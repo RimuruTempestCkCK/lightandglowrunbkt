@@ -42,3 +42,124 @@
     display: none !important;
   }
 }
+
+/* Always display hamburger toggle button so desktop can collapse sidebar */
+.hamburger {
+  display: inline-flex !important;
+}
+
+/* Collapsible Mini Sidebar (Icon-Only Mode) */
+body.is-mini-sidebar .shell {
+  grid-template-columns: 72px 1fr !important;
+  transition: grid-template-columns 0.25s ease;
+}
+body.is-mini-sidebar .d-sidebar {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 20px 10px !important;
+  width: 72px !important;
+  transition: width 0.25s ease, padding 0.25s ease;
+}
+body.is-mini-sidebar .brand-tag,
+body.is-mini-sidebar .brand-text,
+body.is-mini-sidebar .nav-label,
+body.is-mini-sidebar .nav-link .chev,
+body.is-mini-sidebar .nav-link .nav-badge,
+body.is-mini-sidebar .nav-link > span:not(.nav-badge),
+body.is-mini-sidebar .workspace-chev,
+body.is-mini-sidebar .workspace-text,
+body.is-mini-sidebar .sidebar-footer {
+  display: none !important;
+}
+body.is-mini-sidebar .brand {
+  padding: 0 0 18px !important;
+  justify-content: center !important;
+}
+body.is-mini-sidebar .nav-link {
+  justify-content: center !important;
+  padding: 10px !important;
+}
+body.is-mini-sidebar .workspace {
+  justify-content: center !important;
+  padding: 6px !important;
+}
+body.is-mini-sidebar .nav-submenu {
+  display: none !important;
+}
+body.is-mini-sidebar .nav-item-group.is-open .nav-submenu {
+  display: none !important;
+}
+
+/* Adminator Native Modal Popup Theme */
+.adminator-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+.adminator-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  max-width: 520px;
+  width: 100%;
+  overflow: hidden;
+  animation: riseIn 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.adminator-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-soft);
+  padding: 16px 20px;
+}
+.adminator-modal-title {
+  color: var(--t-base);
+  font-family: Inter Tight, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+.adminator-modal-close {
+  color: var(--t-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  transition: all 0.15s;
+}
+.adminator-modal-close:hover {
+  background: var(--bg-hover);
+  color: var(--t-base);
+}
+.adminator-modal-body {
+  padding: 20px;
+  color: var(--t-base);
+  max-height: 75vh;
+  overflow-y: auto;
+}
+.adminator-modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid var(--border-soft);
+  padding: 14px 20px;
+  background: var(--bg-card);
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

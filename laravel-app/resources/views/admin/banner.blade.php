@@ -109,14 +109,10 @@
             <p class="hero-sub">Atur 3 banner carousel utama pada Landing Page: judul promosi, tagline, deskripsi, dan foto background berkualitas tinggi.</p>
           </div>
           <div class="hero-actions">
-            <button class="btn btn--ghost" onclick="resetBanners()">
+            <button class="btn btn--primary" onclick="resetBanners()">
               <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
               Reset Bawaan
             </button>
-            <a href="{{ route('home') }}" target="_blank" class="btn btn--primary">
-              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              Pratinjau di Landing Page
-            </a>
           </div>
         </section>
 
@@ -142,6 +138,43 @@
 
       </main>
       <div data-shell-footer></div>
+    </div>
+  </div>
+
+  <!-- Adminator Native Template Modal Popup -->
+  <div id="adminatorBannerModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeBannerAdminModal()">
+    <div class="adminator-modal">
+      <div class="adminator-modal-head">
+        <h3 id="adminBannerModalTitle" class="adminator-modal-title">Edit Slide Banner</h3>
+        <button class="adminator-modal-close" onclick="closeBannerAdminModal()" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="adminator-modal-body">
+        <input type="hidden" id="modalBannerId" value="1">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <label class="field-label">Tag / Kategori Promosi</label>
+            <input id="inputBannerTag" class="input" placeholder="Contoh: SPECIAL GUEST STARS">
+          </div>
+          <div>
+            <label class="field-label">Judul Utama Slide <span class="req">*</span></label>
+            <input id="inputBannerTitle" class="input" placeholder="Judul slide banner...">
+          </div>
+          <div>
+            <label class="field-label">Deskripsi Promo</label>
+            <textarea id="inputBannerDesc" class="textarea" rows="3" placeholder="Deskripsi..."></textarea>
+          </div>
+          <div>
+            <label class="field-label">URL Foto Background</label>
+            <input id="inputBannerImg" class="input" placeholder="https://images.unsplash.com/...">
+          </div>
+        </div>
+      </div>
+      <div class="adminator-modal-foot">
+        <button class="btn btn--ghost" onclick="closeBannerAdminModal()">Batal</button>
+        <button class="btn btn--primary" onclick="saveBannerFromModal()">Simpan Banner</button>
+      </div>
     </div>
   </div>
 
@@ -236,6 +269,10 @@
       }
     }
 
+    function closeBannerAdminModal() {
+      document.getElementById('adminatorBannerModal').style.display = 'none';
+    }
+
     function editBanner(id) {
       const cms = getStorageData();
       const current = {
@@ -245,56 +282,44 @@
         desc: cms[`slide${id}Desc`] || DEFAULT_BANNERS[id - 1].desc
       };
 
+      document.getElementById('modalBannerId').value = id;
+      document.getElementById('adminBannerModalTitle').textContent = `Edit Slide Banner #${id}`;
+      document.getElementById('inputBannerTag').value = current.tag;
+      document.getElementById('inputBannerTitle').value = current.title;
+      document.getElementById('inputBannerDesc').value = current.desc;
+      document.getElementById('inputBannerImg').value = current.img;
+
+      document.getElementById('adminatorBannerModal').style.display = 'flex';
+    }
+
+    function saveBannerFromModal() {
+      const id = document.getElementById('modalBannerId').value;
+      const tag = document.getElementById('inputBannerTag').value;
+      const title = document.getElementById('inputBannerTitle').value;
+      const desc = document.getElementById('inputBannerDesc').value;
+      const img = document.getElementById('inputBannerImg').value;
+
+      if (!title) {
+        alert('Judul banner tidak boleh kosong!');
+        return;
+      }
+
+      const cms = getStorageData();
+      cms[`slide${id}Tag`] = tag;
+      cms[`slide${id}Title`] = title;
+      cms[`slide${id}Desc`] = desc;
+      cms[`slide${id}Img`] = img;
+      saveStorageData(cms);
+
+      closeBannerAdminModal();
+      renderBanners();
+
       Swal.fire({
-        title: `Edit Slide Banner #${id}`,
-        html: `
-          <div style="text-align:left; font-size:13px; display:flex; flex-direction:column; gap:10px;">
-            <div>
-              <label><b>Tag / Badge:</b></label>
-              <input id="swal-tag" class="swal2-input" style="width:100%; margin:4px 0 0;" value="${current.tag}">
-            </div>
-            <div>
-              <label><b>Judul Utama Slide:</b></label>
-              <input id="swal-title" class="swal2-input" style="width:100%; margin:4px 0 0;" value="${current.title}">
-            </div>
-            <div>
-              <label><b>Deskripsi:</b></label>
-              <textarea id="swal-desc" class="swal2-textarea" style="width:100%; margin:4px 0 0; height:80px;">${current.desc}</textarea>
-            </div>
-            <div>
-              <label><b>URL Gambar Background:</b></label>
-              <input id="swal-img" class="swal2-input" style="width:100%; margin:4px 0 0;" value="${current.img}">
-            </div>
-          </div>
-        `,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonColor: '#EB1355',
-        confirmButtonText: 'Simpan Banner',
-        cancelButtonText: 'Batal',
-        preConfirm: () => {
-          return {
-            tag: document.getElementById('swal-tag').value,
-            title: document.getElementById('swal-title').value,
-            desc: document.getElementById('swal-desc').value,
-            img: document.getElementById('swal-img').value
-          };
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          cms[`slide${id}Tag`] = result.value.tag;
-          cms[`slide${id}Title`] = result.value.title;
-          cms[`slide${id}Desc`] = result.value.desc;
-          cms[`slide${id}Img`] = result.value.img;
-          saveStorageData(cms);
-          renderBanners();
-          Swal.fire({
-            icon: 'success',
-            title: 'Banner Diperbarui!',
-            text: `Slide banner #${id} telah aktif di Landing Page.`,
-            confirmButtonColor: '#EB1355'
-          });
-        }
+        icon: 'success',
+        title: 'Berhasil Diedit!',
+        text: `Slide banner #${id} telah berhasil diperbarui.`,
+        timer: 1500,
+        showConfirmButton: false
       });
     }
 
@@ -304,42 +329,32 @@
       saveStorageData(cms);
       Swal.fire({
         icon: 'success',
-        title: 'Berhasil Disimpan!',
+        title: 'Berhasil Diedit!',
         text: 'Teks bar pengumuman telah diperbarui.',
-        confirmButtonColor: '#EB1355'
+        timer: 1500,
+        showConfirmButton: false
       });
     }
 
     function resetBanners() {
-      Swal.fire({
-        title: 'Reset Semua Banner?',
-        text: 'Kembalikan 3 slide hero carousel ke gambar dan judul default awal?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#EB1355',
-        cancelButtonColor: '#71717A',
-        confirmButtonText: 'Ya, Kembalikan!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const cms = getStorageData();
-          DEFAULT_BANNERS.forEach((b) => {
-            delete cms[`slide${b.id}Tag`];
-            delete cms[`slide${b.id}Title`];
-            delete cms[`slide${b.id}Desc`];
-            delete cms[`slide${b.id}Img`];
-          });
-          saveStorageData(cms);
-          renderBanners();
-          Swal.fire({
-            icon: 'success',
-            title: 'Banner Direset',
-            text: 'Slide banner dikembalikan ke konfigurasi default.',
-            timer: 1500,
-            showConfirmButton: false
-          });
-        }
-      });
+      if (confirm('Kembalikan 3 slide hero carousel ke gambar dan judul default awal?')) {
+        const cms = getStorageData();
+        DEFAULT_BANNERS.forEach((b) => {
+          delete cms[`slide${b.id}Tag`];
+          delete cms[`slide${b.id}Title`];
+          delete cms[`slide${b.id}Desc`];
+          delete cms[`slide${b.id}Img`];
+        });
+        saveStorageData(cms);
+        renderBanners();
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil Direset!',
+          text: 'Slide banner dikembalikan ke konfigurasi default.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
     }
 
     document.addEventListener('DOMContentLoaded', renderBanners);

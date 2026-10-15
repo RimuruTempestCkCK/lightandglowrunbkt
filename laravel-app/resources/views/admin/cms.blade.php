@@ -127,10 +127,6 @@
             <p class="hero-sub">Ubah teks banner, gambar hero slider, daftar tiket konser & harga, tempat wisata, hingga teks footer secara langsung dari dashboard ini.</p>
           </div>
           <div class="hero-actions">
-            <a href="{{ url('/') }}" target="_blank" class="btn btn--ghost">
-              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              Buka Landing Page (Live)
-            </a>
             <button class="btn btn--primary" onclick="saveFullCmsData()">
               <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
               Simpan Semua Perubahan

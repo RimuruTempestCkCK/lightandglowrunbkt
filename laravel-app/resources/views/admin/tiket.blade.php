@@ -140,6 +140,55 @@
     </div>
   </div>
 
+  <!-- Adminator Native Template Modal Popup -->
+  <div id="adminatorTicketModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeTicketAdminModal()">
+    <div class="adminator-modal">
+      <div class="adminator-modal-head">
+        <h3 id="adminModalTitle" class="adminator-modal-title">Kelola Tiket</h3>
+        <button class="adminator-modal-close" onclick="closeTicketAdminModal()" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="adminator-modal-body">
+        <input type="hidden" id="modalTicketIndex" value="-1">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <label class="field-label">Nama Tiket <span class="req">*</span></label>
+            <input id="inputTicketName" class="input" placeholder="Contoh: VIP Neon Glowing Pass">
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <label class="field-label">Harga <span class="req">*</span></label>
+              <input id="inputTicketPrice" class="input" placeholder="Contoh: Rp 250.000">
+            </div>
+            <div>
+              <label class="field-label">Kategori / Benefit</label>
+              <input id="inputTicketCategory" class="input" placeholder="Contoh: Akses Depan">
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <label class="field-label">Tanggal</label>
+              <input id="inputTicketDate" class="input" value="25 Apr 2026">
+            </div>
+            <div>
+              <label class="field-label">Lokasi</label>
+              <input id="inputTicketLocation" class="input" value="Jam Gadang, Bukittinggi">
+            </div>
+          </div>
+          <div>
+            <label class="field-label">URL Foto Tiket</label>
+            <input id="inputTicketImg" class="input" placeholder="https://images.unsplash.com/...">
+          </div>
+        </div>
+      </div>
+      <div class="adminator-modal-foot">
+        <button class="btn btn--ghost" onclick="closeTicketAdminModal()">Batal</button>
+        <button class="btn btn--primary" onclick="saveTicketFromModal()">Simpan Tiket</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     const DEFAULT_TICKETS = [
@@ -216,195 +265,119 @@
       document.getElementById('kpiTotalJenis').textContent = tickets.length + ' Kategori';
     }
 
+    function closeTicketAdminModal() {
+      document.getElementById('adminatorTicketModal').style.display = 'none';
+    }
+
+    function openAddTicketModal() {
+      document.getElementById('modalTicketIndex').value = '-1';
+      document.getElementById('adminModalTitle').textContent = 'Tambah Tiket Baru';
+      document.getElementById('inputTicketName').value = '';
+      document.getElementById('inputTicketPrice').value = '';
+      document.getElementById('inputTicketCategory').value = '';
+      document.getElementById('inputTicketDate').value = '25 Apr 2026';
+      document.getElementById('inputTicketLocation').value = 'Jam Gadang, Bukittinggi';
+      document.getElementById('inputTicketImg').value = 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=60';
+      
+      document.getElementById('adminatorTicketModal').style.display = 'flex';
+    }
+
     function editTicket(index) {
       const cms = getStorageData();
       const tickets = (cms.tickets && cms.tickets.length > 0) ? cms.tickets : DEFAULT_TICKETS;
       const t = tickets[index];
 
-      Swal.fire({
-        title: 'Edit Master Tiket',
-        html: `
-          <div style="text-align:left; font-size:13px; display:flex; flex-direction:column; gap:10px;">
-            <div>
-              <label><b>Nama Tiket:</b></label>
-              <input id="swal-name" class="swal2-input" style="width:100%; margin:4px 0 0;" value="${t.name}">
-            </div>
-            <div>
-              <label><b>Harga:</b></label>
-              <input id="swal-price" class="swal2-input" style="width:100%; margin:4px 0 0;" value="${t.price}">
-            </div>
-            <div>
-              <label><b>Kategori / Benefit:</b></label>
-              <input id="swal-category" class="swal2-input" style="width:100%; margin:4px 0 0;" value="${t.category}">
-            </div>
-            <div>
-              <label><b>Tanggal:</b></label>
-              <input id="swal-date" class="swal2-input" style="width:100%; margin:4px 0 0;" value="${t.date}">
-            </div>
-            <div>
-              <label><b>Lokasi:</b></label>
-              <input id="swal-location" class="swal2-input" style="width:100%; margin:4px 0 0;" value="${t.location}">
-            </div>
-            <div>
-              <label><b>URL Foto Tiket:</b></label>
-              <input id="swal-img" class="swal2-input" style="width:100%; margin:4px 0 0;" value="${t.img}">
-            </div>
-          </div>
-        `,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonColor: '#EB1355',
-        confirmButtonText: 'Simpan Perubahan',
-        cancelButtonText: 'Batal',
-        preConfirm: () => {
-          return {
-            name: document.getElementById('swal-name').value,
-            price: document.getElementById('swal-price').value,
-            category: document.getElementById('swal-category').value,
-            date: document.getElementById('swal-date').value,
-            location: document.getElementById('swal-location').value,
-            img: document.getElementById('swal-img').value
-          };
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          tickets[index] = result.value;
-          cms.tickets = tickets;
-          saveStorageData(cms);
-          renderTickets();
-          Swal.fire({
-            icon: 'success',
-            title: 'Berhasil Diperbarui!',
-            text: 'Data master tiket berhasil disimpan dan terintegrasi ke Landing Page.',
-            confirmButtonColor: '#EB1355'
-          });
-        }
-      });
+      document.getElementById('modalTicketIndex').value = index;
+      document.getElementById('adminModalTitle').textContent = 'Edit Data Tiket';
+      document.getElementById('inputTicketName').value = t.name;
+      document.getElementById('inputTicketPrice').value = t.price;
+      document.getElementById('inputTicketCategory').value = t.category;
+      document.getElementById('inputTicketDate').value = t.date;
+      document.getElementById('inputTicketLocation').value = t.location;
+      document.getElementById('inputTicketImg').value = t.img;
+
+      document.getElementById('adminatorTicketModal').style.display = 'flex';
     }
 
-    function openAddTicketModal() {
-      Swal.fire({
-        title: 'Tambah Tiket Baru',
-        html: `
-          <div style="text-align:left; font-size:13px; display:flex; flex-direction:column; gap:10px;">
-            <div>
-              <label><b>Nama Tiket:</b></label>
-              <input id="swal-name" class="swal2-input" style="width:100%; margin:4px 0 0;" placeholder="Contoh: VIP Neon Glowing Pass">
-            </div>
-            <div>
-              <label><b>Harga:</b></label>
-              <input id="swal-price" class="swal2-input" style="width:100%; margin:4px 0 0;" placeholder="Contoh: Rp 200.000">
-            </div>
-            <div>
-              <label><b>Kategori / Benefit:</b></label>
-              <input id="swal-category" class="swal2-input" style="width:100%; margin:4px 0 0;" placeholder="Contoh: Akses Depan + Goodie Bag">
-            </div>
-            <div>
-              <label><b>Tanggal:</b></label>
-              <input id="swal-date" class="swal2-input" style="width:100%; margin:4px 0 0;" value="25 Apr 2026">
-            </div>
-            <div>
-              <label><b>Lokasi:</b></label>
-              <input id="swal-location" class="swal2-input" style="width:100%; margin:4px 0 0;" value="Jam Gadang, Bukittinggi">
-            </div>
-            <div>
-              <label><b>URL Foto Tiket:</b></label>
-              <input id="swal-img" class="swal2-input" style="width:100%; margin:4px 0 0;" value="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=60">
-            </div>
-          </div>
-        `,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonColor: '#EB1355',
-        confirmButtonText: 'Tambah Tiket',
-        cancelButtonText: 'Batal',
-        preConfirm: () => {
-          const name = document.getElementById('swal-name').value;
-          const price = document.getElementById('swal-price').value;
-          if (!name || !price) {
-            Swal.showValidationMessage('Nama dan harga tiket wajib diisi!');
-            return false;
-          }
-          return {
-            name: name,
-            price: price,
-            category: document.getElementById('swal-category').value || 'Tiket Masuk',
-            date: document.getElementById('swal-date').value,
-            location: document.getElementById('swal-location').value,
-            img: document.getElementById('swal-img').value
-          };
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const cms = getStorageData();
-          const tickets = (cms.tickets && cms.tickets.length > 0) ? cms.tickets : [...DEFAULT_TICKETS];
-          tickets.push(result.value);
-          cms.tickets = tickets;
-          saveStorageData(cms);
-          renderTickets();
-          Swal.fire({
-            icon: 'success',
-            title: 'Tiket Berhasil Ditambahkan!',
-            text: 'Tiket baru otomatis tersedia di katalog penjualan.',
-            confirmButtonColor: '#EB1355'
-          });
-        }
-      });
+    function saveTicketFromModal() {
+      const name = document.getElementById('inputTicketName').value;
+      const price = document.getElementById('inputTicketPrice').value;
+      const category = document.getElementById('inputTicketCategory').value || 'Tiket Masuk';
+      const date = document.getElementById('inputTicketDate').value;
+      const location = document.getElementById('inputTicketLocation').value;
+      const img = document.getElementById('inputTicketImg').value || 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=60';
+      const index = parseInt(document.getElementById('modalTicketIndex').value);
+
+      if (!name || !price) {
+        alert('Nama tiket dan harga wajib diisi!');
+        return;
+      }
+
+      const ticketObj = { name, price, category, date, location, img };
+      const cms = getStorageData();
+      const tickets = (cms.tickets && cms.tickets.length > 0) ? cms.tickets : [...DEFAULT_TICKETS];
+
+      closeTicketAdminModal();
+
+      if (index >= 0) {
+        tickets[index] = ticketObj;
+        cms.tickets = tickets;
+        saveStorageData(cms);
+        renderTickets();
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil Diedit!',
+          text: 'Data tiket berhasil diperbarui.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        tickets.push(ticketObj);
+        cms.tickets = tickets;
+        saveStorageData(cms);
+        renderTickets();
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil Ditambahkan!',
+          text: 'Tiket baru telah berhasil ditambahkan.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
     }
 
     function deleteTicket(index) {
-      Swal.fire({
-        title: 'Hapus Tiket Ini?',
-        text: 'Kategori tiket ini tidak akan lagi tampil di halaman checkout pengunjung.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#EB1355',
-        cancelButtonColor: '#71717A',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const cms = getStorageData();
-          const tickets = (cms.tickets && cms.tickets.length > 0) ? cms.tickets : [...DEFAULT_TICKETS];
-          tickets.splice(index, 1);
-          cms.tickets = tickets;
-          saveStorageData(cms);
-          renderTickets();
-          Swal.fire({
-            icon: 'success',
-            title: 'Tiket Dihapus!',
-            text: 'Data tiket berhasil dihapus dari sistem.',
-            confirmButtonColor: '#EB1355'
-          });
-        }
-      });
+      if (confirm('Yakin ingin menghapus tiket ini?')) {
+        const cms = getStorageData();
+        const tickets = (cms.tickets && cms.tickets.length > 0) ? cms.tickets : [...DEFAULT_TICKETS];
+        tickets.splice(index, 1);
+        cms.tickets = tickets;
+        saveStorageData(cms);
+        renderTickets();
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil Dihapus!',
+          text: 'Tiket telah berhasil dihapus.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
     }
 
     function resetTickets() {
-      Swal.fire({
-        title: 'Reset ke Bawaan?',
-        text: 'Kembalikan seluruh daftar tiket ke default Light And Glow Bukittinggi?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#EB1355',
-        cancelButtonColor: '#71717A',
-        confirmButtonText: 'Ya, Reset',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const cms = getStorageData();
-          cms.tickets = [...DEFAULT_TICKETS];
-          saveStorageData(cms);
-          renderTickets();
-          Swal.fire({
-            icon: 'success',
-            title: 'Berhasil Direset',
-            text: 'Katalog tiket dikembalikan ke daftar awal.',
-            timer: 1500,
-            showConfirmButton: false
-          });
-        }
-      });
+      if (confirm('Kembalikan seluruh daftar tiket ke default awal?')) {
+        const cms = getStorageData();
+        cms.tickets = [...DEFAULT_TICKETS];
+        saveStorageData(cms);
+        renderTickets();
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil Direset!',
+          text: 'Daftar tiket telah dikembalikan ke bawaan.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
     }
 
     document.addEventListener('DOMContentLoaded', renderTickets);

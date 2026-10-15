@@ -95,40 +95,73 @@
     </div>
   </div>
 
+  <!-- Adminator Native Template Modal Popup -->
+  <div id="adminatorStaffModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeStaffModal()">
+    <div class="adminator-modal">
+      <div class="adminator-modal-head">
+        <h3 id="staffModalTitle" class="adminator-modal-title">Tambah Petugas Baru</h3>
+        <button class="adminator-modal-close" onclick="closeStaffModal()" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="staffForm" onsubmit="saveStaff(event)">
+        <div class="adminator-modal-body">
+          <div class="field">
+            <label class="field-label">Nama Petugas</label>
+            <input type="text" id="staffName" class="input" placeholder="Contoh: Ridho Illahi" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Email / Username Petugas</label>
+            <input type="email" id="staffEmail" class="input" placeholder="Contoh: ridho@lightandglow.id" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Penugasan Acara</label>
+            <input type="text" id="staffEvent" class="input" value="Light And Glow Bukittinggi 2026" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Posisi Gate</label>
+            <input type="text" id="staffGate" class="input" value="Gate 1 (Utama)" required>
+          </div>
+        </div>
+        <div class="adminator-modal-foot">
+          <button type="button" class="btn btn--ghost" onclick="closeStaffModal()">Batal</button>
+          <button type="submit" class="btn btn--primary">Buat Akun Petugas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
+    function openStaffModal() {
+      document.getElementById('staffForm').reset();
+      document.getElementById('staffEvent').value = "Light And Glow Bukittinggi 2026";
+      document.getElementById('staffGate').value = "Gate 1 (Utama)";
+      document.getElementById('adminatorStaffModal').style.display = 'flex';
+    }
+
+    function closeStaffModal() {
+      document.getElementById('adminatorStaffModal').style.display = 'none';
+    }
+
     function addStaff() {
+      openStaffModal();
+    }
+
+    function saveStaff(e) {
+      e.preventDefault();
+      const name = document.getElementById('staffName').value.trim();
+      const email = document.getElementById('staffEmail').value.trim();
+      const gate = document.getElementById('staffGate').value.trim();
+
+      closeStaffModal();
+
+      // Gunakan SweetAlert HANYA untuk notifikasi berhasil
       Swal.fire({
-        title: 'Tambah Petugas Baru',
-        html: `
-          <div style="text-align:left; font-size:13px; display:flex; flex-direction:column; gap:10px;">
-            <div>
-              <label><b>Nama Petugas:</b></label>
-              <input id="swal-sname" class="swal2-input" style="width:100%; margin:4px 0 0;" placeholder="Contoh: Ridho Illahi">
-            </div>
-            <div>
-              <label><b>Email / Username:</b></label>
-              <input id="swal-smail" class="swal2-input" style="width:100%; margin:4px 0 0;" placeholder="Contoh: ridho@lightandglow.id">
-            </div>
-            <div>
-              <label><b>Penugasan Gate:</b></label>
-              <input id="swal-sgate" class="swal2-input" style="width:100%; margin:4px 0 0;" value="Gate 1 (Utama)">
-            </div>
-          </div>
-        `,
-        showCancelButton: true,
-        confirmButtonColor: '#EB1355',
-        confirmButtonText: 'Buat Akun Petugas',
-        cancelButtonText: 'Batal'
-      }).then((res) => {
-        if (res.isConfirmed) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Petugas Ditambahkan!',
-            text: 'Akun petugas baru telah dibuat dan siap login ke menu Scanner QR.',
-            confirmButtonColor: '#EB1355'
-          });
-        }
+        icon: 'success',
+        title: 'Berhasil Ditambahkan!',
+        text: `Akun petugas ${name} (${gate}) berhasil dibuat dan siap bertugas.`,
+        confirmButtonColor: '#EB1355'
       });
     }
 
@@ -139,13 +172,14 @@
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#EB1355',
-        confirmButtonText: 'Reset Password'
+        confirmButtonText: 'Reset Password',
+        cancelButtonText: 'Batal'
       }).then((res) => {
         if (res.isConfirmed) {
           Swal.fire({
             icon: 'success',
-            title: 'Password Direset!',
-            text: 'Password baru: LG2026!Gate',
+            title: 'Berhasil Diedit!',
+            text: 'Password baru petugas telah diperbarui.',
             confirmButtonColor: '#10B981'
           });
         }
