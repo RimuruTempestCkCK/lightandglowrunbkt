@@ -279,15 +279,15 @@
                 <p style="font-size:13px; color:var(--goers-gray-700); margin-bottom:8px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
                 <div style="font-size:12px; color:#64748B;">
                   Metode: <strong>{{ $ord->payment_method ?? 'QRIS' }}</strong> · Pemesan: <strong>{{ $ord->buyer_name }}</strong> ({{ $ord->quantity }} Tiket)
-                  @if($ord->proof_of_payment)
-                    · Bukti: <a href="{{ asset('storage/' . $ord->proof_of_payment) }}" target="_blank" style="color:#10B981; font-weight:700; text-decoration:underline;">Lihat Bukti</a>
+                  @if(!empty($ord->payment_proof))
+                    · Bukti: <a href="{{ asset('storage/' . $ord->payment_proof) }}" target="_blank" style="color:#10B981; font-weight:700; text-decoration:underline;">Lihat Bukti</a>
                   @endif
                 </div>
               </div>
               <div style="text-align:right; display:flex; flex-direction:column; justify-content:space-between;">
                 <div>
                   <span style="font-size:11px; color:#64748B;">Total Tagihan:</span>
-                  <div style="font-size:18px; font-weight:800; color:var(--goers-branding-500);">Rp {{ number_format($ord->total_price, 0, ',', '.') }}</div>
+                  <div style="font-size:18px; font-weight:800; color:var(--goers-branding-500);">Rp {{ number_format($ord->total_amount ?? 0, 0, ',', '.') }}</div>
                 </div>
                 <div>
                   @if($ord->status === 'Pembayaran disetujui')
@@ -295,7 +295,7 @@
                       $ticketForOrder = $digitalTickets->firstWhere('order_id', $ord->id);
                     @endphp
                     @if($ticketForOrder)
-                      <button class="btn-signup" style="padding:8px 16px; font-size:12px;" onclick="showMyTicket('{{ $ord->ticket_name }}', '{{ $ord->order_number }}', '{{ $ticketForOrder->qr_token }}', '{{ $ticketForOrder->attendee_name }}', '25 Apr 2026')">
+                      <button class="btn-signup" style="padding:8px 16px; font-size:12px;" onclick="showMyTicket('{{ $ord->ticket_name }}', '{{ $ord->order_number }}', '{{ $ticketForOrder->qr_token }}', '{{ $ticketForOrder->holder_name }}', '25 Apr 2026')">
                         <i data-lucide="qr-code" style="width:14px;height:14px; vertical-align:middle; margin-right:4px;"></i>
                         Lihat E-Tiket
                       </button>
@@ -305,7 +305,7 @@
                       Cek Status
                     </button>
                   @else
-                    <span style="font-size:12px; color:#EF4444; font-weight:600;">{{ $ord->reject_reason ?? 'Pesanan ditolak' }}</span>
+                    <span style="font-size:12px; color:#EF4444; font-weight:600;">{{ $ord->rejection_reason ?? $ord->status }}</span>
                   @endif
                 </div>
               </div>
@@ -345,14 +345,14 @@
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode($dt->qr_token) }}" alt="QR Code" style="width:170px; height:170px;">
                   </div>
                   <div style="font-family:monospace; font-size:14px; font-weight:700; color:#38BDF8; letter-spacing:1px; margin-bottom:8px;">{{ $dt->ticket_code }}</div>
-                  @if($dt->is_used)
-                    <span style="background:rgba(239,68,68,0.2); color:#F87171; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ SUDAH CHECK-IN ({{ \Carbon\Carbon::parse($dt->used_at)->format('H:i') }} WIB)</span>
+                  @if($dt->status === 'Sudah digunakan')
+                    <span style="background:rgba(239,68,68,0.2); color:#F87171; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ SUDAH CHECK-IN ({{ !empty($dt->used_at) ? \Carbon\Carbon::parse($dt->used_at)->format('H:i') : '' }} WIB)</span>
                   @else
                     <span style="background:rgba(16,185,129,0.2); color:#34D399; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ TIKET AKTIF & SIAP DIPAKAI</span>
                   @endif
 
                   <div style="border-top:1px dashed #334155; margin-top:20px; padding-top:16px; text-align:left; font-size:12px; color:#94A3B8; line-height:1.7;">
-                    <div><strong>Nama Pemegang:</strong> <span style="color:#fff;">{{ $dt->attendee_name }}</span></div>
+                    <div><strong>Nama Pemegang:</strong> <span style="color:#fff;">{{ $dt->holder_name }}</span></div>
                     <div><strong>Kategori:</strong> <span style="color:#fff;">{{ $dt->ticket_name }}</span></div>
                     <div><strong>No. Pesanan:</strong> <span style="color:#fff;">{{ $dt->order_number }}</span></div>
                     <div><strong>Gate Masuk:</strong> <span style="color:#fff;">{{ $dt->gate ?? 'Gate 1 (Akses Utama)' }}</span></div>

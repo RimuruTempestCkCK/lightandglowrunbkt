@@ -68,12 +68,25 @@
     @media (max-width: 768px) { .auth-buyer-left { display: none; } }
 
     .auth-buyer-right {
-      width: 520px; max-width: 100%;
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 48px 40px; background: #fff;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 48px 32px;
+      background: #fff;
       overflow-y: auto;
     }
-    @media (max-width: 768px) { .auth-buyer-right { width: 100%; padding: 32px 24px; } }
+    .auth-form-container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+    }
+    @media (max-width: 768px) {
+      .auth-buyer-right { padding: 32px 20px; }
+      .auth-form-container { max-width: 100%; }
+    }
     .auth-buyer-logo {
       display: flex; align-items: center; gap: 10px;
       font-family: 'Montserrat', sans-serif;
@@ -146,21 +159,26 @@
         <div class="auth-left-feature"><span>⚡</span> Registrasi cepat, hanya butuh email & password</div>
         <div class="auth-left-feature"><span>🔒</span> Data Anda aman & terenkripsi</div>
         <div class="auth-left-feature"><span>📱</span> Akses tiket digital dari mana saja</div>
+        {{--
         <div class="auth-left-feature"><span>✅</span> Verifikasi admin cepat (kurang dari 1x24 jam)</div>
+        --}}
       </div>
     </div>
 
     <!-- Right Panel -->
     <div class="auth-buyer-right">
-      <a href="{{ route('home') }}" class="auth-back-link">
-        <i data-lucide="arrow-left" style="width:15px;height:15px;"></i>
-        Kembali ke Beranda
-      </a>
+      <div class="auth-form-container">
+        <a href="{{ route('home') }}" class="auth-back-link">
+          <i data-lucide="arrow-left" style="width:15px;height:15px;"></i>
+          Kembali ke Beranda
+        </a>
 
-      <div class="auth-buyer-logo">LIGHT & GLOW<span class="dot">.</span></div>
+        {{--
+        <div class="auth-buyer-logo">LIGHT & GLOW<span class="dot">.</span></div>
+        --}}
 
-      <h2 class="auth-form-title">Buat Akun Pembeli Baru</h2>
-      <p class="auth-form-sub">Isi data diri Anda untuk daftar. Sudah punya akun? <a href="{{ route('buyer.login') }}" style="color:var(--goers-branding-500);font-weight:700;">Masuk di sini</a></p>
+        <h2 class="auth-form-title">Buat Akun Pembeli Baru</h2>
+        <p class="auth-form-sub">Isi data diri Anda untuk daftar. Sudah punya akun? <a href="{{ route('buyer.login') }}" style="color:var(--goers-branding-500);font-weight:700;">Masuk di sini</a></p>
 
       @if($errors->any())
         <div class="alert-error">
@@ -222,6 +240,7 @@
 
       <div style="margin-top:20px; text-align:center; font-size:12px; color:var(--goers-gray-600);">
         Dengan mendaftar, Anda menyetujui <a href="#" style="color:var(--goers-branding-500);">Syarat & Ketentuan</a> pemesanan tiket Light & Glow.
+      </div>
       </div>
     </div>
   </div>

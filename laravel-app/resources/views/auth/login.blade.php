@@ -1,120 +1,293 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
-  <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-  <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
-  <title>Masuk Admin & Petugas · Light And Glow Bukittinggi</title>
-  <script>
-    !function(){
-      try{
-        var t=localStorage.getItem("dash26-theme"),e=window.matchMedia("(prefers-color-scheme: dark)").matches;
-        document.documentElement.setAttribute("data-theme",t||(e?"dark":"light"))
-      }catch(t){
-        document.documentElement.setAttribute("data-theme","light")
-      }
-    }()
-  </script>
-  <script defer="defer" src="{{ asset('adminator/runtime.096d507f.js') }}"></script>
-  <script defer="defer" src="{{ asset('adminator/2026.5a84696f.js') }}"></script>
-  <link href="{{ asset('adminator/style.76ee5eee.css') }}" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Admin & Petugas · Light And Glow Bukittinggi</title>
+  <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;700&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="{{ asset('style.css') }}" />
+  <style>
+    .auth-admin-page {
+      min-height: 100vh;
+      display: flex;
+      background: #F8FAFC;
+    }
+    .auth-admin-left {
+      flex: 1;
+      background: linear-gradient(145deg, #0B132B 0%, #1C2541 60%, #3A506B 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 64px 56px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-admin-left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=800&q=40') center/cover no-repeat;
+      opacity: 0.10;
+    }
+    .auth-admin-left > * { position: relative; z-index: 1; }
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #38BDF8;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .auth-left-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+    .auth-left-title span { color: #38BDF8; }
+    .auth-left-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+      max-width: 380px;
+      margin-bottom: 30px;
+    }
+    .auth-left-features { display: flex; flex-direction: column; gap: 12px; }
+    .auth-left-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.9);
+    }
+    .auth-left-feature span {
+      width: 30px; height: 30px;
+      background: rgba(56, 189, 248, 0.15);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    @media (max-width: 820px) {
+      .auth-admin-left { display: none; }
+    }
+
+    .auth-admin-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 48px 32px;
+      background: #fff;
+      overflow-y: auto;
+    }
+    .auth-form-container {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+    }
+    @media (max-width: 820px) {
+      .auth-admin-right { padding: 32px 20px; }
+      .auth-form-container { max-width: 100%; }
+    }
+
+    .auth-back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--goers-gray-600);
+      margin-bottom: 28px;
+      transition: color 0.2s;
+    }
+    .auth-back-link:hover { color: var(--goers-branding-500); }
+
+    .auth-form-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px; font-weight: 800;
+      color: var(--goers-navy-900);
+      margin-bottom: 6px;
+    }
+    .auth-form-sub {
+      font-size: 13px; color: var(--goers-gray-700);
+      margin-bottom: 28px; line-height: 1.5;
+    }
+
+    .form-field { margin-bottom: 18px; }
+    .form-label {
+      display: block;
+      font-size: 13px; font-weight: 700;
+      color: var(--goers-navy-900);
+      margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--goers-gray-400);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--goers-gray-900);
+      background: #fff;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: #0284C7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+
+    .form-submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: #0F172A;
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .form-submit-btn:hover {
+      background: #1E293B;
+    }
+
+    .auth-divider {
+      display: flex; align-items: center; gap: 12px;
+      color: var(--goers-gray-500); font-size: 12px;
+      margin: 22px 0 16px;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--goers-gray-300);
+    }
+
+    .quick-roles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .role-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--goers-gray-300);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--goers-navy-900);
+      background: #F8FAFC;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .role-btn:hover {
+      border-color: #0284C7;
+      color: #0284C7;
+      background: #F0F9FF;
+    }
+  </style>
 </head>
 <body>
-  <div class="auth-shell">
-    <aside class="auth-aside">
-      <div class="auth-brand">
-        <div class="logo">
-          <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#fff" d="M14.747 9.125c.527-1.426 1.736-2.573 3.317-2.573c1.643 0 2.792 1.085 3.318 2.573l6.077 16.867c.186.496.248.931.248 1.147c0 1.209-.992 2.046-2.139 2.046c-1.303 0-1.954-.682-2.264-1.611l-.931-2.915h-8.62l-.93 2.884c-.31.961-.961 1.642-2.232 1.642c-1.24 0-2.294-.93-2.294-2.17c0-.496.155-.868.217-1.023l6.233-16.867zm.34 11.256h5.891l-2.883-8.992h-.062l-2.946 8.992z"/>
-          </svg>
-        </div>
-        <div class="name">Light & Glow</div>
+  <div class="auth-admin-page">
+    
+    <!-- Panel Kiri (Ringkas, Clean) -->
+    <div class="auth-admin-left">
+      <div class="auth-badge">
+        🛡️ Portal Internal Event
       </div>
-      <div class="auth-aside-body">
-        <span class="auth-aside-eyebrow">Bukittinggi Event Panel</span>
-        <h1>Sistem Pemesanan Tiket & Check-in QR Code</h1>
-        <p>Kelola verifikasi pembayaran QRIS/Transfer, pantau kuota tiket, dan validasi tiket peserta dengan scanner cepat anti-duplikasi.</p>
-        <div class="auth-quote">
-          "Light And Glow Bukittinggi 2026: Sensasi lari malam penuh cahaya & konser musik spektakuler di Jam Gadang!"
-          <div class="auth-quote-author">
-            <div class="av">LG</div>
-            <div>Admin Panitia Pelaksana</div>
-          </div>
-        </div>
-      </div>
-      <div class="auth-aside-footer">
-        <span>© 2026</span> <span>BUKITTINGGI, SUMATERA BARAT</span>
-      </div>
-    </aside>
+      <h1 class="auth-left-title">
+        Akses Admin &<br><span>Petugas Scanner</span>
+      </h1>
+      <p class="auth-left-desc">
+        Masuk untuk memverifikasi pembayaran pesanan tiket dan melakukan pemindaian check-in tiket peserta.
+    </div>
 
-    <main class="auth-main">
-      <div class="auth-main-top">
-        <a href="{{ url('/') }}" style="font-size:12.5px;color:var(--t-muted);display:inline-flex;align-items:center;gap:6px">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg> Kembali ke Landing Page
+    <!-- Panel Kanan (Form Rapi di Tengah) -->
+    <div class="auth-admin-right">
+      <div class="auth-form-container">
+        <a href="{{ route('home') }}" class="auth-back-link">
+          <i data-lucide="arrow-left" style="width:15px;height:15px;"></i>
+          Kembali ke Beranda
         </a>
-        <div class="switch-link">Belum punya akun? <a href="{{ route('register') }}">Daftar akun</a></div>
-      </div>
 
-      <div class="auth-card">
-        <h2>Selamat Datang</h2>
-        <p class="sub">Masuk untuk mengelola tiket, verifikasi pembayaran, atau scanner check-in.</p>
-        
-        <form class="auth-form" onsubmit="event.preventDefault(); window.location='{{ route('dashboard') }}';">
-          <div class="field">
-            <label class="field-label" for="email">Email Akun</label>
-            <div class="input-icon">
-              <span class="ico">
-                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-              </span>
-              <input id="email" class="input" type="email" placeholder="admin@lightandglow.id" value="admin@lightandglow.id" required>
-            </div>
+        <h2 class="auth-form-title">Masuk ke Portal</h2>
+        <p class="auth-form-sub">Masukkan kredensial akun panitia pelaksana Anda.</p>
+
+        <form method="GET" action="{{ route('dashboard') }}" onsubmit="event.preventDefault(); window.location='{{ route('dashboard') }}';">
+          <div class="form-field">
+            <label class="form-label" for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-input"
+              placeholder="admin@lightandglow.id"
+              value="admin@lightandglow.id"
+              required
+            />
           </div>
 
-          <div class="field">
-            <div class="field-row">
-              <label class="field-label" for="password">Kata Sandi</label>
-              <a href="#">Lupa sandi?</a>
-            </div>
-            <div class="input-icon">
-              <span class="ico">
-                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              </span>
-              <input id="password" class="input" type="password" placeholder="••••••••" value="password123" required>
-            </div>
+          <div class="form-field">
+            <label class="form-label" for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="••••••••"
+              value="password123"
+              required
+            />
           </div>
 
-          <label class="check">
-            <input type="checkbox" checked="checked">
-            <span class="box"></span> Ingat saya selama 30 hari
-          </label>
-
-          <button class="btn btn--primary auth-submit" type="submit">
+          <button type="submit" class="form-submit-btn">
+            <i data-lucide="log-in" style="width:16px;height:16px;"></i>
             Masuk ke Dashboard
-            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
           </button>
         </form>
 
-        <div class="auth-divider">atau peran cepat</div>
-        <div class="social-row">
-          <a class="social-btn" href="{{ route('dashboard') }}">
-            👤 Masuk sebagai Admin
+        <div class="auth-divider">atau akses cepat</div>
+
+        <div class="quick-roles">
+          <a class="role-btn" href="{{ route('dashboard') }}">
+            <i data-lucide="layout-dashboard" style="width:15px;height:15px;color:#0284C7;"></i>
+            Admin Utama
           </a>
-          <a class="social-btn" href="{{ url('/dashboard/scanner') }}">
-            📱 Masuk sebagai Petugas Scan
+          <a class="role-btn" href="{{ url('/dashboard/scanner') }}">
+            <i data-lucide="qr-code" style="width:15px;height:15px;color:#10B981;"></i>
+            Petugas Scan
           </a>
         </div>
       </div>
+    </div>
 
-      <div class="auth-main-bottom">
-        Dengan masuk, Anda menyetujui <a href="#">Syarat Layanan</a> dan <a href="#">Kebijakan Privasi</a> Light And Glow.
-      </div>
-    </main>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
 </body>
 </html>
