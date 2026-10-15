@@ -1,0 +1,79 @@
+# Rancangan Alur Sistem Aplikasi Pemesanan Tiket
+
+## 1. Pembeli
+
+1. Memilih jenis tiket.
+2. Mengisi data pembeli.
+3. Melakukan checkout.
+4. Sistem membuat nomor pesanan unik.
+5. Sistem menampilkan QRIS milik bank/merchant beserta nominal pembayaran.
+6. Pembeli melakukan pembayaran.
+7. Pembeli mengunggah bukti pembayaran.
+8. Pembeli menunggu verifikasi pembayaran oleh admin.
+9. Jika pembayaran disetujui, sistem mengaktifkan tiket.
+10. Pembeli dapat mengunduh atau menampilkan tiket digital yang dilengkapi QR Code unik.
+11. Saat acara berlangsung, pembeli menunjukkan tiket digital atau tiket cetak kepada petugas untuk diperiksa melalui QR Code.
+
+## 2. Admin
+
+- Login ke dashboard admin.
+- Melihat dashboard transaksi.
+- Melihat detail pesanan.
+- Melihat bukti transfer atau pembayaran QRIS.
+- Memverifikasi pembayaran.
+- Menolak pembayaran disertai alasan penolakan.
+- Mengelola jenis tiket.
+- Mengelola harga tiket.
+- Mengelola kuota tiket.
+- Mengelola data pembeli.
+- Menerbitkan tiket digital dan QR Code unik setelah pembayaran disetujui.
+- Melihat dan mengunduh laporan transaksi.
+- Melihat laporan kehadiran peserta berdasarkan data check-in.
+- Mengelola akun petugas dan memberikan akses sesuai acara yang ditugaskan.
+
+## 3. Petugas Check-in
+
+- Login menggunakan akun petugas.
+- Melihat acara yang menjadi tanggung jawabnya.
+- Membuka halaman scanner QR Code melalui kamera HP.
+- Memindai QR Code pada tiket peserta.
+- Sistem memvalidasi keaslian tiket, status pembayaran, kesesuaian acara, dan status penggunaan tiket.
+- Jika tiket valid dan belum digunakan, sistem mencatat check-in serta menampilkan informasi peserta.
+- Jika tiket sudah digunakan, sistem menampilkan peringatan bahwa tiket telah dipakai.
+- Jika tiket tidak valid, pembayaran belum disetujui, atau tiket tidak sesuai acara, sistem menolak check-in.
+- Melihat riwayat dan jumlah peserta yang telah melakukan check-in.
+
+## 4. Alur Check-in Saat Acara
+
+1. Peserta datang ke lokasi acara.
+2. Peserta menunjukkan QR Code tiket kepada petugas.
+3. Petugas memindai QR Code menggunakan scanner pada aplikasi web.
+4. Backend memvalidasi tiket ke database.
+5. Jika tiket valid dan belum digunakan, check-in disetujui dan waktu masuk dicatat.
+6. Jika tiket sudah digunakan atau tidak valid, sistem menolak akses dan menampilkan alasannya.
+7. Data check-in masuk ke laporan kehadiran yang dapat dipantau admin.
+
+## 5. Status Utama Sistem
+
+**Status pesanan dan pembayaran:**
+- Menunggu pembayaran.
+- Menunggu verifikasi.
+- Pembayaran disetujui.
+- Pembayaran ditolak.
+- Kedaluwarsa.
+- Dibatalkan.
+
+**Status tiket:**
+- Aktif dan belum digunakan.
+- Sudah digunakan.
+- Tidak valid atau dinonaktifkan.
+
+## 6. Ketentuan Keamanan
+
+- Setiap tiket memiliki QR Code atau token unik yang tidak mudah ditebak.
+- QR Code tidak boleh digunakan lebih dari satu kali untuk tiket dengan ketentuan satu kali masuk.
+- Validasi dan pencatatan check-in dilakukan di backend, bukan hanya di frontend.
+- Proses check-in harus mencegah penggunaan tiket yang sama secara bersamaan oleh beberapa petugas.
+- Petugas hanya dapat melakukan check-in untuk acara yang menjadi tanggung jawabnya.
+- Setiap aktivitas verifikasi pembayaran dan check-in dicatat untuk keperluan audit.
+- Akses kamera scanner menggunakan koneksi HTTPS pada lingkungan produksi.

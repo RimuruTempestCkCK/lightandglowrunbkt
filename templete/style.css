@@ -1,0 +1,1732 @@
+/* ==========================================================================
+   GOERS DESIGN SYSTEM & DESIGN TOKENS (Extracted from official Goers Bundle)
+   ========================================================================== */
+:root {
+  /* Branding Primary Reds / Pinks */
+  --goers-branding-100: #FDE7EE;
+  --goers-branding-200: #F9B8CC;
+  --goers-branding-300: #F15A88;
+  --goers-branding-400: #EF4377;
+  --goers-branding-500: #EB1355;
+  --goers-branding-600: #CF2B5D;
+  --goers-branding-700: #B51244;
+  --goers-branding-800: #9C002A;
+  --goers-branding-900: #690000;
+  
+  /* Primary Navy Blue */
+  --goers-navy-900: #001F5C;
+  --goers-navy-800: #0E2F72;
+  --goers-navy-500: #284892;
+  --goers-navy-100: #D5E4F9;
+
+  /* Basics Grayscale */
+  --goers-white: #ffffff;
+  --goers-gray-100: #FAFAFA;
+  --goers-gray-200: #F5F5F5;
+  --goers-gray-300: #F0F0F0;
+  --goers-gray-400: #DEDEDE;
+  --goers-gray-500: #C2C2C2;
+  --goers-gray-600: #979797;
+  --goers-gray-700: #818181;
+  --goers-gray-800: #606060;
+  --goers-gray-900: #3C3C3C;
+  --goers-black: #1E1E1E;
+
+  /* Functional */
+  --goers-teal: #00A490;
+  --goers-teal-light: #E8FCF9;
+  --goers-blue-info: #17A9EF;
+  --goers-orange-warning: #F29A4C;
+
+  --font-family-base: 'Karla', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-heading: 'Montserrat', 'Plus Jakarta Sans', sans-serif;
+  --max-width: 1200px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 4px 20px rgba(0, 31, 92, 0.06);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-base);
+  color: var(--goers-gray-900);
+  background-color: var(--goers-white);
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  transition: all 0.2s ease;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Container */
+.goers-container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .goers-container {
+    padding: 0 24px;
+  }
+}
+
+/* ==========================================================================
+   TOP ANNOUNCEMENT BAR
+   ========================================================================== */
+.top-bar {
+  background-color: var(--goers-navy-900);
+  color: #ffffff;
+  font-size: 13px;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar a {
+  color: #B2FFF4;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.top-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #e2e8f0;
+}
+
+.top-bar-item:hover {
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .top-bar-right {
+    display: none;
+  }
+  .top-bar {
+    font-size: 11px;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
+   MAIN NAVBAR (Goers Header Component)
+   ========================================================================== */
+.goers-header {
+  position: sticky;
+  top: 0;
+  background: var(--goers-white);
+  z-index: 1000;
+  border-bottom: 1px solid var(--goers-gray-300);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.goers-nav-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  gap: 20px;
+}
+
+/* Logo */
+.goers-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-family-heading);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--goers-branding-500);
+}
+
+.goers-brand-logo span.dot {
+  color: var(--goers-navy-900);
+}
+
+/* Search Bar */
+.goers-search-box {
+  flex: 1;
+  max-width: 480px;
+  position: relative;
+}
+
+.goers-search-input {
+  width: 100%;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--goers-gray-400);
+  padding: 0 44px 0 44px;
+  font-size: 14px;
+  background-color: var(--goers-gray-100);
+  transition: all 0.25s ease;
+  color: var(--goers-black);
+}
+
+.goers-search-input:focus {
+  background-color: #fff;
+  border-color: var(--goers-branding-500);
+  box-shadow: 0 0 0 3px rgba(235, 19, 85, 0.12);
+}
+
+.goers-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--goers-gray-600);
+  pointer-events: none;
+}
+
+.goers-search-clear {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--goers-gray-600);
+  cursor: pointer;
+  display: none;
+}
+
+/* Navigation Actions */
+.goers-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-btn-link {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--goers-navy-900);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-btn-link:hover {
+  color: var(--goers-branding-500);
+  background-color: var(--goers-branding-100);
+}
+
+.badge-new {
+  background: var(--goers-branding-500);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-login {
+  border: 1.5px solid var(--goers-branding-500);
+  color: var(--goers-branding-500);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  background: transparent;
+}
+
+.btn-login:hover {
+  background-color: var(--goers-branding-500);
+  color: #ffffff;
+}
+
+.btn-signup {
+  background-color: var(--goers-branding-500);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 9px 20px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 12px rgba(235, 19, 85, 0.25);
+}
+
+.btn-signup:hover {
+  background-color: var(--goers-branding-600);
+  box-shadow: 0 6px 16px rgba(235, 19, 85, 0.35);
+}
+
+.mobile-menu-toggle {
+  display: none;
+  padding: 8px;
+  color: var(--goers-navy-900);
+}
+
+@media (max-width: 992px) {
+  .goers-search-box {
+    display: none;
+  }
+  .nav-links-desktop {
+    display: none;
+  }
+  .mobile-menu-toggle {
+    display: block;
+  }
+}
+
+@media (max-width: 576px) {
+  .btn-login,
+  .btn-signup {
+    display: none; /* Accessible inside the mobile slide-out drawer */
+  }
+  .goers-nav-wrapper {
+    height: 60px;
+  }
+  .goers-brand-logo {
+    font-size: 22px;
+  }
+}
+
+/* Sub Navigation / Category Tabs */
+.goers-subnav {
+  background: #ffffff;
+  border-bottom: 1px solid var(--goers-gray-300);
+  overflow-x: auto;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.goers-subnav::-webkit-scrollbar {
+  display: none;
+}
+
+.subnav-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  list-style: none;
+}
+
+.subnav-item a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--goers-gray-800);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+}
+
+.subnav-item.active a,
+.subnav-item a:hover {
+  background: var(--goers-branding-100);
+  color: var(--goers-branding-600);
+  border-color: var(--goers-branding-200);
+}
+
+/* Mobile Search Bar Row (Visible only on mobile/tablet) */
+.mobile-search-row {
+  display: none;
+  padding: 12px 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--goers-gray-300);
+}
+
+@media (max-width: 992px) {
+  .mobile-search-row {
+    display: block;
+  }
+}
+
+/* ==========================================================================
+   HERO BANNER CAROUSEL
+   ========================================================================== */
+.goers-hero-section {
+  padding: 24px 0 16px;
+  background: linear-gradient(180deg, #F9FBFC 0%, #FFFFFF 100%);
+}
+
+.hero-slider-container {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.hero-slider {
+  display: flex;
+  transition: transform 0.4s ease-in-out;
+  width: 100%;
+}
+
+.hero-slide {
+  min-width: 100%;
+  position: relative;
+  background: #111;
+  height: 380px;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .hero-slide {
+    height: 220px;
+  }
+}
+
+.hero-slide-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.88;
+}
+
+.hero-slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0, 16, 50, 0.85) 0%, rgba(0, 16, 50, 0.4) 60%, transparent 100%);
+}
+
+.hero-slide-content {
+  position: relative;
+  z-index: 10;
+  padding: 40px;
+  color: #fff;
+  max-width: 600px;
+}
+
+@media (max-width: 768px) {
+  .hero-slide-content {
+    padding: 20px;
+    max-width: 85%;
+  }
+}
+
+.hero-tag {
+  display: inline-block;
+  background: var(--goers-branding-500);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hero-title {
+  font-family: var(--font-family-heading);
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 20px;
+  }
+}
+
+.hero-desc {
+  font-size: 15px;
+  opacity: 0.9;
+  margin-bottom: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .hero-desc {
+    display: none;
+  }
+}
+
+.btn-hero-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--goers-branding-500);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 14px rgba(235, 19, 85, 0.4);
+}
+
+.btn-hero-action:hover {
+  background: var(--goers-branding-600);
+  transform: translateY(-2px);
+}
+
+/* Slider Controls */
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  color: var(--goers-navy-900);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  z-index: 20;
+  transition: all 0.2s ease;
+}
+
+.slider-arrow:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+  color: var(--goers-branding-500);
+}
+
+.slider-arrow.prev { left: 16px; }
+.slider-arrow.next { right: 16px; }
+
+@media (max-width: 768px) {
+  .slider-arrow {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.slider-dots {
+  position: absolute;
+  bottom: 16px;
+  right: 24px;
+  display: flex;
+  gap: 8px;
+  z-index: 20;
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.slider-dot.active {
+  width: 24px;
+  background: var(--goers-branding-500);
+}
+
+/* ==========================================================================
+   QUICK CATEGORY GRID / SHORTCUTS
+   ========================================================================== */
+.goers-categories-bar {
+  padding: 24px 0;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 14px;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .category-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .category-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 6px;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+}
+
+.category-icon-wrapper {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  font-size: 24px;
+}
+
+.cat-concert { background: #FFEAF8; color: #EB1355; }
+.cat-attraction { background: #E8FCF9; color: #00A490; }
+.cat-sport { background: #FEF3DB; color: #F29A4C; }
+.cat-travel { background: #E7FBFF; color: #17A9EF; }
+.cat-exhibition { background: #F3E8FF; color: #8B5CF6; }
+.cat-meetup { background: #FDE7EE; color: #CF2B5D; }
+.cat-workshop { background: #ECFDF5; color: #10B981; }
+.cat-more { background: #F5F5F5; color: #606060; }
+
+.category-card:hover .category-icon-wrapper {
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+  transform: scale(1.05);
+}
+
+.category-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--goers-gray-900);
+}
+
+/* ==========================================================================
+   SECTION COMMON STYLES
+   ========================================================================== */
+.section-wrap {
+  padding: 32px 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.section-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--goers-branding-500);
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.section-title {
+  font-family: var(--font-family-heading);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--goers-navy-900);
+  letter-spacing: -0.3px;
+}
+
+.section-subtitle {
+  font-size: 14px;
+  color: var(--goers-gray-700);
+}
+
+.btn-view-all {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--goers-branding-500);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-view-all:hover {
+  background: var(--goers-branding-100);
+  gap: 8px;
+}
+
+/* ==========================================================================
+   EVENT CARDS & GRID
+   ========================================================================== */
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .event-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .event-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.event-card {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--goers-gray-300);
+  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.event-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 31, 92, 0.12);
+  border-color: var(--goers-branding-200);
+}
+
+.event-thumbnail {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  background: #2a2a2a;
+  overflow: hidden;
+}
+
+.event-thumbnail img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.event-card:hover .event-thumbnail img {
+  transform: scale(1.05);
+}
+
+.event-badge-floating {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 31, 92, 0.85);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.event-badge-sale {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--goers-branding-500);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.event-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.event-date-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--goers-branding-500);
+  margin-bottom: 6px;
+}
+
+.event-name {
+  font-family: var(--font-family-heading);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--goers-navy-900);
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 40px;
+}
+
+.event-location-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--goers-gray-700);
+  margin-bottom: 14px;
+}
+
+.event-footer {
+  border-top: 1px dashed var(--goers-gray-400);
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.price-label {
+  font-size: 11px;
+  color: var(--goers-gray-700);
+}
+
+.price-value {
+  font-family: var(--font-family-heading);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--goers-branding-500);
+}
+
+.btn-buy-ticket {
+  background: var(--goers-navy-900);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  transition: all 0.2s ease;
+}
+
+.btn-buy-ticket:hover {
+  background: var(--goers-branding-500);
+}
+
+/* ==========================================================================
+   CROWD SECTION (Goers Unique Feature)
+   ========================================================================== */
+.goers-crowd-section {
+  background: linear-gradient(135deg, #001F5C 0%, #17387E 100%);
+  color: #ffffff;
+  padding: 60px 0;
+  position: relative;
+  overflow: hidden;
+  margin: 40px 0;
+  border-radius: 24px;
+}
+
+.crowd-shapes {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(235,19,85,0.3) 0%, transparent 70%);
+  top: -100px;
+  right: -100px;
+  pointer-events: none;
+}
+
+.crowd-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 992px) {
+  .crowd-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.crowd-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(235, 19, 85, 0.2);
+  color: #F9B8CC;
+  border: 1px solid rgba(235, 19, 85, 0.4);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.crowd-title {
+  font-family: var(--font-family-heading);
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .goers-crowd-section {
+    padding: 32px 16px;
+    border-radius: 16px;
+    margin: 24px 0;
+  }
+  .crowd-title {
+    font-size: 22px;
+  }
+  .crowd-description {
+    font-size: 14px;
+  }
+}
+
+.crowd-title span {
+  color: #F15A88;
+}
+
+.crowd-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #D5E4F9;
+  margin-bottom: 24px;
+}
+
+.crowd-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+.crowd-chip {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
+}
+
+.crowd-chip:hover {
+  background: var(--goers-branding-500);
+  border-color: var(--goers-branding-500);
+  cursor: pointer;
+}
+
+.crowd-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-crowd-app {
+  background: var(--goers-branding-500);
+  color: #fff;
+  font-weight: 800;
+  padding: 14px 28px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(235, 19, 85, 0.5);
+}
+
+.btn-crowd-app:hover {
+  background: var(--goers-branding-600);
+  transform: translateY(-2px);
+}
+
+/* Crowd Interactive Preview Card */
+.crowd-preview-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.crowd-meetup-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.crowd-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  overflow: hidden;
+  border: 2px solid var(--goers-branding-500);
+}
+
+.crowd-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.crowd-author-info h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.crowd-author-info span {
+  font-size: 12px;
+  color: #ADC9F4;
+}
+
+.crowd-meetup-body {
+  background: rgba(0, 16, 50, 0.4);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.meetup-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.meetup-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: #D5E4F9;
+  flex-wrap: wrap;
+}
+
+.meetup-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.crowd-participants-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.participants-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.participants-avatars img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #001F5C;
+  margin-left: -8px;
+}
+
+.participants-avatars img:first-child {
+  margin-left: 0;
+}
+
+.participants-avatars .more-count {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--goers-branding-500);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -8px;
+  border: 2px solid #001F5C;
+}
+
+/* ==========================================================================
+   PROMO / BANNER GRID
+   ========================================================================== */
+.promo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .promo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.promo-banner {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  height: 180px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.promo-banner:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.promo-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   EXPERIENCE & DESTINATION CARDS
+   ========================================================================== */
+.destination-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 992px) {
+  .destination-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .destination-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.destination-card {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  height: 240px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.destination-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.destination-card:hover img {
+  transform: scale(1.08);
+}
+
+.destination-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(0, 31, 92, 0.9) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px;
+  color: #fff;
+}
+
+.destination-city {
+  font-family: var(--font-family-heading);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.destination-count {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   GEM (GOERS EXPERIENCE MANAGER) / BUSINESS SOLUTIONS BANNER
+   ========================================================================== */
+.goers-gem-section {
+  background: #F9FAFB;
+  border: 1px solid var(--goers-gray-300);
+  border-radius: 20px;
+  padding: 40px;
+  margin: 40px 0;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 30px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .goers-gem-section {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+}
+
+.gem-tag {
+  color: var(--goers-teal);
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.gem-title {
+  font-family: var(--font-family-heading);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--goers-navy-900);
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+
+.gem-desc {
+  font-size: 15px;
+  color: var(--goers-gray-800);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.gem-features-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 576px) {
+  .gem-features-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gem-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--goers-gray-900);
+}
+
+.gem-feature-item i {
+  color: var(--goers-teal);
+}
+
+.btn-gem-partner {
+  background: var(--goers-teal);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-gem-partner:hover {
+  background: #008D88;
+}
+
+.gem-illu img {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+}
+
+/* ==========================================================================
+   APP DOWNLOAD CALL TO ACTION
+   ========================================================================== */
+.goers-app-download {
+  background: linear-gradient(90deg, #FDE7EE 0%, #FFEAF8 100%);
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 40px;
+  border: 1px solid var(--goers-branding-200);
+}
+
+@media (max-width: 768px) {
+  .goers-app-download {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+  }
+}
+
+.download-text h3 {
+  font-family: var(--font-family-heading);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--goers-navy-900);
+  margin-bottom: 8px;
+}
+
+.download-text p {
+  font-size: 14px;
+  color: var(--goers-gray-800);
+}
+
+.download-badges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .download-badges {
+    justify-content: center;
+  }
+}
+
+.store-badge {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #000;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.store-badge:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+.store-badge .store-text {
+  text-align: left;
+  line-height: 1.1;
+}
+
+.store-badge .store-text span {
+  font-size: 10px;
+  opacity: 0.8;
+  display: block;
+}
+
+.store-badge .store-text strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   FOOTER (Official Goers Layout)
+   ========================================================================== */
+.goers-footer {
+  background: #111827;
+  color: #9CA3AF;
+  padding: 60px 0 24px;
+  font-size: 14px;
+}
+
+.footer-top-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+@media (max-width: 1024px) {
+  .footer-top-grid {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.footer-brand h2 {
+  font-family: var(--font-family-heading);
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.footer-brand h2 span {
+  color: var(--goers-branding-500);
+}
+
+.footer-brand p {
+  line-height: 1.6;
+  font-size: 13px;
+  margin-bottom: 20px;
+  color: #9CA3AF;
+}
+
+.footer-col h4 {
+  font-family: var(--font-family-heading);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links a {
+  color: #9CA3AF;
+  transition: color 0.2s ease;
+  font-size: 13px;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+  padding-left: 2px;
+}
+
+.newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.newsletter-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.newsletter-input {
+  flex: 1;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #374151;
+  background: #1F2937;
+  color: #fff;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.newsletter-input:focus {
+  outline: none;
+  border-color: var(--goers-branding-500);
+}
+
+.btn-newsletter {
+  background: var(--goers-branding-500);
+  color: #fff;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.btn-newsletter:hover {
+  background: var(--goers-branding-600);
+}
+
+/* Payment Gateways */
+.footer-payments {
+  padding: 24px 0;
+  border-top: 1px solid #1F2937;
+  border-bottom: 1px solid #1F2937;
+  margin-bottom: 24px;
+}
+
+.payment-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.payment-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.payment-badge {
+  background: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.social-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #1F2937;
+  color: #D1D5DB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.social-icon-btn:hover {
+  background: var(--goers-branding-500);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   MODAL & INTERACTION OVERLAYS (Cookie & Detail Modal)
+   ========================================================================== */
+.cookie-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  max-width: 500px;
+  background: #ffffff;
+  border: 1px solid var(--goers-gray-300);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+@media (max-width: 576px) {
+  .cookie-banner {
+    flex-direction: column;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+.cookie-text {
+  font-size: 12px;
+  color: var(--goers-gray-800);
+}
+
+.cookie-text a {
+  color: var(--goers-branding-500);
+  font-weight: 700;
+}
+
+.btn-cookie-accept {
+  background: var(--goers-navy-900);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* Ticket Detail Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 560px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--goers-gray-300);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h3 {
+  font-family: var(--font-family-heading);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--goers-navy-900);
+}
+
+.modal-close-btn {
+  color: var(--goers-gray-600);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modal-body {
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.modal-image {
+  width: 100%;
+  height: 220px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 16px;
+}
+
+.modal-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--goers-gray-300);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--goers-gray-100);
+}
+
+/* Mobile Drawer */
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 280px;
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+  z-index: 10001;
+  transition: right 0.3s ease;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mobile-drawer.open {
+  right: 0;
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 10000;
+  display: none;
+}
+
+.drawer-overlay.active {
+  display: block;
+}
