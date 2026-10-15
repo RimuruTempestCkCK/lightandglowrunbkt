@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+  <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+  <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
+  <title>Dashboard Petugas Scanner · Light And Glow Bukittinggi</title>
+  <script>
+    !function(){
+      try{
+        var t=localStorage.getItem("dash26-theme"),e=window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.setAttribute("data-theme",t||(e?"dark":"light"))
+      }catch(t){
+        document.documentElement.setAttribute("data-theme","light")
+      }
+    }()
+  </script>
+  <script defer="defer" src="{{ asset('adminator/runtime.096d507f.js') }}"></script>
+  <script defer="defer" src="{{ asset('adminator/2026.5a84696f.js') }}"></script>
+  <link href="{{ asset('adminator/style.76ee5eee.css') }}" rel="stylesheet">
+  <style>
+    .scanner-box {
+      max-width: 580px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+    }
+    .viewfinder {
+      width: 100%;
+      height: 280px;
+      background: #0B1120;
+      border-radius: 14px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      overflow: hidden;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+    .scan-laser {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #EB1355;
+      box-shadow: 0 0 14px #EB1355;
+      animation: scanAnim 2.5s infinite alternate ease-in-out;
+    }
+    @keyframes scanAnim {
+      0% { top: 5%; }
+      100% { top: 95%; }
+    }
+    .scan-reticle {
+      width: 180px;
+      height: 180px;
+      border: 2px dashed rgba(255,255,255,0.65);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    .scan-result-card {
+      background: var(--bg-body);
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 16px;
+      display: none;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body data-active="scanner" data-crumbs="Petugas | Scanner QR Code Check-in Gate">
+  <div class="shell">
+    <div data-shell-sidebar></div>
+    <div class="main">
+      <div data-shell-topbar></div>
+      <main class="content">
+        
+        <section class="hero" style="margin-bottom: 24px;">
+          <div class="hero-text">
+            <span class="eyebrow" id="heroDate">Check-in Gate</span>
+            <h1 class="hero-title">Dashboard <span class="accent">Petugas Scanner</span></h1>
+            <p class="hero-sub">Pindai QR Code tiket peserta di gerbang masuk venue Light And Glow Bukittinggi. Sistem memverifikasi keabsahan tiket secara realtime dan mencatat log kehadiran.</p>
+          </div>
+          <div class="hero-actions">
+            <a href="{{ route('admin.dashboard') }}" class="btn btn--ghost">
+              <svg viewBox="0 0 24 24"><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+              Mode Admin
+            </a>
+          </div>
+        </section>
+
+        <!-- KPI Check-in Ringkas untuk Petugas -->
+        <section class="kpi-grid" style="margin-bottom: 24px;">
+          <article class="kpi-card c-success">
+            <div class="kpi-top">
+              <div class="kpi-identity">
+                <div class="kpi-icon success"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                <div class="kpi-label">Total Peserta Check-in</div>
+              </div>
+              <span class="kpi-pill up">Gate Aktif</span>
+            </div>
+            <div class="kpi-value">{{ $todayCheckIns ?? 0 }}</div>
+            <div class="kpi-compare"><svg class="up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg> Peserta telah masuk gate utama</div>
+          </article>
+
+          <article class="kpi-card c-primary">
+            <div class="kpi-top">
+              <div class="kpi-identity">
+                <div class="kpi-icon primary"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+                <div class="kpi-label">Status Kamera Scanner</div>
+              </div>
+              <span class="kpi-pill info">Siap Scan</span>
+            </div>
+            <div class="kpi-value" style="font-size: 24px; font-weight: 700; margin-top: 6px;">READY</div>
+            <div class="kpi-compare"><svg class="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg> Sensor & Validasi realtime aktif</div>
+          </article>
+        </section>
+
+        <div class="scanner-box">
+          <div class="viewfinder">
+            <div class="scan-laser"></div>
+            <div class="scan-reticle">
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+            </div>
+            <span style="font-size:12px; margin-top:12px; color:#94A3B8;">Arahkan kamera ke QR Code e-tiket peserta</span>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="ticketCodeInput" class="form-control" placeholder="Ketik / Scan QR Token atau Kode Tiket..." style="padding:11px 14px; border-radius:8px; border:1px solid var(--border); background:var(--bg-body); color:inherit; flex:1;" />
+              <button class="btn btn--primary" onclick="submitScanCode()">Validasi</button>
+            </div>
+            <div style="font-size:11px; color:var(--t-muted); margin-top:8px;">Format kode tiket: LG-BKT-2026-XXXXX atau Scan QR dari smartphone peserta</div>
+          </div>
+
+          <div style="display:flex; gap:10px; justify-content:center; margin-bottom:16px;">
+            <button class="btn btn--ghost" style="font-size:12px;" onclick="quickScan('LG-BKT-2026-99214')">
+              Demo Valid (LG-BKT-2026-99214)
+            </button>
+          </div>
+
+          <!-- Result card container -->
+          <div id="scanResult" class="scan-result-card"></div>
+        </div>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    function quickScan(code) {
+      document.getElementById('ticketCodeInput').value = code;
+      submitScanCode();
+    }
+
+    async function submitScanCode() {
+      const code = document.getElementById('ticketCodeInput').value.trim();
+      if (!code) {
+        Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Silakan masukkan kode tiket atau token QR!' });
+        return;
+      }
+
+      const el = document.getElementById('scanResult');
+      el.style.display = 'block';
+      el.innerHTML = '<div style="text-align:center; padding:10px; color:#64748B;">Memvalidasi tiket ke server database...</div>';
+
+      try {
+        const res = await fetch('/api/scanner/validate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            qr_token: code,
+            gate: 'Gate 1 (Utama Jam Gadang)',
+            scanned_by: 'Petugas Gate 1'
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.status === 'valid') {
+          el.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px; color:#10B981; font-weight:700; margin-bottom:8px;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              CHECK-IN BERHASIL (TIKET RESMI VALID)
+            </div>
+            <div style="font-size:13px; color:var(--t-base); line-height:1.6;">
+              <strong>Nama Pemegang:</strong> ${data.data.attendee_name}<br>
+              <strong>Kode Tiket:</strong> ${data.data.ticket_code}<br>
+              <strong>Kategori:</strong> ${data.data.ticket_name}<br>
+              <strong>No. Pesanan:</strong> ${data.data.order_number}<br>
+              <strong>Gate:</strong> ${data.data.gate}<br>
+              <strong>Status:</strong> <span style="color:#10B981; font-weight:700;">Check-in Berhasil Dicatat</span>
+            </div>
+          `;
+          Swal.fire({
+            icon: 'success',
+            title: 'Check-in Berhasil! 🎉',
+            html: `Tiket <b>${data.data.ticket_code}</b> atas nama <b>${data.data.attendee_name}</b> valid.<br><br><span style="color:#10B981; font-weight:700;">Silakan serahkan Jersey, Race Pack & LED Glow kit!</span>`,
+            confirmButtonColor: '#10B981',
+            confirmButtonText: 'Lanjut Scan Berikutnya'
+          });
+          document.getElementById('ticketCodeInput').value = '';
+        } else if (data.status === 'rejected_used') {
+          el.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px; color:var(--danger); font-weight:700; margin-bottom:8px;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              CHECK-IN DITOLAK: TIKET SUDAH PERNAH DIGUNAKAN!
+            </div>
+            <div style="font-size:13px; color:var(--t-base); line-height:1.6;">
+              <strong>Nama Pemegang:</strong> ${data.data.attendee_name}<br>
+              <strong>Waktu Masuk Pertama:</strong> ${data.data.used_at} WIB<br>
+              <span style="color:#EF4444; font-weight:700;">Peringatan Keamanan: Tiket ini tidak dapat dipakai masuk ulang!</span>
+            </div>
+          `;
+          Swal.fire({
+            icon: 'error',
+            title: 'Akses Ditolak!',
+            html: `Tiket ini <b>sudah digunakan check-in</b> pada pukul <b>${data.data.used_at} WIB</b>.<br>Tidak boleh dipakai dua kali demi mencegah tiket ganda!`,
+            confirmButtonColor: '#EB1355',
+            confirmButtonText: 'Kembali'
+          });
+        } else {
+          el.innerHTML = `
+            <div style="color:var(--danger); font-weight:700;">
+              ❌ TIKET TIDAK DITEMUKAN / TIDAK VALID
+            </div>
+            <div style="font-size:13px; color:#A1A1AA; margin-top:4px;">${data.message || 'Data tidak terdaftar di sistem acara.'}</div>
+          `;
+          Swal.fire({
+            icon: 'error',
+            title: 'Tiket Tidak Valid',
+            text: data.message || 'QR Code atau kode tiket tidak ditemukan dalam database.',
+            confirmButtonColor: '#EB1355'
+          });
+        }
+      } catch (err) {
+        el.innerHTML = '<div style="color:red;">Terjadi kesalahan saat memvalidasi tiket ke server.</div>';
+      }
+    }
+  </script>
+</body>
+</html>

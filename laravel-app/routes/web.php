@@ -45,7 +45,7 @@ Route::get('/tiket-saya', function () {
     $digitalTickets = DB::table('digital_tickets')
         ->join('orders', 'digital_tickets.order_id', '=', 'orders.id')
         ->join('ticket_types', 'digital_tickets.ticket_type_id', '=', 'ticket_types.id')
-        ->select('digital_tickets.*', 'ticket_types.name as ticket_name', 'orders.order_number')
+        ->select('digital_tickets.*', 'ticket_types.name as ticket_name', 'ticket_types.category as ticket_category', 'ticket_types.price as ticket_price', 'orders.order_number')
         ->where('orders.buyer_id', $buyer['id'])
         ->get();
 
@@ -62,7 +62,7 @@ Route::get('/register', function () {
 })->name('register');
 
 // 3. Dashboard Admin Utama (Adminator 4.4.0)
-Route::get('/dashboard', function () {
+$adminDashboardHandler = function () {
     $pendingCount = DB::table('orders')->where('status', 'Menunggu verifikasi')->count();
     $approvedCount = DB::table('orders')->where('status', 'Pembayaran disetujui')->count();
     $rejectedCount = DB::table('orders')->where('status', 'Pembayaran ditolak')->count();
@@ -75,8 +75,28 @@ Route::get('/dashboard', function () {
         ->limit(7)
         ->get();
 
-    return view('dashboard', compact('pendingCount', 'approvedCount', 'rejectedCount', 'checkInCount', 'recentOrders'));
+    return view('admin.dashboard', compact('pendingCount', 'approvedCount', 'rejectedCount', 'checkInCount', 'recentOrders'));
+};
+
+Route::get('/admin/dashboard', $adminDashboardHandler)->name('admin.dashboard');
+Route::get('/dashboard', function () {
+    return redirect()->route('admin.dashboard');
 })->name('dashboard');
+
+// 3b. Dashboard Petugas Scanner (Check-in & Gate)
+$petugasDashboardHandler = function () {
+    $event = DB::table('events')->first();
+    $todayCheckIns = DB::table('check_in_logs')->where('validation_status', 'success')->count();
+    $recentLogs = DB::table('check_in_logs')
+        ->join('digital_tickets', 'check_in_logs.digital_ticket_id', '=', 'digital_tickets.id')
+        ->select('check_in_logs.*', 'digital_tickets.holder_name', 'digital_tickets.ticket_code')
+        ->orderBy('check_in_logs.id', 'desc')
+        ->limit(5)
+        ->get();
+    return view('petugas.dashboard', compact('event', 'todayCheckIns', 'recentLogs'));
+};
+
+Route::get('/petugas/dashboard', $petugasDashboardHandler)->name('petugas.dashboard');
 
 // 4. CMS & Master Data
 Route::get('/dashboard/cms', function () {
@@ -113,8 +133,7 @@ Route::get('/dashboard/verifikasi', function () {
 
 // 6. Scanner QR Code Petugas Check-in (Berdasarkan rancangan web.txt)
 Route::get('/dashboard/scanner', function () {
-    $event = DB::table('events')->first();
-    return view('admin.scanner', compact('event'));
+    return redirect()->route('petugas.dashboard');
 })->name('admin.scanner');
 
 // 7. Data Pesanan, Kehadiran, & Petugas

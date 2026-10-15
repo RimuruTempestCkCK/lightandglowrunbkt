@@ -290,7 +290,11 @@ class OrderController extends Controller
                 'status' => 'rejected_used',
                 'title' => 'Tiket Sudah Digunakan!',
                 'message' => "PERINGATAN: Tiket atas nama {$ticket->holder_name} ({$ticket->ticket_code}) sudah dipakai check-in sebelumnya pada {$ticket->used_at}!",
-                'ticket' => $ticket
+                'data' => [
+                    'attendee_name' => $ticket->holder_name,
+                    'ticket_code' => $ticket->ticket_code,
+                    'used_at' => $ticket->used_at ? \Carbon\Carbon::parse($ticket->used_at)->format('d M Y, H:i') : 'Sebelumnya'
+                ]
             ], 409);
         }
 
@@ -326,14 +330,15 @@ class OrderController extends Controller
 
         return response()->json([
             'success' => true,
-            'status' => 'success',
+            'status' => 'valid',
             'title' => 'Check-in Berhasil Disetujui! ✅',
             'message' => "Selamat datang, {$ticket->holder_name}! Silakan masuk melalui {$gate}.",
-            'ticket' => [
-                'holder_name' => $ticket->holder_name,
+            'data' => [
+                'attendee_name' => $ticket->holder_name,
                 'ticket_code' => $ticket->ticket_code,
                 'ticket_name' => $ticket->ticket_name,
                 'ticket_category' => $ticket->ticket_category,
+                'order_number' => '#' . $ticket->order_number,
                 'gate' => $gate,
                 'time' => now()->format('H:i:s WIB')
             ]

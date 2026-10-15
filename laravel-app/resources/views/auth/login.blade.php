@@ -234,7 +234,7 @@
         <h2 class="auth-form-title">Masuk ke Portal</h2>
         <p class="auth-form-sub">Masukkan kredensial akun panitia pelaksana Anda.</p>
 
-        <form method="GET" action="{{ route('dashboard') }}" onsubmit="event.preventDefault(); window.location='{{ route('dashboard') }}';">
+        <form method="GET" action="{{ route('admin.dashboard') }}" onsubmit="event.preventDefault(); window.location='{{ route('admin.dashboard') }}';">
           <div class="form-field">
             <label class="form-label" for="email">Email</label>
             <input
@@ -270,11 +270,11 @@
         <div class="auth-divider">atau akses cepat</div>
 
         <div class="quick-roles">
-          <a class="role-btn" href="{{ route('dashboard') }}">
+          <a class="role-btn" href="{{ route('admin.dashboard') }}">
             <i data-lucide="layout-dashboard" style="width:15px;height:15px;color:#0284C7;"></i>
             Admin Utama
           </a>
-          <a class="role-btn" href="{{ url('/dashboard/scanner') }}">
+          <a class="role-btn" href="{{ route('petugas.dashboard') }}">
             <i data-lucide="qr-code" style="width:15px;height:15px;color:#10B981;"></i>
             Petugas Scan
           </a>

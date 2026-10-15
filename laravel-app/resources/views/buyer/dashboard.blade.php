@@ -157,6 +157,67 @@
       text-align: center;
       background: #F8FAFC;
     }
+    .qr-container {
+      position: relative;
+      display: inline-block;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #ffffff;
+      padding: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .qr-container.is-expired img {
+      filter: grayscale(100%) blur(1.5px) opacity(0.35);
+    }
+    .qr-expired-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.45);
+      border-radius: 14px;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .qr-expired-cross {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.95);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+      border: 3px solid #ffffff;
+      margin-bottom: 6px;
+      animation: pulseAlert 2s infinite ease-in-out;
+    }
+    @keyframes pulseAlert {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    .qr-expired-label {
+      background: #EF4444;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .proof-preview-modal-img {
+      max-width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1px solid var(--goers-gray-300);
+      background: #F8FAFC;
+    }
   </style>
 </head>
 <body>
@@ -279,8 +340,16 @@
                 <p style="font-size:13px; color:var(--goers-gray-700); margin-bottom:8px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
                 <div style="font-size:12px; color:#64748B;">
                   Metode: <strong>{{ $ord->payment_method ?? 'QRIS' }}</strong> · Pemesan: <strong>{{ $ord->buyer_name }}</strong> ({{ $ord->quantity }} Tiket)
-                  @if(!empty($ord->payment_proof))
-                    · Bukti: <a href="{{ asset('storage/' . $ord->payment_proof) }}" target="_blank" style="color:#10B981; font-weight:700; text-decoration:underline;">Lihat Bukti</a>
+                  @php
+                    $proofUrl = null;
+                    if (!empty($ord->payment_proof)) {
+                      $proofUrl = str_starts_with($ord->payment_proof, 'http') ? $ord->payment_proof : asset('storage/' . $ord->payment_proof);
+                    }
+                  @endphp
+                  @if($proofUrl)
+                    · Bukti: <button type="button" onclick="showProofModal('{{ $proofUrl }}', '{{ $ord->order_number }}')" style="background:none; border:none; padding:0; color:#10B981; font-weight:700; text-decoration:underline; cursor:pointer; font-size:12px; display:inline-flex; align-items:center; gap:4px;">
+                      <i data-lucide="image" style="width:13px;height:13px;"></i> Lihat Bukti
+                    </button>
                   @endif
                 </div>
               </div>
@@ -295,7 +364,7 @@
                       $ticketForOrder = $digitalTickets->firstWhere('order_id', $ord->id);
                     @endphp
                     @if($ticketForOrder)
-                      <button class="btn-signup" style="padding:8px 16px; font-size:12px;" onclick="showMyTicket('{{ $ord->ticket_name }}', '{{ $ord->order_number }}', '{{ $ticketForOrder->qr_token }}', '{{ $ticketForOrder->holder_name }}', '25 Apr 2026')">
+                      <button class="btn-signup" style="padding:8px 16px; font-size:12px;" onclick="openETicketModal('{{ $ord->ticket_name }}', '{{ $ord->order_number }}', '{{ $ticketForOrder->ticket_code }}', '{{ $ticketForOrder->qr_token }}', '{{ $ticketForOrder->holder_name }}', '{{ $ticketForOrder->status }}', '{{ $ticketForOrder->used_at }}', '{{ $ticketForOrder->ticket_category ?? 'FESTIVAL' }}', '{{ $ticketForOrder->gate ?? 'Gate 1 (Utama Jam Gadang)' }}')">
                         <i data-lucide="qr-code" style="width:14px;height:14px; vertical-align:middle; margin-right:4px;"></i>
                         Lihat E-Tiket
                       </button>
@@ -328,40 +397,70 @@
         <div style="background:#ffffff; border-radius:16px; border:1px solid var(--goers-gray-300); padding:28px;">
           <div style="margin-bottom:20px;">
             <h2 style="font-size:18px; font-weight:800; color:var(--goers-navy-900); margin-bottom:4px;">Tiket Masuk Digital Resmi (E-Pass)</h2>
-            <p style="font-size:13px; color:var(--goers-gray-700); margin:0;">Tunjukkan QR Code berikut di layar ponsel Anda kepada petugas scanner saat masuk ke area Jam Gadang.</p>
+            <p style="font-size:13px; color:var(--goers-gray-700); margin:0;">Tunjukkan QR Code berikut di layar ponsel Anda kepada petugas scanner saat masuk ke area Jam Gadang. Tiket hanya dapat di-scan <strong>1 kali</strong> saja.</p>
           </div>
 
           <div style="display:flex; flex-wrap:wrap; gap:24px; justify-content:center;">
             @forelse($digitalTickets as $dt)
-              <div style="max-width:400px; width:100%; background:#0F172A; border-radius:18px; overflow:hidden; color:#fff; box-shadow:0 12px 30px rgba(0,0,0,0.15); margin-bottom:16px;">
-                <div style="background:linear-gradient(135deg, #EB1355, #881337); padding:20px; text-align:center;">
+              @php
+                $isUsed = ($dt->status === 'Sudah digunakan');
+              @endphp
+              <div style="max-width:400px; width:100%; background:#0F172A; border-radius:18px; overflow:hidden; color:#fff; box-shadow:0 12px 30px rgba(0,0,0,0.15); margin-bottom:16px; border:{{ $isUsed ? '2px solid rgba(239,68,68,0.5)' : '1px solid #1E293B' }};">
+                <div style="background:{{ $isUsed ? 'linear-gradient(135deg, #475569, #1E293B)' : 'linear-gradient(135deg, #EB1355, #881337)' }}; padding:20px; text-align:center;">
                   <span style="font-size:11px; letter-spacing:2px; text-transform:uppercase; opacity:0.8;">OFFICIAL E-TICKET</span>
                   <h3 style="font-size:18px; font-weight:800; margin:4px 0;">Light And Glow Bukittinggi 2026</h3>
                   <p style="font-size:12px; margin:0; opacity:0.9;">25 April 2026 · Jam Gadang, Bukittinggi</p>
                 </div>
 
                 <div style="padding:24px; text-align:center;">
-                  <div style="background:#fff; border-radius:14px; padding:16px; display:inline-block; margin-bottom:14px;">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode($dt->qr_token) }}" alt="QR Code" style="width:170px; height:170px;">
+                  <!-- QR Code Container dengan Efek Expired & Logo X Merah jika sudah digunakan -->
+                  <div class="qr-container {{ $isUsed ? 'is-expired' : '' }}" style="margin-bottom:14px;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode($dt->qr_token) }}" alt="QR Code {{ $dt->ticket_code }}" style="width:170px; height:170px; display:block;">
+                    
+                    @if($isUsed)
+                      <div class="qr-expired-overlay">
+                        <div class="qr-expired-cross">
+                          <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                        </div>
+                        <span class="qr-expired-label">EXPIRED</span>
+                      </div>
+                    @endif
                   </div>
-                  <div style="font-family:monospace; font-size:14px; font-weight:700; color:#38BDF8; letter-spacing:1px; margin-bottom:8px;">{{ $dt->ticket_code }}</div>
-                  @if($dt->status === 'Sudah digunakan')
-                    <span style="background:rgba(239,68,68,0.2); color:#F87171; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ SUDAH CHECK-IN ({{ !empty($dt->used_at) ? \Carbon\Carbon::parse($dt->used_at)->format('H:i') : '' }} WIB)</span>
+
+                  <div style="font-family:monospace; font-size:14px; font-weight:700; color:{{ $isUsed ? '#94A3B8' : '#38BDF8' }}; letter-spacing:1px; margin-bottom:8px;">{{ $dt->ticket_code }}</div>
+                  
+                  @if($isUsed)
+                    <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(239,68,68,0.2); color:#F87171; font-size:11px; font-weight:800; padding:5px 12px; border-radius:20px; border:1px solid rgba(239,68,68,0.4);">
+                      <i data-lucide="x-circle" style="width:13px;height:13px;"></i>
+                      SUDAH CHECK-IN / EXPIRED ({{ !empty($dt->used_at) ? \Carbon\Carbon::parse($dt->used_at)->format('H:i') : '' }} WIB)
+                    </div>
                   @else
-                    <span style="background:rgba(16,185,129,0.2); color:#34D399; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ TIKET AKTIF & SIAP DIPAKAI</span>
+                    <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(16,185,129,0.2); color:#34D399; font-size:11px; font-weight:800; padding:5px 12px; border-radius:20px; border:1px solid rgba(16,185,129,0.4);">
+                      <i data-lucide="check-circle" style="width:13px;height:13px;"></i>
+                      TIKET AKTIF & SIAP DIPAKAI (1x SCAN)
+                    </div>
                   @endif
 
                   <div style="border-top:1px dashed #334155; margin-top:20px; padding-top:16px; text-align:left; font-size:12px; color:#94A3B8; line-height:1.7;">
                     <div><strong>Nama Pemegang:</strong> <span style="color:#fff;">{{ $dt->holder_name }}</span></div>
                     <div><strong>Kategori:</strong> <span style="color:#fff;">{{ $dt->ticket_name }}</span></div>
                     <div><strong>No. Pesanan:</strong> <span style="color:#fff;">{{ $dt->order_number }}</span></div>
-                    <div><strong>Gate Masuk:</strong> <span style="color:#fff;">{{ $dt->gate ?? 'Gate 1 (Akses Utama)' }}</span></div>
+                    <div><strong>Gate Masuk:</strong> <span style="color:#fff;">{{ $dt->gate ?? 'Gate 1 (Akses Utama Jam Gadang)' }}</span></div>
+                    @if($isUsed)
+                      <div style="color:#EF4444; font-weight:700; margin-top:4px;">⚠ Tiket ini telah diverifikasi di gerbang & tidak dapat digunakan lagi.</div>
+                    @endif
                   </div>
 
-                  <div style="margin-top:20px;">
-                    <button class="btn-signup" style="width:100%; justify-content:center; padding:10px;" onclick="downloadTicketPDF('{{ $dt->ticket_code }}')">
-                      <i data-lucide="download" style="width:16px;height:16px; margin-right:6px;"></i>
-                      Unduh E-Tiket (PNG/PDF)
+                  <div style="margin-top:20px; display:flex; gap:8px;">
+                    <button class="btn-signup" style="flex:1; justify-content:center; padding:10px; font-size:13px;" onclick="openETicketModal('{{ $dt->ticket_name }}', '{{ $dt->order_number }}', '{{ $dt->ticket_code }}', '{{ $dt->qr_token }}', '{{ $dt->holder_name }}', '{{ $dt->status }}', '{{ $dt->used_at }}', '{{ $dt->ticket_category ?? 'FESTIVAL' }}', '{{ $dt->gate ?? 'Gate 1 (Utama Jam Gadang)' }}')">
+                      <i data-lucide="maximize-2" style="width:15px;height:15px; margin-right:6px;"></i>
+                      Buka E-Pass
+                    </button>
+                    <button class="btn-login" style="padding:10px 14px; background:rgba(255,255,255,0.08); border-color:#334155; color:#fff;" title="Unduh / Cetak Tiket" onclick="directDownloadTicket('{{ $dt->ticket_code }}', '{{ $dt->holder_name }}', '{{ $dt->ticket_name }}', '{{ $dt->qr_token }}', '{{ $dt->status }}')">
+                      <i data-lucide="download" style="width:16px;height:16px;"></i>
                     </button>
                   </div>
                 </div>
@@ -378,6 +477,96 @@
 
     </div>
   </main>
+
+  <!-- ==================== POP UP MODAL: BUKTI PEMBAYARAN ==================== -->
+  <div id="proofModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 520px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <i data-lucide="receipt" style="width:20px;height:20px; color:#10B981;"></i>
+          <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--goers-navy-900);">Bukti Pembayaran <span id="proofOrderNumText" style="color:var(--goers-branding-500);"></span></h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeProofModal()"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+      </div>
+      <div class="modal-body" style="text-align:center; padding:20px;">
+        <div style="margin-bottom:14px; text-align:left; font-size:12px; color:var(--goers-gray-700); background:#F8FAFC; padding:10px 14px; border-radius:8px; border:1px solid #E2E8F0;">
+          Berikut screenshot / file bukti transfer QRIS yang telah diunggah untuk pesanan ini.
+        </div>
+        <div style="background:#0F172A; border-radius:12px; padding:12px; display:inline-block; max-width:100%;">
+          <img id="proofModalImg" src="" alt="Bukti Pembayaran" class="proof-preview-modal-img" />
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+        <a id="proofModalDownloadLink" href="#" target="_blank" download class="btn-login" style="padding:8px 16px; font-size:12px; display:inline-flex; align-items:center; gap:6px; border-color:#CBD5E1; color:#0F172A;">
+          <i data-lucide="external-link" style="width:14px;height:14px;"></i> Buka Gambar Asli
+        </a>
+        <button type="button" class="btn-signup" onclick="closeProofModal()" style="padding:8px 20px; font-size:12px;">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== POP UP MODAL: E-TIKET DIGITAL & UNDUH ==================== -->
+  <div id="eTicketModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 440px; background:#0F172A; color:#fff; border:1px solid #334155;">
+      <div class="modal-header" style="border-bottom:1px solid #1E293B; background:transparent;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <i data-lucide="ticket" style="width:20px;height:20px; color:#EB1355;"></i>
+          <h3 style="margin:0; font-size:15px; font-weight:800; color:#fff;">E-Tiket Light & Glow Bukittinggi</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeETicketModal()" style="color:#94A3B8;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+      </div>
+      <div class="modal-body" id="printableTicketArea" style="text-align:center; padding:24px 20px;">
+        <div style="font-size:11px; letter-spacing:2px; color:#F43F5E; font-weight:800; text-transform:uppercase;">OFFICIAL ENTRANCE PASS</div>
+        <h2 id="modalETicketEventTitle" style="font-size:18px; font-weight:800; margin:4px 0 2px; color:#fff;">Light And Glow Bukittinggi 2026</h2>
+        <p style="font-size:12px; color:#94A3B8; margin-bottom:16px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
+
+        <!-- QR Box dengan efek expired bila sudah check-in -->
+        <div id="modalQRContainer" class="qr-container" style="margin-bottom:12px;">
+          <img id="modalQRImage" src="" alt="QR" style="width:180px; height:180px; display:block;">
+          <div id="modalQRExpiredOverlay" class="qr-expired-overlay" style="display:none;">
+            <div class="qr-expired-cross">
+              <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </div>
+            <span class="qr-expired-label">EXPIRED</span>
+          </div>
+        </div>
+
+        <div id="modalETicketCode" style="font-family:monospace; font-size:15px; font-weight:800; letter-spacing:1px; margin-bottom:8px; color:#38BDF8;">-</div>
+        <div id="modalETicketStatusBadge" style="margin-bottom:16px;"></div>
+
+        <div style="background:#1E293B; border-radius:12px; padding:14px; text-align:left; font-size:12px; color:#CBD5E1; line-height:1.7;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#94A3B8;">Nama Pemegang:</span>
+            <strong id="modalETicketHolder" style="color:#fff;">-</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#94A3B8;">Kategori Tiket:</span>
+            <strong id="modalETicketCategory" style="color:#fff;">-</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#94A3B8;">Nomor Pesanan:</span>
+            <strong id="modalETicketOrder" style="color:#fff;">-</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#94A3B8;">Akses Gate:</span>
+            <strong id="modalETicketGate" style="color:#fff;">Gate 1 (Utama Jam Gadang)</strong>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #1E293B; background:transparent; display:flex; gap:10px;">
+        <button type="button" class="btn-signup" onclick="printETicket()" style="flex:1; justify-content:center; padding:10px; font-size:13px;">
+          <i data-lucide="download" style="width:15px;height:15px; margin-right:6px;"></i>
+          Unduh E-Tiket (PDF/Cetak)
+        </button>
+        <button type="button" class="btn-login" onclick="closeETicketModal()" style="border-color:#475569; color:#94A3B8; padding:10px 18px;">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="goers-footer" style="padding:24px 0; border-top:1px solid #E2E8F0;">
@@ -403,47 +592,99 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    function showMyTicket(title, orderId, token, name, date) {
-      Swal.fire({
-        title: 'E-Tiket Digital',
-        html: `
-          <div style="text-align:center; padding:10px;">
-            <div style="background:#0F172A; color:#fff; padding:14px; border-radius:10px; margin-bottom:12px; text-align:left;">
-              <div style="font-size:11px; color:#94A3B8; text-transform:uppercase;">Light And Glow Bukittinggi</div>
-              <div style="font-size:16px; font-weight:800; color:#fff; margin-top:2px;">${name}</div>
-              <div style="font-size:12px; color:#38BDF8;">${title} · ${orderId}</div>
-            </div>
-            <div style="background:#fff; border:2px dashed #CBD5E1; padding:12px; border-radius:10px; display:inline-block; margin-bottom:10px;">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${token}" alt="QR" style="width:150px; height:150px;">
-            </div>
-            <div style="font-size:13px; font-family:monospace; font-weight:700; color:#0F172A;">${token}</div>
-            <p style="font-size:12px; color:#64748B; margin-top:6px;">Tunjukkan QR Code ini kepada petugas di gate untuk di-scan.</p>
-          </div>
-        `,
-        confirmButtonColor: '#EB1355',
-        confirmButtonText: 'Tutup'
-      });
+    // Modal Bukti Pembayaran
+    function showProofModal(url, orderNum) {
+      document.getElementById('proofOrderNumText').textContent = '#' + orderNum;
+      document.getElementById('proofModalImg').src = url;
+      document.getElementById('proofModalDownloadLink').href = url;
+      document.getElementById('proofModal').classList.add('active');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeProofModal() {
+      document.getElementById('proofModal').classList.remove('active');
+    }
+
+    // Modal E-Tiket
+    function openETicketModal(title, orderNum, ticketCode, qrToken, name, status, usedAt, category, gate) {
+      const isUsed = (status === 'Sudah digunakan');
+      document.getElementById('modalETicketHolder').textContent = name;
+      document.getElementById('modalETicketCategory').textContent = title + ' (' + (category || 'FESTIVAL') + ')';
+      document.getElementById('modalETicketOrder').textContent = '#' + orderNum;
+      document.getElementById('modalETicketGate').textContent = gate || 'Gate 1 (Utama Jam Gadang)';
+      document.getElementById('modalETicketCode').textContent = ticketCode;
+      
+      const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(qrToken);
+      document.getElementById('modalQRImage').src = qrUrl;
+
+      const container = document.getElementById('modalQRContainer');
+      const overlay = document.getElementById('modalQRExpiredOverlay');
+      const statusBadge = document.getElementById('modalETicketStatusBadge');
+
+      if (isUsed) {
+        container.classList.add('is-expired');
+        overlay.style.display = 'flex';
+        statusBadge.innerHTML = '<span style="background:rgba(239,68,68,0.25); color:#F87171; font-size:11px; font-weight:800; padding:4px 12px; border-radius:20px; border:1px solid rgba(239,68,68,0.5);">✓ SUDAH CHECK-IN / EXPIRED</span>';
+      } else {
+        container.classList.remove('is-expired');
+        overlay.style.display = 'none';
+        statusBadge.innerHTML = '<span style="background:rgba(16,185,129,0.25); color:#34D399; font-size:11px; font-weight:800; padding:4px 12px; border-radius:20px; border:1px solid rgba(16,185,129,0.5);">✓ TIKET AKTIF (HANYA BISA 1x SCAN)</span>';
+      }
+
+      document.getElementById('eTicketModal').classList.add('active');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeETicketModal() {
+      document.getElementById('eTicketModal').classList.remove('active');
+    }
+
+    // Direct Download & Print E-Tiket
+    function directDownloadTicket(code, name, ticketName, qrToken, status) {
+      openETicketModal(ticketName, '', code, qrToken, name, status, '', 'FESTIVAL', 'Gate 1 (Utama Jam Gadang)');
+      setTimeout(() => {
+        printETicket();
+      }, 300);
+    }
+
+    function printETicket() {
+      window.print();
     }
 
     function checkStatusPending(orderId) {
-      Swal.fire({
-        icon: 'info',
-        title: 'Sedang Diverifikasi',
-        html: `Pesanan <b>${orderId}</b> telah masuk ke antrean verifikasi admin.<br><small style="color:gray;">Admin sedang mencocokkan mutasi bukti transfer Anda. Tiket digital & QR Code akan otomatis terbit begitu disetujui.</small>`,
-        confirmButtonColor: '#EB1355',
-        confirmButtonText: 'Oke, Mengerti'
-      });
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay active';
+      modal.innerHTML = `
+        <div class="modal-content" style="max-width: 440px; text-align:center; padding:28px 24px;">
+          <div style="width:54px; height:54px; border-radius:50%; background:#FEF3C7; color:#B45309; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;">
+            <i data-lucide="clock" style="width:28px;height:28px;"></i>
+          </div>
+          <h3 style="font-size:17px; font-weight:800; color:var(--goers-navy-900); margin-bottom:8px;">Pembayaran Sedang Diverifikasi</h3>
+          <p style="font-size:13px; color:var(--goers-gray-700); line-height:1.6; margin-bottom:20px;">
+            Pesanan <strong>#${orderId}</strong> sedang dicocokkan dengan mutasi bank / QRIS oleh panitia pelaksana. Begitu disetujui, QR Code tiket digital resmi Anda akan otomatis terbit di tab <strong>Tiket Digital</strong>.
+          </p>
+          <button class="btn-signup" style="width:100%; justify-content:center; padding:10px;" onclick="this.closest('.modal-overlay').remove()">
+            Oke, Mengerti
+          </button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      if (window.lucide) lucide.createIcons();
     }
 
-    function downloadTicketPDF() {
-      Swal.fire({
-        icon: 'success',
-        title: 'Mengunduh E-Tiket...',
-        text: 'File tiket digital (PDF) sedang diunduh ke perangkat Anda.',
-        timer: 1500,
-        showConfirmButton: false
-      });
-    }
+    // Close modal on click backdrop or escape
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        e.target.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeProofModal();
+        closeETicketModal();
+      }
+    });
   </script>
 </body>
 </html>
