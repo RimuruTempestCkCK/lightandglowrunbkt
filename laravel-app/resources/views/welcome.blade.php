@@ -203,6 +203,7 @@
     </div>
   </section>
 
+  {{--
   <!-- Category Shortcut Grid -->
   <section class="goers-categories-bar">
     <div class="goers-container">
@@ -214,14 +215,12 @@
           <span class="category-name">Konser & Musik</span>
         </div>
 
-        {{--
         <div class="category-card" onclick="filterByCategory('wisata')">
           <div class="category-icon-wrapper cat-attraction">
             <i data-lucide="ferris-wheel"></i>
           </div>
           <span class="category-name">Tempat Wisata</span>
         </div>
-        --}}
 
         <div class="category-card" onclick="filterByCategory('olahraga')">
           <div class="category-icon-wrapper cat-sport">
@@ -267,6 +266,7 @@
       </div>
     </div>
   </section>
+  --}}
 
   <!-- Section 1: Populer & Trending Tiket Konser -->
   <section class="section-wrap" id="konser-section">
