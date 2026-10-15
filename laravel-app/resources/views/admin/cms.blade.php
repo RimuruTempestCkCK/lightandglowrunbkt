@@ -532,18 +532,41 @@
 
       localStorage.setItem('goers_full_cms', JSON.stringify(fullData));
 
-      const alertBox = document.getElementById('saveAlert');
-      alertBox.style.display = 'block';
-      setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil Disimpan!',
+        text: 'Semua perubahan konten (banner, tiket & teks) berhasil disimpan dan dipublikasikan ke Landing Page.',
+        confirmButtonColor: '#EB1355',
+        confirmButtonText: 'Mantap'
+      });
     }
 
     function resetToDefault() {
-      if (confirm('Kembalikan semua teks, banner, dan daftar tiket ke bawaan template awal?')) {
-        localStorage.removeItem('goers_full_cms');
-        location.reload();
-      }
+      Swal.fire({
+        title: 'Kembalikan ke Default?',
+        text: 'Semua teks, banner, dan daftar tiket akan dikembalikan ke bawaan template awal.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#EB1355',
+        cancelButtonColor: '#71717A',
+        confirmButtonText: 'Ya, Kembalikan!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.removeItem('goers_full_cms');
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil Direset!',
+            text: 'Pengaturan awal telah dipulihkan.',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            location.reload();
+          });
+        }
+      });
     }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

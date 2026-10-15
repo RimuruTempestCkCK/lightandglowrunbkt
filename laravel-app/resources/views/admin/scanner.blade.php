@@ -122,6 +122,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     function simulateScan(status) {
       const el = document.getElementById('scanResult');
@@ -141,6 +142,13 @@
             <strong>Status:</strong> <span style="color:#10B981; font-weight:700;">Check-in Tercatat</span>
           </div>
         `;
+        Swal.fire({
+          icon: 'success',
+          title: 'Check-in Berhasil!',
+          html: 'Tiket <b>LG-BKT-2026-99214</b> atas nama <b>Rian Hidayat</b> valid. Silakan berikan Neon Pack & Wristband.',
+          confirmButtonColor: '#10B981',
+          confirmButtonText: 'Lanjut Scan'
+        });
       } else {
         el.innerHTML = `
           <div style="display:flex; align-items:center; gap:8px; color:var(--danger); font-weight:700; margin-bottom:8px;">
@@ -152,6 +160,13 @@
             Tiket tidak dapat digunakan dua kali!
           </div>
         `;
+        Swal.fire({
+          icon: 'error',
+          title: 'Akses Ditolak!',
+          html: 'Tiket ini <b>sudah digunakan check-in</b> sebelumnya di Gate 1. Tolong periksa identitas pembeli.',
+          confirmButtonColor: '#EB1355',
+          confirmButtonText: 'Tutup'
+        });
       }
     }
   </script>
