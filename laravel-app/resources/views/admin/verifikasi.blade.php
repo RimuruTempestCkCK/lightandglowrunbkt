@@ -67,47 +67,33 @@
               </tr>
             </thead>
             <tbody>
-              <tr id="row-88421">
-                <td><strong>#LG-88421</strong></td>
-                <td>Rian Hidayat</td>
-                <td>Presale - VIP Glow Run</td>
-                <td><strong>Rp 275.000</strong></td>
-                <td>QRIS BCA</td>
-                <td><a href="#" onclick="viewProof('Rian Hidayat', '#LG-88421', 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500&auto=format&fit=crop&q=60'); return false;" style="color:var(--primary); font-weight:600;">Lihat Bukti 🔍</a></td>
-                <td><span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span></td>
+              @forelse($pendingOrders as $order)
+              <tr id="row-{{ $order->id }}">
+                <td><strong>#{{ $order->order_number }}</strong></td>
+                <td>{{ $order->buyer_name }}<br><small style="color:gray;">{{ $order->buyer_phone }}</small></td>
+                <td>{{ $order->ticket_name }}</td>
+                <td><strong>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></td>
+                <td>{{ $order->payment_method }}</td>
+                <td>
+                  @if($order->payment_proof)
+                    <a href="#" onclick="viewProof('{{ $order->buyer_name }}', '#{{ $order->order_number }}', '{{ $order->payment_proof }}'); return false;" style="color:var(--primary); font-weight:600;">Lihat Bukti 🔍</a>
+                  @else
+                    <span style="color:#94A3B8; font-size:12px;">Belum upload</span>
+                  @endif
+                </td>
+                <td><span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">{{ $order->status }}</span></td>
                 <td style="text-align:right">
-                  <button class="btn btn--primary" style="padding:4px 10px; font-size:12px;" onclick="approvePayment('#LG-88421', 'Rian Hidayat', 'row-88421')">Setujui</button>
-                  <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="rejectPayment('#LG-88421', 'Rian Hidayat', 'row-88421')">Tolak</button>
+                  <button class="btn btn--primary" style="padding:4px 10px; font-size:12px;" onclick="approvePayment('{{ $order->id }}', '{{ $order->buyer_name }}', 'row-{{ $order->id }}')">Setujui</button>
+                  <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="rejectPayment('{{ $order->id }}', '{{ $order->buyer_name }}', 'row-{{ $order->id }}')">Tolak</button>
                 </td>
               </tr>
-
-              <tr id="row-88420">
-                <td><strong>#LG-88420</strong></td>
-                <td>Nadia Putri</td>
-                <td>Reguler - 5K Night Run</td>
-                <td><strong>Rp 150.000</strong></td>
-                <td>Transfer Mandiri</td>
-                <td><a href="#" onclick="viewProof('Nadia Putri', '#LG-88420', 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500&auto=format&fit=crop&q=60'); return false;" style="color:var(--primary); font-weight:600;">Lihat Bukti 🔍</a></td>
-                <td><span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span></td>
-                <td style="text-align:right">
-                  <button class="btn btn--primary" style="padding:4px 10px; font-size:12px;" onclick="approvePayment('#LG-88420', 'Nadia Putri', 'row-88420')">Setujui</button>
-                  <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="rejectPayment('#LG-88420', 'Nadia Putri', 'row-88420')">Tolak</button>
+              @empty
+              <tr>
+                <td colspan="8" style="text-align:center; padding:30px; color:#94A3B8;">
+                  Tidak ada antrean verifikasi pembayaran saat ini. Semua pesanan telah diproses! 🎉
                 </td>
               </tr>
-
-              <tr id="row-88419">
-                <td><strong>#LG-88419</strong></td>
-                <td>Budi Setiawan</td>
-                <td>Early Bird - Festival Pass</td>
-                <td><strong>Rp 99.000</strong></td>
-                <td>QRIS GoPay</td>
-                <td><a href="#" onclick="viewProof('Budi Setiawan', '#LG-88419', 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500&auto=format&fit=crop&q=60'); return false;" style="color:var(--primary); font-weight:600;">Lihat Bukti 🔍</a></td>
-                <td><span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span></td>
-                <td style="text-align:right">
-                  <button class="btn btn--primary" style="padding:4px 10px; font-size:12px;" onclick="approvePayment('#LG-88419', 'Budi Setiawan', 'row-88419')">Setujui</button>
-                  <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="rejectPayment('#LG-88419', 'Budi Setiawan', 'row-88419')">Tolak</button>
-                </td>
-              </tr>
+              @endforelse
             </tbody>
           </table>
         </div>
@@ -120,22 +106,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     function refreshData() {
-      Swal.fire({
-        title: 'Sinkronisasi...',
-        text: 'Memeriksa mutasi rekening & transaksi QRIS otomatis.',
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      }).then(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Data Terkini',
-          text: 'Semua status antrean transaksi telah disinkronkan.',
-          confirmButtonColor: '#EB1355'
-        });
-      });
+      location.reload();
     }
 
     function viewProof(name, orderId, imgUrl) {
@@ -154,13 +125,31 @@
     function approvePayment(orderId, name, rowId) {
       Swal.fire({
         title: `Setujui Pembayaran?`,
-        html: `Apakah Anda yakin ingin memverifikasi pesanan <b>${orderId}</b> atas nama <b>${name}</b>?<br><small style="color:gray;">Tiket digital & QR Code resmi akan langsung diterbitkan.</small>`,
+        html: `Apakah Anda yakin ingin memverifikasi pesanan atas nama <b>${name}</b>?<br><small style="color:gray;">Tiket digital & QR Code resmi akan langsung diterbitkan ke database.</small>`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#10B981',
         cancelButtonColor: '#71717A',
         confirmButtonText: 'Ya, Setujui!',
-        cancelButtonText: 'Batal'
+        cancelButtonText: 'Batal',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          return fetch(`/api/orders/${orderId}/verify`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          })
+          .then(r => r.json())
+          .then(res => {
+            if (!res.success) throw new Error(res.message || 'Gagal memverifikasi');
+            return res;
+          })
+          .catch(e => {
+            Swal.showValidationMessage(`Error: ${e}`);
+          });
+        }
       }).then((result) => {
         if (result.isConfirmed) {
           const row = document.getElementById(rowId);
@@ -170,12 +159,12 @@
             row.querySelector('.tag').style.background = 'rgba(16,185,129,0.2)';
             row.querySelector('.tag').style.color = '#10B981';
             row.querySelector('.tag').textContent = 'Disetujui';
-            row.querySelector('td:last-child').innerHTML = '<span style="color:#10B981; font-weight:600; font-size:12px;">✓ Selesai</span>';
+            row.querySelector('td:last-child').innerHTML = '<span style="color:#10B981; font-weight:600; font-size:12px;">✓ Tiket Terbit</span>';
           }
           Swal.fire({
             icon: 'success',
             title: 'Pembayaran Disetujui!',
-            text: `Tiket digital dan QR Code untuk ${name} (${orderId}) telah aktif.`,
+            text: `Tiket digital dan QR Code untuk ${name} telah berhasil dibuat & aktif.`,
             confirmButtonColor: '#10B981'
           });
         }
@@ -184,8 +173,8 @@
 
     function rejectPayment(orderId, name, rowId) {
       Swal.fire({
-        title: `Tolak Pembayaran ${orderId}`,
-        text: `Masukkan alasan penolakan untuk dikirim ke ${name}:`,
+        title: `Tolak Pembayaran`,
+        text: `Masukkan alasan penolakan untuk pembeli ${name}:`,
         input: 'textarea',
         inputPlaceholder: 'Contoh: Nominal transfer kurang / bukti bayar tidak jelas / QRIS kedaluwarsa...',
         showCancelButton: true,
@@ -193,10 +182,29 @@
         cancelButtonColor: '#71717A',
         confirmButtonText: 'Tolak Pembayaran',
         cancelButtonText: 'Batal',
+        showLoaderOnConfirm: true,
         inputValidator: (value) => {
           if (!value) {
             return 'Alasan penolakan wajib diisi!';
           }
+        },
+        preConfirm: (reason) => {
+          return fetch(`/api/orders/${orderId}/reject`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ reason: reason })
+          })
+          .then(r => r.json())
+          .then(res => {
+            if (!res.success) throw new Error(res.message || 'Gagal menolak pesanan');
+            return res;
+          })
+          .catch(e => {
+            Swal.showValidationMessage(`Error: ${e}`);
+          });
         }
       }).then((result) => {
         if (result.isConfirmed) {
@@ -212,7 +220,7 @@
           Swal.fire({
             icon: 'info',
             title: 'Pembayaran Ditolak',
-            text: `Pesanan ${orderId} telah dibatalkan dengan alasan: "${result.value}".`,
+            text: `Pesanan telah dibatalkan dengan alasan: "${result.value.reason}".`,
             confirmButtonColor: '#EB1355'
           });
         }

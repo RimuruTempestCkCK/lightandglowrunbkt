@@ -106,12 +106,17 @@
             <span style="font-size:12px; margin-top:10px; color:#A1A1AA;">Arahkan kamera ke QR Code tiket peserta</span>
           </div>
 
+          <div style="margin-bottom:16px;">
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="ticketCodeInput" class="form-control" placeholder="Ketik / Scan QR Token atau Kode Tiket..." style="padding:10px 14px; border-radius:8px; border:1px solid var(--border-soft); background:var(--bg-card); color:inherit; flex:1;" />
+              <button class="btn btn--primary" onclick="submitScanCode()">Validasi</button>
+            </div>
+            <div style="font-size:11px; color:#A1A1AA; margin-top:6px;">Contoh kode terdaftar: LG-BKT-2026-99214 atau token QR resmi</div>
+          </div>
+
           <div style="display:flex; gap:10px; justify-content:center; margin-bottom:16px;">
-            <button class="btn btn--primary" onclick="simulateScan('valid')">
-              Simulasi Tiket VALID
-            </button>
-            <button class="btn btn--ghost" style="color:var(--danger);" onclick="simulateScan('used')">
-              Simulasi Tiket SUDAH DIGUNAKAN
+            <button class="btn btn--ghost" onclick="quickScan('LG-BKT-2026-99214')">
+              Scan Demo (LG-BKT-2026-99214)
             </button>
           </div>
 
@@ -126,49 +131,96 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    function simulateScan(status) {
+    function quickScan(code) {
+      document.getElementById('ticketCodeInput').value = code;
+      submitScanCode();
+    }
+
+    async function submitScanCode() {
+      const code = document.getElementById('ticketCodeInput').value.trim();
+      if (!code) {
+        Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Silakan masukkan kode tiket atau token QR!' });
+        return;
+      }
+
       const el = document.getElementById('scanResult');
       el.style.display = 'block';
+      el.innerHTML = '<div style="text-align:center; padding:10px; color:#64748B;">Memvalidasi tiket ke server database...</div>';
 
-      if (status === 'valid') {
-        el.innerHTML = `
-          <div style="display:flex; align-items:center; gap:8px; color:#10B981; font-weight:700; margin-bottom:8px;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            CHECK-IN BERHASIL (TIKET VALID)
-          </div>
-          <div style="font-size:13px; color:var(--t-base); line-height:1.6;">
-            <strong>Nama:</strong> Rian Hidayat<br>
-            <strong>Kode Tiket:</strong> LG-BKT-2026-99214<br>
-            <strong>Kategori:</strong> VIP Glow Run 5K<br>
-            <strong>Waktu Masuk:</strong> ${new Date().toLocaleTimeString()} WIB<br>
-            <strong>Status:</strong> <span style="color:#10B981; font-weight:700;">Check-in Tercatat</span>
-          </div>
-        `;
-        Swal.fire({
-          icon: 'success',
-          title: 'Check-in Berhasil!',
-          html: 'Tiket <b>LG-BKT-2026-99214</b> atas nama <b>Rian Hidayat</b> valid. Silakan berikan Neon Pack & Wristband.',
-          confirmButtonColor: '#10B981',
-          confirmButtonText: 'Lanjut Scan'
+      try {
+        const res = await fetch('/api/scanner/validate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            qr_token: code,
+            gate: 'Gate 1 (Utama Jam Gadang)',
+            scanned_by: 'Alex - Petugas Gate 1'
+          })
         });
-      } else {
-        el.innerHTML = `
-          <div style="display:flex; align-items:center; gap:8px; color:var(--danger); font-weight:700; margin-bottom:8px;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-            CHECK-IN DITOLAK: TIKET SUDAH DIPAKAI!
-          </div>
-          <div style="font-size:13px; color:var(--t-base); line-height:1.6;">
-            <strong>Peringatan Keamanan:</strong> QR Code ini telah digunakan check-in pada pukul <strong>18:32 WIB</strong> di Gate 1.<br>
-            Tiket tidak dapat digunakan dua kali!
-          </div>
-        `;
-        Swal.fire({
-          icon: 'error',
-          title: 'Akses Ditolak!',
-          html: 'Tiket ini <b>sudah digunakan check-in</b> sebelumnya di Gate 1. Tolong periksa identitas pembeli.',
-          confirmButtonColor: '#EB1355',
-          confirmButtonText: 'Tutup'
-        });
+
+        const data = await res.json();
+
+        if (res.ok && data.status === 'valid') {
+          el.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px; color:#10B981; font-weight:700; margin-bottom:8px;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              CHECK-IN BERHASIL (TIKET RESMI VALID)
+            </div>
+            <div style="font-size:13px; color:var(--t-base); line-height:1.6;">
+              <strong>Nama Pemegang:</strong> ${data.data.attendee_name}<br>
+              <strong>Kode Tiket:</strong> ${data.data.ticket_code}<br>
+              <strong>Kategori:</strong> ${data.data.ticket_name}<br>
+              <strong>No. Pesanan:</strong> ${data.data.order_number}<br>
+              <strong>Gate:</strong> ${data.data.gate}<br>
+              <strong>Status:</strong> <span style="color:#10B981; font-weight:700;">Check-in Berhasil Dicatat</span>
+            </div>
+          `;
+          Swal.fire({
+            icon: 'success',
+            title: 'Check-in Berhasil! 🎉',
+            html: `Tiket <b>${data.data.ticket_code}</b> atas nama <b>${data.data.attendee_name}</b> valid.<br><br><span style="color:#10B981; font-weight:700;">Silakan serahkan Jersey, Race Pack & LED Glow kit!</span>`,
+            confirmButtonColor: '#10B981',
+            confirmButtonText: 'Lanjut Scan Berikutnya'
+          });
+          document.getElementById('ticketCodeInput').value = '';
+        } else if (data.status === 'rejected_used') {
+          el.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px; color:var(--danger); font-weight:700; margin-bottom:8px;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              CHECK-IN DITOLAK: TIKET SUDAH PERNAH DIGUNAKAN!
+            </div>
+            <div style="font-size:13px; color:var(--t-base); line-height:1.6;">
+              <strong>Nama Pemegang:</strong> ${data.data.attendee_name}<br>
+              <strong>Waktu Masuk Pertama:</strong> ${data.data.used_at} WIB<br>
+              <span style="color:#EF4444; font-weight:700;">Peringatan Keamanan: Tiket ini tidak dapat dipakai masuk ulang!</span>
+            </div>
+          `;
+          Swal.fire({
+            icon: 'error',
+            title: 'Akses Ditolak!',
+            html: `Tiket ini <b>sudah digunakan check-in</b> pada pukul <b>${data.data.used_at} WIB</b>.<br>Tidak boleh dipakai dua kali demi mencegah tiket ganda!`,
+            confirmButtonColor: '#EB1355',
+            confirmButtonText: 'Kembali'
+          });
+        } else {
+          el.innerHTML = `
+            <div style="color:var(--danger); font-weight:700;">
+              ❌ TIKET TIDAK DITEMUKAN / TIDAK VALID
+            </div>
+            <div style="font-size:13px; color:#A1A1AA; margin-top:4px;">${data.message || 'Data tidak terdaftar di sistem acara.'}</div>
+          `;
+          Swal.fire({
+            icon: 'error',
+            title: 'Tiket Tidak Valid',
+            text: data.message || 'QR Code atau kode tiket tidak ditemukan dalam database.',
+            confirmButtonColor: '#EB1355'
+          });
+        }
+      } catch (err) {
+        el.innerHTML = '<div style="color:red;">Terjadi kesalahan saat memvalidasi tiket ke server.</div>';
       }
     }
   </script>

@@ -282,7 +282,7 @@
                 <span class="price-label">Mulai dari</span>
                 <div class="price-value">Rp 99.000</div>
               </div>
-              <button class="btn-buy-ticket" onclick="showTicketDetail('Early Bird - Festival Pass', 'Rp 99.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80', 'Festival Run')">Beli Tiket</button>
+              <button class="btn-buy-ticket" onclick="showTicketDetail('Early Bird - Festival Pass', 'Rp 99.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80', 'Festival Run', 1)">Beli Tiket</button>
             </div>
           </div>
         </div>
@@ -311,7 +311,7 @@
                 <span class="price-label">Mulai dari</span>
                 <div class="price-value">Rp 275.000</div>
               </div>
-              <button class="btn-buy-ticket" onclick="showTicketDetail('Presale - VIP Glow Run', 'Rp 275.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=600&q=80', 'VIP Access')">Beli Tiket</button>
+              <button class="btn-buy-ticket" onclick="showTicketDetail('Presale - VIP Glow Run', 'Rp 275.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=600&q=80', 'VIP Access', 2)">Beli Tiket</button>
             </div>
           </div>
         </div>
@@ -339,7 +339,7 @@
                 <span class="price-label">Mulai dari</span>
                 <div class="price-value">Rp 150.000</div>
               </div>
-              <button class="btn-buy-ticket" onclick="showTicketDetail('Reguler - 5K Night Run', 'Rp 150.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?auto=format&fit=crop&w=600&q=80', 'Reguler Run')">Beli Tiket</button>
+              <button class="btn-buy-ticket" onclick="showTicketDetail('Reguler - 5K Night Run', 'Rp 150.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?auto=format&fit=crop&w=600&q=80', 'Reguler Run', 3)">Beli Tiket</button>
             </div>
           </div>
         </div>
@@ -368,7 +368,7 @@
                 <span class="price-label">Paket 4 Orang</span>
                 <div class="price-value">Rp 500.000</div>
               </div>
-              <button class="btn-buy-ticket" onclick="showTicketDetail('Squad / Group Bundle (4 Pax)', 'Rp 500.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80', 'Group Pass')">Beli Tiket</button>
+              <button class="btn-buy-ticket" onclick="showTicketDetail('Squad / Group Bundle (4 Pax)', 'Rp 500.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80', 'Group Pass', 4)">Beli Tiket</button>
             </div>
           </div>
         </div>

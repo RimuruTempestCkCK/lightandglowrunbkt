@@ -206,17 +206,24 @@
     <div class="goers-container">
       
       <!-- Buyer Profile Card -->
+      @php
+        $latestBuyer = $orders->first();
+        $buyerName = $latestBuyer ? $latestBuyer->buyer_name : 'Sahabat Light and Glow';
+        $buyerEmail = $latestBuyer ? $latestBuyer->buyer_email : 'info@lightandglow.id';
+        $buyerPhone = $latestBuyer ? $latestBuyer->buyer_phone : '-';
+        $initials = collect(explode(' ', $buyerName))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
+      @endphp
       <div class="buyer-header-card">
         <div class="buyer-profile-info">
-          <div class="buyer-avatar">RH</div>
+          <div class="buyer-avatar">{{ $initials ?: 'LG' }}</div>
           <div>
-            <h1 style="font-size:20px; font-weight:800; color:var(--goers-navy-900); margin-bottom:4px;">Rian Hidayat</h1>
-            <p style="font-size:13px; color:var(--goers-gray-700); margin:0;">rian.h@gmail.com · 081267891234 · NIK: 1375012304950001</p>
+            <h1 style="font-size:20px; font-weight:800; color:var(--goers-navy-900); margin-bottom:4px;">{{ $buyerName }}</h1>
+            <p style="font-size:13px; color:var(--goers-gray-700); margin:0;">{{ $buyerEmail }} · {{ $buyerPhone }}</p>
           </div>
         </div>
         <div style="text-align:right;">
-          <span style="font-size:12px; color:var(--goers-gray-700);">Total Pembelian:</span>
-          <div style="font-size:22px; font-weight:800; color:var(--goers-branding-500);">2 Tiket Terdaftar</div>
+          <span style="font-size:12px; color:var(--goers-gray-700);">Total E-Tiket Terbit:</span>
+          <div style="font-size:22px; font-weight:800; color:var(--goers-branding-500);">{{ $digitalTickets->count() }} Tiket Aktif</div>
         </div>
       </div>
 
@@ -224,84 +231,96 @@
       <div class="buyer-nav-tabs">
         <div class="buyer-tab-item active" id="tab-orders" onclick="switchBuyerTab('orders')">
           <i data-lucide="receipt" style="width:18px;height:18px;"></i>
-          Riwayat Pembelian & Transaksi (2)
+          Riwayat Pembelian & Transaksi ({{ $orders->count() }})
         </div>
         <div class="buyer-tab-item" id="tab-tickets" onclick="switchBuyerTab('tickets')">
           <i data-lucide="qr-code" style="width:18px;height:18px;"></i>
-          Tiket Digital Aktif & QR Code (1)
+          Tiket Digital Aktif & QR Code ({{ $digitalTickets->count() }})
         </div>
       </div>
 
       <!-- Section 1: Riwayat Pembelian -->
       <div id="content-orders">
-
-        <!-- Order 1: Disetujui / Aktif -->
-        <div class="order-card">
-          <div class="order-card-head">
-            <div>
-              <span style="font-size:12px; color:var(--goers-gray-700);">Nomor Pesanan:</span>
-              <strong style="font-size:15px; color:var(--goers-navy-900); margin-left:4px;">#LG-88415</strong>
-              <span style="font-size:12px; color:#94A3B8; margin-left:8px;">• 15 April 2026, 11:05 WIB</span>
-            </div>
-            <span class="status-pill success">
-              <i data-lucide="check-circle" style="width:14px;height:14px;"></i>
-              Pembayaran Disetujui
-            </span>
-          </div>
-          <div class="order-card-body">
-            <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=500&auto=format&fit=crop&q=60" class="order-thumb" alt="VIP Glow Run">
-            <div class="order-info">
-              <span style="background:var(--goers-branding-100); color:var(--goers-branding-500); font-weight:800; font-size:11px; padding:2px 8px; border-radius:4px;">VIP ACCESS</span>
-              <h3 style="font-size:16px; font-weight:800; color:var(--goers-navy-900); margin:6px 0 4px;">Presale - VIP Glow Run 5K</h3>
-              <p style="font-size:13px; color:var(--goers-gray-700); margin-bottom:8px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
-              <div style="font-size:12px; color:#64748B;">Metode Bayar: <strong>QRIS BCA</strong> · Jumlah: <strong>1 Tiket</strong></div>
-            </div>
-            <div style="text-align:right; display:flex; flex-direction:column; justify-content:space-between;">
+        @forelse($orders as $ord)
+          <div class="order-card">
+            <div class="order-card-head">
               <div>
-                <span style="font-size:11px; color:#64748B;">Total Tagihan:</span>
-                <div style="font-size:18px; font-weight:800; color:var(--goers-branding-500);">Rp 275.000</div>
+                <span style="font-size:12px; color:var(--goers-gray-700);">Nomor Pesanan:</span>
+                <strong style="font-size:15px; color:var(--goers-navy-900); margin-left:4px;">{{ $ord->order_number }}</strong>
+                <span style="font-size:12px; color:#94A3B8; margin-left:8px;">• {{ \Carbon\Carbon::parse($ord->created_at)->translatedFormat('d M Y, H:i') }} WIB</span>
               </div>
-              <button class="btn-signup" style="padding:8px 16px; font-size:12px;" onclick="showMyTicket('Presale - VIP Glow Run', '#LG-88415', 'LG-BKT-2026-99214', 'Rian Hidayat', '25 Apr 2026')">
-                <i data-lucide="qr-code" style="width:14px;height:14px; vertical-align:middle; margin-right:4px;"></i>
-                Tampilkan E-Tiket
-              </button>
+              @if($ord->status === 'Pembayaran disetujui')
+                <span class="status-pill success">
+                  <i data-lucide="check-circle" style="width:14px;height:14px;"></i>
+                  Pembayaran Disetujui
+                </span>
+              @elseif($ord->status === 'Menunggu verifikasi')
+                <span class="status-pill pending">
+                  <i data-lucide="clock" style="width:14px;height:14px;"></i>
+                  Menunggu Verifikasi Admin
+                </span>
+              @elseif($ord->status === 'Pembayaran ditolak')
+                <span class="status-pill danger">
+                  <i data-lucide="x-circle" style="width:14px;height:14px;"></i>
+                  Pembayaran Ditolak
+                </span>
+              @else
+                <span class="status-pill pending">
+                  <i data-lucide="alert-circle" style="width:14px;height:14px;"></i>
+                  {{ $ord->status }}
+                </span>
+              @endif
             </div>
-          </div>
-        </div>
-
-        <!-- Order 2: Menunggu Verifikasi -->
-        <div class="order-card">
-          <div class="order-card-head">
-            <div>
-              <span style="font-size:12px; color:var(--goers-gray-700);">Nomor Pesanan:</span>
-              <strong style="font-size:15px; color:var(--goers-navy-900); margin-left:4px;">#LG-88421</strong>
-              <span style="font-size:12px; color:#94A3B8; margin-left:8px;">• 15 April 2026, 14:10 WIB</span>
-            </div>
-            <span class="status-pill pending">
-              <i data-lucide="clock" style="width:14px;height:14px;"></i>
-              Menunggu Verifikasi Admin
-            </span>
-          </div>
-          <div class="order-card-body">
-            <img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&auto=format&fit=crop&q=60" class="order-thumb" alt="Reguler 5K">
-            <div class="order-info">
-              <span style="background:#FEF3C7; color:#B45309; font-weight:800; font-size:11px; padding:2px 8px; border-radius:4px;">REGULER RUN</span>
-              <h3 style="font-size:16px; font-weight:800; color:var(--goers-navy-900); margin:6px 0 4px;">Reguler - 5K Night Run</h3>
-              <p style="font-size:13px; color:var(--goers-gray-700); margin-bottom:8px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
-              <div style="font-size:12px; color:#64748B;">Metode Bayar: <strong>QRIS Standar</strong> · Bukti transfer: <span style="color:#10B981; font-weight:600;">✓ Berhasil Diunggah</span></div>
-            </div>
-            <div style="text-align:right; display:flex; flex-direction:column; justify-content:space-between;">
-              <div>
-                <span style="font-size:11px; color:#64748B;">Total Tagihan:</span>
-                <div style="font-size:18px; font-weight:800; color:var(--goers-navy-900);">Rp 150.000</div>
+            <div class="order-card-body">
+              <img src="{{ $ord->ticket_image ?? 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=500&auto=format&fit=crop&q=60' }}" class="order-thumb" alt="{{ $ord->ticket_name }}">
+              <div class="order-info">
+                <span style="background:var(--goers-branding-100); color:var(--goers-branding-500); font-weight:800; font-size:11px; padding:2px 8px; border-radius:4px;">{{ strtoupper($ord->ticket_category ?? 'FESTIVAL') }}</span>
+                <h3 style="font-size:16px; font-weight:800; color:var(--goers-navy-900); margin:6px 0 4px;">{{ $ord->ticket_name }}</h3>
+                <p style="font-size:13px; color:var(--goers-gray-700); margin-bottom:8px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
+                <div style="font-size:12px; color:#64748B;">
+                  Metode: <strong>{{ $ord->payment_method ?? 'QRIS' }}</strong> · Pemesan: <strong>{{ $ord->buyer_name }}</strong> ({{ $ord->quantity }} Tiket)
+                  @if($ord->proof_of_payment)
+                    · Bukti: <a href="{{ asset('storage/' . $ord->proof_of_payment) }}" target="_blank" style="color:#10B981; font-weight:700; text-decoration:underline;">Lihat Bukti</a>
+                  @endif
+                </div>
               </div>
-              <button class="btn-login" style="padding:8px 16px; font-size:12px;" onclick="checkStatusPending('#LG-88421')">
-                Cek Status
-              </button>
+              <div style="text-align:right; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                  <span style="font-size:11px; color:#64748B;">Total Tagihan:</span>
+                  <div style="font-size:18px; font-weight:800; color:var(--goers-branding-500);">Rp {{ number_format($ord->total_price, 0, ',', '.') }}</div>
+                </div>
+                <div>
+                  @if($ord->status === 'Pembayaran disetujui')
+                    @php
+                      $ticketForOrder = $digitalTickets->firstWhere('order_id', $ord->id);
+                    @endphp
+                    @if($ticketForOrder)
+                      <button class="btn-signup" style="padding:8px 16px; font-size:12px;" onclick="showMyTicket('{{ $ord->ticket_name }}', '{{ $ord->order_number }}', '{{ $ticketForOrder->qr_token }}', '{{ $ticketForOrder->attendee_name }}', '25 Apr 2026')">
+                        <i data-lucide="qr-code" style="width:14px;height:14px; vertical-align:middle; margin-right:4px;"></i>
+                        Lihat E-Tiket
+                      </button>
+                    @endif
+                  @elseif($ord->status === 'Menunggu verifikasi')
+                    <button class="btn-login" style="padding:8px 16px; font-size:12px;" onclick="checkStatusPending('{{ $ord->order_number }}')">
+                      Cek Status
+                    </button>
+                  @else
+                    <span style="font-size:12px; color:#EF4444; font-weight:600;">{{ $ord->reject_reason ?? 'Pesanan ditolak' }}</span>
+                  @endif
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-
+        @empty
+          <div style="background:#fff; border-radius:16px; border:1px solid #E2E8F0; padding:48px 24px; text-align:center;">
+            <i data-lucide="ticket-x" style="width:48px;height:48px; color:#94A3B8; margin-bottom:12px;"></i>
+            <h3 style="font-size:18px; font-weight:800; color:var(--goers-navy-900);">Belum Ada Pesanan</h3>
+            <p style="font-size:13px; color:#64748B; margin-bottom:16px;">Anda belum melakukan pemesanan tiket Light and Glow Bukittinggi 2026.</p>
+            <a href="{{ route('home') }}#konser-section" class="btn-signup" style="display:inline-flex; align-items:center; gap:8px;">
+              Pesan Tiket Sekarang
+            </a>
+          </div>
+        @endforelse
       </div>
 
       <!-- Section 2: Tiket Digital & QR Code -->
@@ -312,34 +331,47 @@
             <p style="font-size:13px; color:var(--goers-gray-700); margin:0;">Tunjukkan QR Code berikut di layar ponsel Anda kepada petugas scanner saat masuk ke area Jam Gadang.</p>
           </div>
 
-          <div style="max-width:440px; margin:0 auto; background:#0F172A; border-radius:18px; overflow:hidden; color:#fff; box-shadow:0 12px 30px rgba(0,0,0,0.15);">
-            <div style="background:linear-gradient(135deg, #EB1355, #881337); padding:20px; text-align:center;">
-              <span style="font-size:11px; letter-spacing:2px; text-transform:uppercase; opacity:0.8;">OFFICIAL E-TICKET</span>
-              <h3 style="font-size:20px; font-weight:800; margin:4px 0;">Light And Glow Bukittinggi 2026</h3>
-              <p style="font-size:12px; margin:0; opacity:0.9;">25 April 2026 · Jam Gadang, Bukittinggi</p>
-            </div>
+          <div style="display:flex; flex-wrap:wrap; gap:24px; justify-content:center;">
+            @forelse($digitalTickets as $dt)
+              <div style="max-width:400px; width:100%; background:#0F172A; border-radius:18px; overflow:hidden; color:#fff; box-shadow:0 12px 30px rgba(0,0,0,0.15); margin-bottom:16px;">
+                <div style="background:linear-gradient(135deg, #EB1355, #881337); padding:20px; text-align:center;">
+                  <span style="font-size:11px; letter-spacing:2px; text-transform:uppercase; opacity:0.8;">OFFICIAL E-TICKET</span>
+                  <h3 style="font-size:18px; font-weight:800; margin:4px 0;">Light And Glow Bukittinggi 2026</h3>
+                  <p style="font-size:12px; margin:0; opacity:0.9;">25 April 2026 · Jam Gadang, Bukittinggi</p>
+                </div>
 
-            <div style="padding:24px; text-align:center;">
-              <div style="background:#fff; border-radius:14px; padding:16px; display:inline-block; margin-bottom:14px;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=LG-BKT-2026-99214" alt="QR Code" style="width:170px; height:170px;">
-              </div>
-              <div style="font-family:monospace; font-size:14px; font-weight:700; color:#38BDF8; letter-spacing:1px; margin-bottom:8px;">LG-BKT-2026-99214</div>
-              <span style="background:rgba(16,185,129,0.2); color:#34D399; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ TIKET AKTIF & BELUM DIGUNAKAN</span>
+                <div style="padding:24px; text-align:center;">
+                  <div style="background:#fff; border-radius:14px; padding:16px; display:inline-block; margin-bottom:14px;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode($dt->qr_token) }}" alt="QR Code" style="width:170px; height:170px;">
+                  </div>
+                  <div style="font-family:monospace; font-size:14px; font-weight:700; color:#38BDF8; letter-spacing:1px; margin-bottom:8px;">{{ $dt->ticket_code }}</div>
+                  @if($dt->is_used)
+                    <span style="background:rgba(239,68,68,0.2); color:#F87171; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ SUDAH CHECK-IN ({{ \Carbon\Carbon::parse($dt->used_at)->format('H:i') }} WIB)</span>
+                  @else
+                    <span style="background:rgba(16,185,129,0.2); color:#34D399; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">✓ TIKET AKTIF & SIAP DIPAKAI</span>
+                  @endif
 
-              <div style="border-top:1px dashed #334155; margin-top:20px; padding-top:16px; text-align:left; font-size:12px; color:#94A3B8; line-height:1.7;">
-                <div><strong>Nama Pemegang:</strong> <span style="color:#fff;">Rian Hidayat</span></div>
-                <div><strong>Kategori:</strong> <span style="color:#fff;">Presale - VIP Glow Run 5K</span></div>
-                <div><strong>No. Pesanan:</strong> <span style="color:#fff;">#LG-88415</span></div>
-                <div><strong>Gate Masuk:</strong> <span style="color:#fff;">Gate 1 (Akses Depan Panggung)</span></div>
-              </div>
+                  <div style="border-top:1px dashed #334155; margin-top:20px; padding-top:16px; text-align:left; font-size:12px; color:#94A3B8; line-height:1.7;">
+                    <div><strong>Nama Pemegang:</strong> <span style="color:#fff;">{{ $dt->attendee_name }}</span></div>
+                    <div><strong>Kategori:</strong> <span style="color:#fff;">{{ $dt->ticket_name }}</span></div>
+                    <div><strong>No. Pesanan:</strong> <span style="color:#fff;">{{ $dt->order_number }}</span></div>
+                    <div><strong>Gate Masuk:</strong> <span style="color:#fff;">{{ $dt->gate ?? 'Gate 1 (Akses Utama)' }}</span></div>
+                  </div>
 
-              <div style="margin-top:20px;">
-                <button class="btn-signup" style="width:100%; justify-content:center; padding:10px;" onclick="downloadTicketPDF()">
-                  <i data-lucide="download" style="width:16px;height:16px; margin-right:6px;"></i>
-                  Unduh Tiket (PDF / Gambar)
-                </button>
+                  <div style="margin-top:20px;">
+                    <button class="btn-signup" style="width:100%; justify-content:center; padding:10px;" onclick="downloadTicketPDF('{{ $dt->ticket_code }}')">
+                      <i data-lucide="download" style="width:16px;height:16px; margin-right:6px;"></i>
+                      Unduh E-Tiket (PNG/PDF)
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            @empty
+              <div style="text-align:center; padding:32px; color:#64748B;">
+                <i data-lucide="qr-code" style="width:40px;height:40px; margin-bottom:8px; opacity:0.5;"></i>
+                <p>Belum ada tiket digital yang aktif. Begitu verifikasi pembayaran disetujui admin, tiket Anda akan muncul otomatis di sini.</p>
+              </div>
+            @endforelse
           </div>
         </div>
       </div>
