@@ -21,10 +21,8 @@
 
   <!-- External Stylesheet -->
   <link rel="stylesheet" href="{{ asset('style.css') }}" />
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
+<body data-buyer-logged-in="{{ !empty($buyer) ? '1' : '0' }}" data-login-url="{{ route('buyer.login') }}">
 
   <!-- Top Announcement Bar -->
   <div class="top-bar">
@@ -66,16 +64,28 @@
             <a href="#tiket-section" class="nav-btn-link">Tiket</a>
             <a href="#highlight-section" class="nav-btn-link">Highlight Acara</a>
             <a href="#rute-section" class="nav-btn-link">Rute & Venue</a>
-            <a href="{{ route('buyer.dashboard') }}" class="nav-btn-link" style="color:var(--goers-branding-500); font-weight:700;">
-              <i data-lucide="ticket" style="width:14px;height:14px; vertical-align:middle;"></i>
-              Tiket Saya
-            </a>
+            @if(!empty($buyer))
+              <a href="{{ route('buyer.dashboard') }}" class="nav-btn-link" style="color:var(--goers-branding-500); font-weight:700;">
+                <i data-lucide="ticket" style="width:14px;height:14px; vertical-align:middle;"></i>
+                Tiket Saya
+              </a>
+            @endif
           </div>
 
-          <a href="{{ route('buyer.dashboard') }}" class="btn-login" style="border-color:var(--goers-branding-500); color:var(--goers-branding-500);">
-            Tiket Saya
-          </a>
-          <a href="{{ route('login') }}" class="btn-signup">Admin Portal</a>
+          @if(!empty($buyer))
+            <a href="{{ route('buyer.dashboard') }}" class="btn-login" style="border-color:var(--goers-branding-500); color:var(--goers-branding-500);">
+              <i data-lucide="user" style="width:14px;height:14px; vertical-align:middle; display:inline-block; margin-right:4px;"></i>{{ Str::limit($buyer['name'], 12) }}
+            </a>
+            <form action="{{ route('buyer.logout') }}" method="POST" style="display:inline;">
+              @csrf
+              <button type="submit" class="btn-login" style="border:none; color:#64748B; padding:8px 12px;" title="Keluar">
+                <i data-lucide="log-out" style="width:16px;height:16px;"></i>
+              </button>
+            </form>
+          @else
+            <a href="{{ route('buyer.login') }}" class="btn-login">Masuk</a>
+            <a href="{{ route('buyer.register') }}" class="btn-signup">Daftar</a>
+          @endif
           
           <button class="mobile-menu-toggle" onclick="toggleMobileDrawer()">
             <i data-lucide="menu" style="width:24px; height:24px;"></i>
@@ -107,8 +117,17 @@
       <a href="#help-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">❓ Informasi Acara</a>
     </div>
     <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
-      <a href="{{ route('buyer.dashboard') }}" class="btn-login" style="width:100%; text-align:center; display:block; border-color:var(--goers-branding-500); color:var(--goers-branding-500);">🎫 Tiket Saya & Riwayat</a>
-      <a href="{{ route('login') }}" class="btn-signup" style="width:100%; text-align:center; display:block;">Admin Portal</a>
+      @if(!empty($buyer))
+        <a href="{{ route('buyer.dashboard') }}" class="btn-login" style="width:100%; text-align:center; display:block; border-color:var(--goers-branding-500); color:var(--goers-branding-500);">🎫 Tiket Saya ({{ $buyer['name'] }})</a>
+        <form action="{{ route('buyer.logout') }}" method="POST" style="width:100%;">
+          @csrf
+          <button type="submit" class="btn-login" style="width:100%; text-align:center; display:block; border:1px solid #CBD5E1; color:#64748B;">Keluar</button>
+        </form>
+      @else
+        <a href="{{ route('buyer.login') }}" class="btn-login" style="width:100%; text-align:center; display:block;">Masuk Akun</a>
+        <a href="{{ route('buyer.register') }}" class="btn-signup" style="width:100%; text-align:center; display:block;">Daftar Akun Baru</a>
+      @endif
+      <a href="{{ route('login') }}" style="font-size:11px; text-align:center; color:#94A3B8; margin-top:6px;">Portal Admin</a>
     </div>
   </div>
 
@@ -742,37 +761,225 @@
     <button class="btn-cookie-accept" onclick="acceptCookies()">Saya Setuju</button>
   </div>
 
-  <!-- Ticket Detail & Booking Modal -->
+  <!-- Ticket Detail & Booking Modal (Berdasarkan template Goers, Tanpa SweetAlert) -->
   <div class="modal-overlay" id="ticketModal" onclick="closeModalOnOverlay(event)">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modalTitle">Detail Tiket Light & Glow</h3>
-        <button class="modal-close-btn" onclick="closeTicketModal()"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+    <div class="modal-content" style="max-height:92vh; display:flex; flex-direction:column;">
+      
+      <!-- STEP 1: Detail Tiket -->
+      <div id="bookingStepDetail" style="display:flex; flex-direction:column; height:100%; overflow:hidden;">
+        <div class="modal-header">
+          <h3 id="modalTitle">Detail Tiket Light & Glow</h3>
+          <button class="modal-close-btn" onclick="closeTicketModal()"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+        </div>
+        <div class="modal-body" style="overflow-y:auto; flex:1;">
+          <img id="modalImg" class="modal-image" src="" alt="Detail Tiket" />
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <span id="modalCategory" style="background:var(--goers-branding-100); color:var(--goers-branding-500); font-weight:800; font-size:12px; padding:4px 10px; border-radius:4px;">Kategori</span>
+            <span id="modalDate" style="font-size:13px; font-weight:700; color:var(--goers-navy-900);">Tanggal</span>
+          </div>
+          <h2 id="modalEventName" style="font-size:20px; font-weight:800; color:var(--goers-navy-900); margin-bottom:10px;">Nama Paket Tiket</h2>
+          <div style="display:flex; align-items:center; gap:6px; font-size:13px; color:var(--goers-gray-700); margin-bottom:16px;">
+            <i data-lucide="map-pin" style="width:16px;height:16px;"></i>
+            <span id="modalLocation">Jam Gadang, Bukittinggi</span>
+          </div>
+          <div style="border-top:1px solid var(--goers-gray-300); padding-top:14px;">
+            <h4 style="font-size:14px; font-weight:700; margin-bottom:6px;">Tentang Tiket & Event:</h4>
+            <p style="font-size:13px; color:var(--goers-gray-800); line-height:1.6;">
+              E-tiket resmi dan QR Code unik akan otomatis tersimpan di menu <strong>Tiket Saya</strong> & dikirimkan ke email Anda setelah pembayaran QRIS diverifikasi oleh admin. Tunjukkan QR Code digital kepada petugas scanner saat pengambilan race pack dan hari acara.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div>
+            <span style="font-size:11px; color:var(--goers-gray-700);">Harga Total</span>
+            <div id="modalPrice" style="font-size:20px; font-weight:800; color:var(--goers-branding-500);">Rp 0</div>
+          </div>
+          <button class="btn-signup" style="padding:10px 24px;" onclick="proceedCheckout()">Pesan Sekarang</button>
+        </div>
       </div>
-      <div class="modal-body">
-        <img id="modalImg" class="modal-image" src="" alt="Detail Tiket" />
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <span id="modalCategory" style="background:var(--goers-branding-100); color:var(--goers-branding-500); font-weight:800; font-size:12px; padding:4px 10px; border-radius:4px;">Kategori</span>
-          <span id="modalDate" style="font-size:13px; font-weight:700; color:var(--goers-navy-900);">Tanggal</span>
+
+      <!-- STEP 2: Form Data Diri Pembeli -->
+      <div id="bookingStepForm" style="display:none; flex-direction:column; height:100%; overflow:hidden;">
+        <div class="modal-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button onclick="switchBookingStep('detail')" style="color:var(--goers-navy-900); display:flex; align-items:center;" title="Kembali"><i data-lucide="arrow-left" style="width:20px;height:20px;"></i></button>
+            <h3 style="margin:0;">Data Diri Pembeli</h3>
+          </div>
+          <button class="modal-close-btn" onclick="closeTicketModal()"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
         </div>
-        <h2 id="modalEventName" style="font-size:20px; font-weight:800; color:var(--goers-navy-900); margin-bottom:10px;">Nama Paket Tiket</h2>
-        <div style="display:flex; align-items:center; gap:6px; font-size:13px; color:var(--goers-gray-700); margin-bottom:16px;">
-          <i data-lucide="map-pin" style="width:16px;height:16px;"></i>
-          <span id="modalLocation">Jam Gadang, Bukittinggi</span>
+        <div class="modal-body" style="overflow-y:auto; flex:1;">
+          <div style="background:#FFF1F2; border:1px solid #FECDD3; padding:12px 14px; border-radius:10px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:12px; color:#9F1239;">Paket Dipilih:</div>
+              <strong id="formSelectedTicketName" style="color:#0F172A; font-size:14px;">-</strong>
+            </div>
+            <div id="formSelectedTicketPrice" style="font-weight:800; color:#EB1355; font-size:16px;">-</div>
+          </div>
+
+          <form id="buyerCheckoutForm" onsubmit="submitCheckoutOrder(event)" style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#0F172A; margin-bottom:4px;">Nama Lengkap (Sesuai KTP / Tanda Pengenal) <span style="color:#EB1355;">*</span></label>
+              <input type="text" id="custName" class="newsletter-input" style="width:100%; border-color:#CBD5E1; color:#0F172A; background:#fff; font-size:13px; height:42px; border-radius:8px;" required placeholder="Contoh: Rian Hidayat" value="{{ $buyer['name'] ?? '' }}">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#0F172A; margin-bottom:4px;">Alamat Email Aktif (Pengiriman E-Tiket) <span style="color:#EB1355;">*</span></label>
+              <input type="email" id="custEmail" class="newsletter-input" style="width:100%; border-color:#CBD5E1; color:#0F172A; background:#fff; font-size:13px; height:42px; border-radius:8px;" required placeholder="Contoh: rian@email.com" value="{{ $buyer['email'] ?? '' }}">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#0F172A; margin-bottom:4px;">Nomor WhatsApp Aktif <span style="color:#EB1355;">*</span></label>
+              <input type="tel" id="custPhone" class="newsletter-input" style="width:100%; border-color:#CBD5E1; color:#0F172A; background:#fff; font-size:13px; height:42px; border-radius:8px;" required placeholder="Contoh: 081234567890" value="{{ $buyer['phone'] ?? '' }}">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#0F172A; margin-bottom:4px;">Nomor KTP / NIK / Kartu Pelajar (Opsional)</label>
+              <input type="text" id="custNik" class="newsletter-input" style="width:100%; border-color:#CBD5E1; color:#0F172A; background:#fff; font-size:13px; height:42px; border-radius:8px;" placeholder="Contoh: 1375012304950001" value="{{ $buyer['nik'] ?? '' }}">
+            </div>
+            <div id="checkoutFormError" style="display:none; color:#DC2626; font-size:12px; background:#FEF2F2; padding:8px 12px; border-radius:6px; border:1px solid #FCA5A5;"></div>
+          </form>
         </div>
-        <div style="border-top:1px solid var(--goers-gray-300); padding-top:14px;">
-          <h4 style="font-size:14px; font-weight:700; margin-bottom:6px;">Tentang Tiket & Event:</h4>
-          <p style="font-size:13px; color:var(--goers-gray-800); line-height:1.6;">
-            E-tiket resmi dan QR Code unik akan otomatis tersimpan di menu <strong>Tiket Saya</strong> & dikirimkan ke email Anda setelah pembayaran QRIS diverifikasi oleh admin. Tunjukkan QR Code digital kepada petugas scanner saat pengambilan race pack dan hari acara.
+        <div class="modal-footer">
+          <button type="button" class="btn-login" onclick="switchBookingStep('detail')" style="border-color:#CBD5E1; color:#64748B;">Kembali</button>
+          <button type="button" id="btnSubmitCheckout" class="btn-signup" style="padding:10px 24px;" onclick="document.getElementById('buyerCheckoutForm').requestSubmit()">
+            Lanjut ke Pembayaran QRIS →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Pembayaran QRIS (Template Style) -->
+      <div id="bookingStepPayment" style="display:none; flex-direction:column; height:100%; overflow:hidden;">
+        <div class="modal-header">
+          <div>
+            <h3 style="margin:0; font-size:16px;" id="payModalOrderNumber">Pembayaran QRIS</h3>
+            <span style="font-size:11px; color:#64748B;">Scan kode QRIS berikut menggunakan aplikasi m-Banking atau e-Wallet</span>
+          </div>
+          <button class="modal-close-btn" onclick="closeTicketModal()"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+        </div>
+        <div class="modal-body" style="overflow-y:auto; flex:1; text-align:center;">
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:12px; margin-bottom:14px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span style="font-size:12px; color:#64748B;">Pesanan Atas Nama:</span>
+              <strong id="payModalBuyerName" style="font-size:13px; color:#0F172A;">-</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span style="font-size:12px; color:#64748B;">Kategori Tiket:</span>
+              <span id="payModalTicketName" style="font-size:12px; font-weight:700; color:#0F172A;">-</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #CBD5E1; padding-top:6px; margin-top:6px;">
+              <span style="font-size:12px; font-weight:700; color:#0F172A;">Total Tagihan:</span>
+              <span id="payModalTotalAmount" style="font-size:18px; font-weight:900; color:#EB1355;">-</span>
+            </div>
+          </div>
+
+          <!-- QRIS Image Box -->
+          <div style="background:#ffffff; border:2px solid #E2E8F0; border-radius:14px; padding:16px; display:inline-block; margin-bottom:12px; box-shadow:0 6px 16px rgba(0,0,0,0.06);">
+            <img id="payModalQrisImg" src="" alt="QRIS Code" style="width:200px; height:200px; margin:0 auto; display:block;" />
+            <div style="font-size:11px; font-weight:800; color:#0F172A; margin-top:10px; letter-spacing:0.05em;">QRIS STANDAR PEMBAYARAN NASIONAL</div>
+            <div style="font-size:10px; color:#64748B; margin-top:2px;">BCA · Mandiri · BRI · BNI · GoPay · OVO · ShopeePay · DANA</div>
+          </div>
+
+          <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:10px; padding:10px 14px; text-align:left; font-size:12px; color:#92400E; line-height:1.5;">
+            <strong>Petunjuk Pembayaran:</strong>
+            <ol style="margin:4px 0 0 18px; padding:0;">
+              <li>Buka aplikasi m-Banking atau e-Wallet pilihan Anda.</li>
+              <li>Scan kode QRIS di atas dan selesaikan pembayaran sesuai nominal tepat.</li>
+              <li>Simpan bukti/screenshot transfer dan klik tombol di bawah untuk unggah bukti.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-login" onclick="closeTicketModal()" style="border-color:#CBD5E1; color:#64748B;">Bayar Nanti</button>
+          <button type="button" class="btn-signup" style="padding:10px 22px; background:#10B981;" onclick="switchBookingStep('upload')">
+            <i data-lucide="upload" style="width:16px;height:16px; vertical-align:middle; display:inline-block; margin-right:4px;"></i>
+            Saya Sudah Bayar (Unggah Bukti)
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Unggah Bukti Pembayaran -->
+      <div id="bookingStepUpload" style="display:none; flex-direction:column; height:100%; overflow:hidden;">
+        <div class="modal-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button onclick="switchBookingStep('payment')" style="color:var(--goers-navy-900); display:flex; align-items:center;" title="Kembali ke QRIS"><i data-lucide="arrow-left" style="width:20px;height:20px;"></i></button>
+            <h3 style="margin:0;">Unggah Bukti Transfer</h3>
+          </div>
+          <button class="modal-close-btn" onclick="closeTicketModal()"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+        </div>
+        <div class="modal-body" style="overflow-y:auto; flex:1;">
+          <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:10px; padding:12px 14px; margin-bottom:16px; color:#166534; font-size:13px;">
+            Pesanan: <strong id="uploadOrderNumber">-</strong><br>
+            Nominal Tagihan: <strong id="uploadOrderTotal">-</strong>
+          </div>
+
+          <form id="uploadProofForm" onsubmit="submitPaymentProof(event)" style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#0F172A; margin-bottom:6px;">Foto / Screenshot Bukti Pembayaran QRIS <span style="color:#EB1355;">*</span></label>
+              <input type="file" id="proofFileInput" accept="image/*" required style="width:100%; padding:10px; border:2px dashed #CBD5E1; border-radius:10px; background:#F8FAFC; cursor:pointer;" onchange="previewProofImage(this)">
+              <div id="proofPreviewContainer" style="display:none; margin-top:10px; text-align:center;">
+                <img id="proofPreviewImg" src="" style="max-height:180px; max-width:100%; border-radius:8px; border:1px solid #E2E8F0; margin:0 auto;" alt="Pratinjau Bukti">
+              </div>
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#0F172A; margin-bottom:4px;">Catatan Tambahan (Opsional)</label>
+              <input type="text" id="proofNoteInput" class="newsletter-input" style="width:100%; border-color:#CBD5E1; color:#0F172A; background:#fff; font-size:13px; height:42px; border-radius:8px;" placeholder="Contoh: Transfer via BCA atas nama Rian">
+            </div>
+            <div id="uploadFormError" style="display:none; color:#DC2626; font-size:12px; background:#FEF2F2; padding:8px 12px; border-radius:6px; border:1px solid #FCA5A5;"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-login" onclick="switchBookingStep('payment')" style="border-color:#CBD5E1; color:#64748B;">Kembali</button>
+          <button type="button" id="btnSubmitProof" class="btn-signup" style="padding:10px 24px; background:#10B981;" onclick="document.getElementById('uploadProofForm').requestSubmit()">
+            Kirim Bukti Pembayaran
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 5: Sukses & Menunggu Verifikasi Admin -->
+      <div id="bookingStepSuccess" style="display:none; flex-direction:column; height:100%; overflow:hidden;">
+        <div class="modal-header">
+          <h3 style="margin:0; color:#10B981;">Bukti Berhasil Dikirim!</h3>
+          <button class="modal-close-btn" onclick="closeTicketModal()"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+        </div>
+        <div class="modal-body" style="overflow-y:auto; flex:1; text-align:center; padding:30px 20px;">
+          <div style="width:64px; height:64px; border-radius:50%; background:#DCFCE7; color:#16A34A; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+            <i data-lucide="check" style="width:36px;height:36px;"></i>
+          </div>
+          <h3 style="font-size:18px; font-weight:800; color:#0F172A; margin-bottom:6px;">Terima Kasih, Bukti Pembayaran Telah Diterima!</h3>
+          <p style="font-size:13px; color:#64748B; line-height:1.6; max-width:440px; margin:0 auto 18px;">
+            Pesanan Anda <strong id="successOrderNumber" style="color:#0F172A;">-</strong> sedang diverifikasi oleh admin. Tiket digital ber-QR Code unik akan otomatis aktif di halaman <strong>Tiket Saya</strong> begitu pembayaran disetujui.
           </p>
+          <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:10px; padding:12px; display:inline-block; font-size:12px; color:#92400E; margin-bottom:20px;">
+            Status: <span style="font-weight:800; color:#D97706;">Menunggu Verifikasi Admin</span>
+          </div>
+        </div>
+        <div class="modal-footer" style="justify-content:center;">
+          <a href="{{ route('buyer.dashboard') }}" class="btn-signup" style="padding:12px 28px; text-decoration:none;">
+            Buka Halaman Tiket Saya →
+          </a>
         </div>
       </div>
-      <div class="modal-footer">
-        <div>
-          <span style="font-size:11px; color:var(--goers-gray-700);">Harga Total</span>
-          <div id="modalPrice" style="font-size:20px; font-weight:800; color:var(--goers-branding-500);">Rp 0</div>
-        </div>
-        <button class="btn-signup" style="padding:10px 24px;" onclick="proceedCheckout()">Pesan Sekarang</button>
+
+    </div>
+  </div>
+
+  <!-- Modal Peringatan Harus Login (Bila Pembeli Belum Login) -->
+  <div class="modal-overlay" id="requireLoginModal" onclick="closeRequireLoginModal(event)">
+    <div class="modal-content" style="max-width:440px; text-align:center; padding:28px 24px;">
+      <div style="width:58px; height:58px; border-radius:50%; background:#FFF1F2; color:#EB1355; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;">
+        <i data-lucide="lock" style="width:28px;height:28px;"></i>
+      </div>
+      <h3 style="font-size:18px; font-weight:800; color:var(--goers-navy-900); margin-bottom:8px;">Harus Masuk Terlebih Dahulu</h3>
+      <p style="font-size:13px; color:var(--goers-gray-700); line-height:1.6; margin-bottom:22px;">
+        Untuk melakukan pemesanan tiket <strong>Light and Glow Bukittinggi 2026</strong>, Anda harus masuk ke akun pembeli terlebih dahulu agar e-tiket dapat tersimpan dengan aman di riwayat Anda.
+      </p>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <a href="{{ route('buyer.login') }}" class="btn-signup" style="width:100%; text-align:center; padding:12px; font-size:14px; text-decoration:none;">
+          Masuk ke Akun Saya
+        </a>
+        <a href="{{ route('buyer.register') }}" class="btn-login" style="width:100%; text-align:center; padding:10px; font-size:13px; border-color:var(--goers-gray-400); color:var(--goers-navy-900); text-decoration:none;">
+          Belum punya akun? Daftar Sekarang
+        </a>
+        <button type="button" onclick="closeRequireLoginModal()" style="color:#94A3B8; font-size:12px; margin-top:4px; background:none; border:none; cursor:pointer;">
+          Tutup
+        </button>
       </div>
     </div>
   </div>

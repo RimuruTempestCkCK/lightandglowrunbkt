@@ -16,11 +16,7 @@ class OrderController extends Controller
     {
         $request->validate([
             'ticket_type_id' => 'required',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:50',
-            'nik' => 'nullable|string|max:50',
-            'quantity' => 'nullable|integer|min:1',
+            'quantity'       => 'nullable|integer|min:1',
             'payment_method' => 'nullable|string'
         ]);
 
@@ -31,57 +27,73 @@ class OrderController extends Controller
             $ticket = DB::table('ticket_types')->first();
         }
 
-        $quantity = (int) ($request->input('quantity', 1) ?: 1);
+        $quantity    = (int) ($request->input('quantity', 1) ?: 1);
         $totalAmount = $ticket->price * $quantity;
 
-        // 1. Simpan atau update data Pembeli (Buyers Table)
-        $buyerId = DB::table('buyers')->insertGetId([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'nik' => $request->input('nik'),
-            'address' => $request->input('address', 'Bukittinggi, Sumatera Barat'),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Gunakan buyer dari session jika ada, jika tidak buat baru (fallback)
+        if ($request->input('buyer_session_id')) {
+            $buyerId = $request->input('buyer_session_id');
+            $existingBuyer = DB::table('buyers')->where('id', $buyerId)->first();
+            if (!$existingBuyer) {
+                return response()->json(['success' => false, 'message' => 'Akun pembeli tidak ditemukan.'], 401);
+            }
+        } else {
+            // Fallback: cek dulu apakah email sudah ada
+            $name  = $request->input('name', 'Peserta');
+            $email = $request->input('email', 'guest@lightandglow.id');
+            $existing = DB::table('buyers')->where('email', $email)->first();
+            if ($existing) {
+                $buyerId = $existing->id;
+            } else {
+                $buyerId = DB::table('buyers')->insertGetId([
+                    'name'       => $name,
+                    'email'      => $email,
+                    'phone'      => $request->input('phone', '-'),
+                    'nik'        => $request->input('nik'),
+                    'address'    => $request->input('address', 'Bukittinggi, Sumatera Barat'),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
 
-        // 2. Buat Nomor Pesanan Unik (#LG-XXXXX)
+        // Buat Nomor Pesanan Unik (#LG-XXXXX)
         do {
-            $randNum = mt_rand(10000, 99999);
+            $randNum     = mt_rand(10000, 99999);
             $orderNumber = "LG-{$randNum}";
-            $exists = DB::table('orders')->where('order_number', $orderNumber)->exists();
+            $exists      = DB::table('orders')->where('order_number', $orderNumber)->exists();
         } while ($exists);
 
-        // 3. Payload QRIS Nasional Dinamis
+        // Payload QRIS Nasional Dinamis
         $qrisPayload = "00020101021226680016ID.CO.QRIS.WWW01189360050300000{$randNum}5204581253033605802ID5914LIGHT%20AND%20GLOW6011BUKITTINGGI630419A8";
 
-        // 4. Kurangi sisa kuota tiket
+        // Kurangi sisa kuota tiket
         if ($ticket->remaining_quota > 0) {
             DB::table('ticket_types')->where('id', $ticket->id)->decrement('remaining_quota', $quantity);
         }
 
-        // 5. Simpan ke Tabel Orders
+        // Simpan ke Tabel Orders
         $orderId = DB::table('orders')->insertGetId([
-            'order_number' => $orderNumber,
-            'buyer_id' => $buyerId,
+            'order_number'   => $orderNumber,
+            'buyer_id'       => $buyerId,
             'ticket_type_id' => $ticket->id,
-            'quantity' => $quantity,
-            'total_amount' => $totalAmount,
-            'payment_method' => $request->input('payment_method', 'QRIS BCA'),
-            'qris_payload' => $qrisPayload,
-            'status' => 'Menunggu pembayaran',
-            'created_at' => now(),
-            'updated_at' => now(),
+            'quantity'       => $quantity,
+            'total_amount'   => $totalAmount,
+            'payment_method' => $request->input('payment_method', 'QRIS'),
+            'qris_payload'   => $qrisPayload,
+            'status'         => 'Menunggu pembayaran',
+            'created_at'     => now(),
+            'updated_at'     => now(),
         ]);
 
         return response()->json([
-            'success' => true,
-            'order_id' => $orderId,
-            'order_number' => '#' . $orderNumber,
-            'total_amount' => $totalAmount,
+            'success'        => true,
+            'order_id'       => $orderId,
+            'order_number'   => '#' . $orderNumber,
+            'total_amount'   => $totalAmount,
             'total_formatted' => 'Rp ' . number_format($totalAmount, 0, ',', '.'),
-            'ticket_name' => $ticket->name,
-            'qris_payload' => $qrisPayload,
+            'ticket_name'    => $ticket->name,
+            'qris_payload'   => $qrisPayload,
             'qris_image_url' => "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($qrisPayload)
         ]);
     }
