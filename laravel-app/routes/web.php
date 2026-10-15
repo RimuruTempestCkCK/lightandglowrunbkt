@@ -27,10 +27,22 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-// 4. CMS Landing Page (Admin dapat mengubah teks & konten landing page)
+// 4. CMS & Master Data
 Route::get('/dashboard/cms', function () {
     return view('admin.cms');
 })->name('admin.cms');
+
+Route::get('/dashboard/tiket', function () {
+    return view('admin.tiket');
+})->name('admin.tiket');
+
+Route::get('/dashboard/banner', function () {
+    return view('admin.banner');
+})->name('admin.banner');
+
+Route::get('/dashboard/acara', function () {
+    return view('admin.acara');
+})->name('admin.acara');
 
 // 5. Verifikasi Pembayaran (Berdasarkan rancangan web.txt)
 Route::get('/dashboard/verifikasi', function () {
@@ -46,10 +58,6 @@ Route::get('/dashboard/scanner', function () {
 Route::get('/dashboard/pesanan', function () {
     return view('admin.verifikasi');
 })->name('admin.pesanan');
-
-Route::get('/dashboard/tiket', function () {
-    return view('admin.verifikasi');
-})->name('admin.tiket');
 
 Route::get('/dashboard/kehadiran', function () {
     return view('admin.verifikasi');

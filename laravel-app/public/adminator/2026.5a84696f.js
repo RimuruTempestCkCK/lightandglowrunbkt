@@ -3,16 +3,33 @@
     label: "Utama",
     items: [
       { key: "dashboard", text: "Dashboard Transaksi", href: "/dashboard", icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
-      { key: "cms", text: "CMS Landing Page", href: "/dashboard/cms", badge: { kind: "new", text: "CMS" }, icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' },
       { key: "landing", text: "Lihat Landing Page", href: "/", badge: { kind: "pro", text: "LIVE" }, icon: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>' }
     ]
   },
   {
-    label: "Manajemen Tiket & Pesanan",
+    label: "Master Data & Konten",
+    items: [
+      {
+        key: "master_data",
+        text: "Master Data",
+        icon: '<path d="M4 7h16M4 12h16M4 17h16"/><rect x="2" y="3" width="20" height="18" rx="2"/>',
+        children: [
+          { key: "master_tiket", text: "Master Tiket", href: "/dashboard/tiket" },
+          { key: "master_banner", text: "Master Banner Hero", href: "/dashboard/banner" },
+          { key: "master_acara", text: "Master Acara & Info", href: "/dashboard/acara" },
+          { key: "master_peserta", text: "Master Data Pembeli", href: "/dashboard/pesanan" }
+        ]
+      },
+      { key: "tiket_direct", text: "Kelola Tiket", href: "/dashboard/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
+      { key: "banner_direct", text: "Kelola Banner Hero", href: "/dashboard/banner", badge: { kind: "info", text: "SLIDER" }, icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
+      { key: "acara_direct", text: "Kelola Konten Acara", href: "/dashboard/acara", icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' }
+    ]
+  },
+  {
+    label: "Transaksi & Validasi",
     items: [
       { key: "verifikasi", text: "Verifikasi Pembayaran", href: "/dashboard/verifikasi", badge: { kind: "danger", text: "3 PENDING" }, icon: '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>' },
-      { key: "pesanan", text: "Data Pesanan & Pembeli", href: "/dashboard/pesanan", icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>' },
-      { key: "tiket", text: "Kelola Kuota & Harga", href: "/dashboard/tiket", icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' }
+      { key: "pesanan", text: "Data Pesanan & Transaksi", href: "/dashboard/pesanan", icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>' }
     ]
   },
   {
