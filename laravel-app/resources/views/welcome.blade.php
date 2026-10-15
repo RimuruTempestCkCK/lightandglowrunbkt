@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Light And Glow Bukittinggi | Official Ticketing & Event Experience</title>
-  <meta name="description" content="Beli tiket Light And Glow Bukittinggi, festival musik glow in the dark, konser, dan atraksi seru di Bukittinggi!" />
+  <title>GOERS | Beli Tiket Online Lebih Gampang dengan Respons Cepat</title>
+  <meta name="description" content="Harga terbaik tiket tempat wisata, konser, & event seru lainnya menantimu di goersapp.com!" />
   <meta name="theme-color" content="#EB1355" />
   
   <!-- Favicon -->
@@ -28,7 +28,7 @@
   <div class="top-bar">
     <div class="goers-container" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
       <div>
-        ⚡ Jelajah event musik, wisata & aktivitas terbaik. <strong>Diskon s/d 50%</strong> <a href="#konser-section">Beli Tiket Sekarang</a>
+        <span id="cmsTopBar">⚡ Jelajah event musik, wisata & aktivitas terbaik. <strong>Diskon s/d 50%</strong></span> <a href="#konser-section">Beli Tiket Sekarang</a>
       </div>
       <div class="top-bar-right">
         <a href="#gem-section" class="top-bar-item">
@@ -53,7 +53,7 @@
       <div class="goers-nav-wrapper">
         <!-- Logo -->
         <a href="index.html" class="goers-brand-logo">
-          LIGHT & GLOW<span class="dot">.</span>
+          GOERS<span class="dot">.</span>
         </a>
 
         <!-- Desktop Search Bar -->
@@ -74,8 +74,8 @@
             <a href="#gem-section" class="nav-btn-link">Partner with Us</a>
           </div>
 
-          <button class="btn-login" onclick="openLoginModal()">Masuk</button>
-          <button class="btn-signup" onclick="openLoginModal()">Daftar</button>
+          <a href="{{ route('login') }}" class="btn-login">Masuk</a>
+          <a href="{{ route('register') }}" class="btn-signup">Daftar</a>
           
           <button class="mobile-menu-toggle" onclick="toggleMobileDrawer()">
             <i data-lucide="menu" style="width:24px; height:24px;"></i>
@@ -112,7 +112,7 @@
   <div class="drawer-overlay" id="drawerOverlay" onclick="toggleMobileDrawer()"></div>
   <div class="mobile-drawer" id="mobileDrawer">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-      <a href="index.html" class="goers-brand-logo">LIGHT & GLOW<span class="dot">.</span></a>
+      <a href="index.html" class="goers-brand-logo">GOERS<span class="dot">.</span></a>
       <button onclick="toggleMobileDrawer()"><i data-lucide="x" style="width:24px;height:24px;"></i></button>
     </div>
     <div style="display:flex; flex-direction:column; gap:14px; margin-top:20px;">
@@ -123,8 +123,8 @@
       <a href="#help-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">❓ Pusat Bantuan</a>
     </div>
     <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
-      <button class="btn-signup" style="width:100%; text-align:center;" onclick="openLoginModal()">Daftar Akun</button>
-      <button class="btn-login" style="width:100%; text-align:center;" onclick="openLoginModal()">Masuk</button>
+      <a href="{{ route('register') }}" class="btn-signup" style="width:100%; text-align:center; display:block;">Daftar Akun</a>
+      <a href="{{ route('login') }}" class="btn-login" style="width:100%; text-align:center; display:block;">Masuk</a>
     </div>
   </div>
 
@@ -140,10 +140,10 @@
             <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=80" alt="Soundrenaline Music Festival" class="hero-slide-bg" />
             <div class="hero-slide-overlay"></div>
             <div class="hero-slide-content">
-              <span class="hero-tag">Trending Festival 2026</span>
-              <h1 class="hero-title">Light And Glow Bukittinggi 2026: The Radiant Night</h1>
-              <p class="hero-desc">Sensasi lari malam penuh cahaya glow & pesta konser musik spektakuler di Bukittinggi, Sumatera Barat. Dapatkan tiket presale sekarang sebelum kehabisan!</p>
-              <button class="btn-hero-action" onclick="showTicketDetail('Soundwave Jakarta Fest 2026', 'Rp 275.000', '14 - 15 Nov 2026', 'Jam Gadang & Lapangan Kantin, Bukittinggi', 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=80', 'Konser Musik')">
+              <span class="hero-tag" id="cmsHeroTag">Trending Festival 2026</span>
+              <h1 class="hero-title" id="cmsHeroTitle">Soundwave Jakarta Fest 2026: Live Stage</h1>
+              <p class="hero-desc" id="cmsHeroDesc">Saksikan penampilan musisi papan atas Indonesia dan internasional secara langsung di GBK Senayan. Dapatkan tiket presale sekarang sebelum kehabisan!</p>
+              <button class="btn-hero-action" onclick="showTicketDetail('Soundwave Jakarta Fest 2026', 'Rp 275.000', '14 - 15 Nov 2026', 'Stadion Utama GBK, Jakarta', 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=80', 'Konser Musik')">
                 <i data-lucide="ticket" style="width:18px;height:18px;"></i>
                 Beli Tiket Presale
               </button>
@@ -265,8 +265,8 @@
       <div class="section-header">
         <div class="section-title-wrap">
           <span class="section-badge"><i data-lucide="flame" style="width:14px;height:14px;"></i> Tiket Pilihan Terpopuler</span>
-          <h2 class="section-title">Konser Musik & Festival Paling Hits</h2>
-          <p class="section-subtitle">Temukan tiket konser musisi favoritmu dengan harga terbaik dan konfirmasi instan</p>
+          <h2 class="section-title" id="cmsConcertTitle">Konser Musik & Festival Paling Hits</h2>
+          <p class="section-subtitle" id="cmsConcertDesc">Temukan tiket konser musisi favoritmu dengan harga terbaik dan konfirmasi instan</p>
         </div>
         <a href="#all" class="btn-view-all">Lihat Semua <i data-lucide="arrow-right" style="width:16px;height:16px;"></i></a>
       </div>
@@ -401,10 +401,10 @@
               <i data-lucide="sparkles" style="width:14px;height:14px;"></i>
               Kenalin CROWD di Goers
             </div>
-            <h2 class="crowd-title">
+            <h2 class="crowd-title" id="cmsCrowdTitle">
               Jangan sampai rencana cuma jadi wacana. <span>Post, cari teman, langsung jalan!</span>
             </h2>
-            <p class="crowd-description">
+            <p class="crowd-description" id="cmsCrowdDesc">
               Pergi sendirian itu valid. Tapi pergi bareng itu core memory! Crowd membantumu menemukan teman baru yang mau melakukan aktivitas seru di dunia nyata. Konser, nobar, kulineran, hingga jalan santai di museum.
             </p>
 
@@ -811,7 +811,7 @@
       <!-- Footer Bottom -->
       <div class="footer-bottom">
         <div>
-          &copy; 2021-2026 Light And Glow Bukittinggi Management. All Rights Reserved.
+          &copy; 2021-2026 PT Goers Expresi Solusi (GOERS). All Rights Reserved.
         </div>
         <div style="display:flex; gap:16px;">
           <a href="#" style="color:#9CA3AF;">Kebijakan Privasi</a>
@@ -867,5 +867,52 @@
 
   <!-- External JavaScript Logic -->
   <script src="{{ asset('script.js') }}"></script>
+
+  <!-- CMS Dynamic Content Sync (Frontend Demo) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const savedCms = localStorage.getItem('goers_landing_cms');
+        if (savedCms) {
+          const data = JSON.parse(savedCms);
+          if (data.topBar) {
+            const el = document.getElementById('cmsTopBar');
+            if (el) el.innerHTML = data.topBar;
+          }
+          if (data.heroTag) {
+            const el = document.getElementById('cmsHeroTag');
+            if (el) el.textContent = data.heroTag;
+          }
+          if (data.heroTitle) {
+            const el = document.getElementById('cmsHeroTitle');
+            if (el) el.textContent = data.heroTitle;
+          }
+          if (data.heroDesc) {
+            const el = document.getElementById('cmsHeroDesc');
+            if (el) el.textContent = data.heroDesc;
+          }
+          if (data.concertTitle) {
+            const el = document.getElementById('cmsConcertTitle');
+            if (el) el.textContent = data.concertTitle;
+          }
+          if (data.concertDesc) {
+            const el = document.getElementById('cmsConcertDesc');
+            if (el) el.textContent = data.concertDesc;
+          }
+          if (data.crowdTitle) {
+            const el = document.getElementById('cmsCrowdTitle');
+            if (el) el.innerHTML = data.crowdTitle;
+          }
+          if (data.crowdDesc) {
+            const el = document.getElementById('cmsCrowdDesc');
+            if (el) el.textContent = data.crowdDesc;
+          }
+        }
+      } catch (e) {
+        console.error('Error loading CMS data', e);
+      }
+    });
+  </script>
 </body>
+
 </html>
