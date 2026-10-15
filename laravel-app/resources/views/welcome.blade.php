@@ -73,11 +73,16 @@
               Crowd
               <span class="badge-new">NEW</span>
             </a>
-            <a href="#gem-section" class="nav-btn-link">Partner with Us</a>
+            <a href="{{ route('buyer.dashboard') }}" class="nav-btn-link" style="color:var(--goers-branding-500); font-weight:700;">
+              <i data-lucide="ticket" style="width:14px;height:14px; vertical-align:middle;"></i>
+              Tiket Saya
+            </a>
           </div>
 
-          <a href="{{ route('login') }}" class="btn-login">Masuk</a>
-          <a href="{{ route('register') }}" class="btn-signup">Daftar</a>
+          <a href="{{ route('buyer.dashboard') }}" class="btn-login" style="border-color:var(--goers-branding-500); color:var(--goers-branding-500);">
+            Tiket Saya
+          </a>
+          <a href="{{ route('login') }}" class="btn-signup">Admin Portal</a>
           
           <button class="mobile-menu-toggle" onclick="toggleMobileDrawer()">
             <i data-lucide="menu" style="width:24px; height:24px;"></i>

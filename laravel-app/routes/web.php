@@ -13,6 +13,11 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// 1.1 Dashboard Pembeli (Template Goers: Riwayat Pembelian & Tiket Transaksi)
+Route::get('/tiket-saya', function () {
+    return view('buyer.dashboard');
+})->name('buyer.dashboard');
+
 // 2. Autentikasi (Adminator 4.4.0)
 Route::get('/login', function () {
     return view('auth.login');
