@@ -1,16 +1,33 @@
-// Initialize Lucide Icons
+// Initialize Lucide Icons + Hero Carousel + Cookie Banner on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) {
     lucide.createIcons();
+  }
+
+  // Initialize hero slider after DOM is ready
+  initHeroSlider();
+
+  // Cookie banner
+  if (localStorage.getItem('goers_cookie_accepted') === 'true') {
+    const cb = document.getElementById('cookieBanner');
+    if (cb) cb.style.display = 'none';
   }
 });
 
 // Hero Carousel Logic
 let currentSlide = 0;
-const heroSlider = document.getElementById('heroSlider');
-const dots = document.querySelectorAll('.slider-dot');
+let heroSlider = null;
+let dots = [];
 const totalSlides = 3;
-let autoSlideInterval = setInterval(() => slideHero(1), 5000);
+let autoSlideInterval = null;
+
+function initHeroSlider() {
+  heroSlider = document.getElementById('heroSlider');
+  dots = document.querySelectorAll('.slider-dot');
+  if (heroSlider) {
+    autoSlideInterval = setInterval(() => slideHero(1), 5000);
+  }
+}
 
 function updateSlider() {
   if (!heroSlider) return;
@@ -61,9 +78,24 @@ function showTicketDetail(title, price, date, location, imgUrl, category, id) {
   const modal = document.getElementById('ticketModal');
   if (modal) {
     modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
   }
   if (window.lucide) {
     lucide.createIcons();
+  }
+}
+
+function closeTicketModal() {
+  const modal = document.getElementById('ticketModal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+function closeModalOnOverlay(event) {
+  if (event.target === document.getElementById('ticketModal')) {
+    closeTicketModal();
   }
 }
 
@@ -358,11 +390,6 @@ function acceptCookies() {
     banner.style.display = 'none';
   }
   localStorage.setItem('goers_cookie_accepted', 'true');
-}
-
-if (localStorage.getItem('goers_cookie_accepted') === 'true') {
-  const cb = document.getElementById('cookieBanner');
-  if (cb) cb.style.display = 'none';
 }
 
 // Newsletter Form
