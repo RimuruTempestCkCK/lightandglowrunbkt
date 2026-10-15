@@ -42,45 +42,6 @@
           </div>
         </section>
 
-        <!-- KPI Summary based on rancangan web -->
-        <section class="kpi-grid" style="margin-bottom: 24px;">
-          <article class="kpi-card c-danger">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon danger"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-                <div class="kpi-label">Menunggu Verifikasi</div>
-              </div>
-              <span class="kpi-pill down">3 Antrean</span>
-            </div>
-            <div class="kpi-value">3</div>
-            <div class="kpi-compare">Perlu tindakan persetujuan admin</div>
-          </article>
-
-          <article class="kpi-card c-success">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon success"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                <div class="kpi-label">Disetujui Hari Ini</div>
-              </div>
-              <span class="kpi-pill up">+18</span>
-            </div>
-            <div class="kpi-value">18</div>
-            <div class="kpi-compare">Tiket digital aktif & QR terbit</div>
-          </article>
-
-          <article class="kpi-card c-purple">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon purple"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
-                <div class="kpi-label">Ditolak / Batal</div>
-              </div>
-              <span class="kpi-pill flat">2</span>
-            </div>
-            <div class="kpi-value">2</div>
-            <div class="kpi-compare">Disertai alasan penolakan</div>
-          </article>
-        </section>
-
         <!-- Table Verifikasi -->
         <div class="card" style="padding: 24px;">
           <div class="card-head" style="margin-bottom: 16px;">
