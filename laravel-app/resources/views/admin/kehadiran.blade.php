@@ -45,45 +45,6 @@
           </div>
         </section>
 
-        <!-- KPI Grid -->
-        <section class="kpi-grid" style="margin-bottom: 24px;">
-          <article class="kpi-card c-success">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon success"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-                <div class="kpi-label">Sudah Check-in</div>
-              </div>
-              <span class="kpi-pill up">89.8%</span>
-            </div>
-            <div class="kpi-value">142 Peserta</div>
-            <div class="kpi-compare">Masuk via Gate 1 & Gate 2</div>
-          </article>
-
-          <article class="kpi-card c-primary">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon primary"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-                <div class="kpi-label">Belum Hadir</div>
-              </div>
-              <span class="kpi-pill flat">16 Tiket</span>
-            </div>
-            <div class="kpi-value">16</div>
-            <div class="kpi-compare">Tiket aktif belum dipindai</div>
-          </article>
-
-          <article class="kpi-card c-danger">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon danger"><svg viewBox="0 0 24 24"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-                <div class="kpi-label">Percobaan Ganda / Tolak</div>
-              </div>
-              <span class="kpi-pill down">2 Kasus</span>
-            </div>
-            <div class="kpi-value">2</div>
-            <div class="kpi-compare">Percobaan scan tiket yang sama dicegah</div>
-          </article>
-        </section>
-
         <!-- Table Kehadiran -->
         <div class="card" style="padding: 24px;">
           <div class="card-head" style="margin-bottom: 16px;">

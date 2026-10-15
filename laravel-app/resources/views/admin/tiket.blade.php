@@ -69,45 +69,6 @@
           </div>
         </section>
 
-        <!-- KPI Summary Cards -->
-        <section class="kpi-grid" style="margin-bottom: 24px;">
-          <article class="kpi-card c-primary">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon primary"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/></svg></div>
-                <div class="kpi-label">Total Jenis Tiket</div>
-              </div>
-              <span class="kpi-pill up" id="kpiTotalJenis">4 Kategori</span>
-            </div>
-            <div class="kpi-value" id="kpiTotalCount">4</div>
-            <div class="kpi-compare">Semua tampil aktif di Landing Page</div>
-          </article>
-
-          <article class="kpi-card c-success">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon success"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-                <div class="kpi-label">Harga Terendah</div>
-              </div>
-              <span class="kpi-pill up">Early Bird</span>
-            </div>
-            <div class="kpi-value">Rp 99.000</div>
-            <div class="kpi-compare">Tiket Festival Pass</div>
-          </article>
-
-          <article class="kpi-card c-purple">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon purple"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-                <div class="kpi-label">Kategori VIP</div>
-              </div>
-              <span class="kpi-pill flat">Best Seller</span>
-            </div>
-            <div class="kpi-value">Rp 275.000</div>
-            <div class="kpi-compare">Termasuk akses depan panggung</div>
-          </article>
-        </section>
-
         <!-- Table Master Tiket -->
         <div class="tiket-table-wrap">
           <div class="card-head" style="margin-bottom: 16px;">
@@ -260,9 +221,6 @@
         `;
         tbody.appendChild(tr);
       });
-
-      document.getElementById('kpiTotalCount').textContent = tickets.length;
-      document.getElementById('kpiTotalJenis').textContent = tickets.length + ' Kategori';
     }
 
     function closeTicketAdminModal() {
