@@ -8,7 +8,8 @@
   <meta name="theme-color" content="#EB1355" />
   
   <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="https://www.goersapp.com/favicon-32x32.png" />
+  <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+  <link rel="alternate icon" href="{{ asset('favicon.ico') }}" />
 
   <!-- Google Fonts: Karla & Montserrat & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
