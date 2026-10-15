@@ -52,8 +52,8 @@
     <div class="goers-container">
       <div class="goers-nav-wrapper">
         <!-- Logo -->
-        <a href="index.html" class="goers-brand-logo">
-          GOERS<span class="dot">.</span>
+        <a href="index.html" class="goers-brand-logo" id="cmsBrandLogoLink">
+          <span id="cmsBrandLogoText">GOERS</span><span class="dot">.</span>
         </a>
 
         <!-- Desktop Search Bar -->
@@ -137,12 +137,12 @@
           
           <!-- Slide 1: Music Concert -->
           <div class="hero-slide">
-            <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=80" alt="Soundrenaline Music Festival" class="hero-slide-bg" />
+            <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=80" alt="Hero Slide 1" id="cmsSlide1Img" class="hero-slide-bg" />
             <div class="hero-slide-overlay"></div>
             <div class="hero-slide-content">
-              <span class="hero-tag" id="cmsHeroTag">Trending Festival 2026</span>
-              <h1 class="hero-title" id="cmsHeroTitle">Soundwave Jakarta Fest 2026: Live Stage</h1>
-              <p class="hero-desc" id="cmsHeroDesc">Saksikan penampilan musisi papan atas Indonesia dan internasional secara langsung di GBK Senayan. Dapatkan tiket presale sekarang sebelum kehabisan!</p>
+              <span class="hero-tag" id="cmsSlide1Tag">Trending Festival 2026</span>
+              <h1 class="hero-title" id="cmsSlide1Title">Soundwave Jakarta Fest 2026: Live Stage</h1>
+              <p class="hero-desc" id="cmsSlide1Desc">Saksikan penampilan musisi papan atas Indonesia dan internasional secara langsung di GBK Senayan. Dapatkan tiket presale sekarang sebelum kehabisan!</p>
               <button class="btn-hero-action" onclick="showTicketDetail('Soundwave Jakarta Fest 2026', 'Rp 275.000', '14 - 15 Nov 2026', 'Stadion Utama GBK, Jakarta', 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=80', 'Konser Musik')">
                 <i data-lucide="ticket" style="width:18px;height:18px;"></i>
                 Beli Tiket Presale
@@ -152,12 +152,12 @@
 
           <!-- Slide 2: Tourism & Theme Park -->
           <div class="hero-slide">
-            <img src="https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1200&q=80" alt="Taman Wisata Alam" class="hero-slide-bg" />
+            <img src="https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1200&q=80" alt="Hero Slide 2" id="cmsSlide2Img" class="hero-slide-bg" />
             <div class="hero-slide-overlay"></div>
             <div class="hero-slide-content">
-              <span class="hero-tag" style="background:var(--goers-teal);">Wisata & Liburan Seru</span>
-              <h1 class="hero-title">Wisata Alam & Safari Adventure Park</h1>
-              <p class="hero-desc">Jelajahi keindahan alam liar dan nikmati atraksi keluarga tak terlupakan. Praktis tanpa antre dengan e-tiket instan Goers.</p>
+              <span class="hero-tag" id="cmsSlide2Tag" style="background:var(--goers-teal);">Wisata & Liburan Seru</span>
+              <h1 class="hero-title" id="cmsSlide2Title">Wisata Alam & Safari Adventure Park</h1>
+              <p class="hero-desc" id="cmsSlide2Desc">Jelajahi keindahan alam liar dan nikmati atraksi keluarga tak terlupakan. Praktis tanpa antre dengan e-tiket instan Goers.</p>
               <button class="btn-hero-action" style="background:var(--goers-teal);" onclick="showTicketDetail('Wisata Alam & Safari Adventure', 'Rp 95.000', 'Buka Setiap Hari (08:00 - 17:00)', 'Bogor, Jawa Barat', 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1200&q=80', 'Tempat Wisata')">
                 <i data-lucide="compass" style="width:18px;height:18px;"></i>
                 Pesan Tiket Wisata
@@ -167,12 +167,12 @@
 
           <!-- Slide 3: Crowd Meetup -->
           <div class="hero-slide">
-            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80" alt="Meetup Crowd" class="hero-slide-bg" />
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80" alt="Hero Slide 3" id="cmsSlide3Img" class="hero-slide-bg" />
             <div class="hero-slide-overlay"></div>
             <div class="hero-slide-content">
-              <span class="hero-tag" style="background:#7B1FA2;">Fitur Baru Goers</span>
-              <h1 class="hero-title">Bawa ke Crowd: Temukan Teman Sefrekuensi</h1>
-              <p class="hero-desc">Mau nonton konser atau nongkrong tapi bingung ajak siapa? Post rencana meetup kamu di Crowd dan jalan bareng!</p>
+              <span class="hero-tag" id="cmsSlide3Tag" style="background:#7B1FA2;">Fitur Baru Goers</span>
+              <h1 class="hero-title" id="cmsSlide3Title">Bawa ke Crowd: Temukan Teman Sefrekuensi</h1>
+              <p class="hero-desc" id="cmsSlide3Desc">Mau nonton konser atau nongkrong tapi bingung ajak siapa? Post rencana meetup kamu di Crowd dan jalan bareng!</p>
               <a href="#crowd-section" class="btn-hero-action" style="background:#7B1FA2;">
                 <i data-lucide="users" style="width:18px;height:18px;"></i>
                 Jelajahi Crowd Meetup
@@ -671,8 +671,8 @@
     <div class="goers-gem-section">
       <div>
         <div class="gem-tag">Goers Experience Manager (GEM)</div>
-        <h2 class="gem-title">Solusi Ticketing & Event Management End-to-End untuk Bisnis Anda</h2>
-        <p class="gem-desc">
+        <h2 class="gem-title" id="cmsGemTitle">Solusi Ticketing & Event Management End-to-End untuk Bisnis Anda</h2>
+        <p class="gem-desc" id="cmsGemDesc">
           GOERS menyediakan teknologi manajemen reservasi tiket online, POS kasir offline, access gate scanner, hingga laporan analitik real-time untuk event organizer dan pengelola destinasi wisata di Indonesia.
         </p>
 
@@ -868,51 +868,98 @@
   <!-- External JavaScript Logic -->
   <script src="{{ asset('script.js') }}"></script>
 
-  <!-- CMS Dynamic Content Sync (Frontend Demo) -->
+  
+  <!-- Full CMS Dynamic Hydration Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       try {
-        const savedCms = localStorage.getItem('goers_landing_cms');
-        if (savedCms) {
-          const data = JSON.parse(savedCms);
-          if (data.topBar) {
-            const el = document.getElementById('cmsTopBar');
-            if (el) el.innerHTML = data.topBar;
-          }
-          if (data.heroTag) {
-            const el = document.getElementById('cmsHeroTag');
-            if (el) el.textContent = data.heroTag;
-          }
-          if (data.heroTitle) {
-            const el = document.getElementById('cmsHeroTitle');
-            if (el) el.textContent = data.heroTitle;
-          }
-          if (data.heroDesc) {
-            const el = document.getElementById('cmsHeroDesc');
-            if (el) el.textContent = data.heroDesc;
-          }
-          if (data.concertTitle) {
-            const el = document.getElementById('cmsConcertTitle');
-            if (el) el.textContent = data.concertTitle;
-          }
-          if (data.concertDesc) {
-            const el = document.getElementById('cmsConcertDesc');
-            if (el) el.textContent = data.concertDesc;
-          }
-          if (data.crowdTitle) {
-            const el = document.getElementById('cmsCrowdTitle');
-            if (el) el.innerHTML = data.crowdTitle;
-          }
-          if (data.crowdDesc) {
-            const el = document.getElementById('cmsCrowdDesc');
-            if (el) el.textContent = data.crowdDesc;
-          }
+        const raw = localStorage.getItem('goers_full_cms');
+        if (!raw) return;
+        const d = JSON.parse(raw);
+
+        // Brand & Top Bar
+        if (d.brandLogoText) {
+          const el = document.getElementById('cmsBrandLogoText');
+          if (el) el.textContent = d.brandLogoText;
+        }
+        if (d.topBarText) {
+          const el = document.getElementById('cmsTopBar');
+          if (el) el.innerHTML = d.topBarText;
+        }
+
+        // Hero Slide 1
+        if (d.slide1Tag) { const el = document.getElementById('cmsSlide1Tag'); if (el) el.textContent = d.slide1Tag; }
+        if (d.slide1Img) { const el = document.getElementById('cmsSlide1Img'); if (el) el.src = d.slide1Img; }
+        if (d.slide1Title) { const el = document.getElementById('cmsSlide1Title'); if (el) el.textContent = d.slide1Title; }
+        if (d.slide1Desc) { const el = document.getElementById('cmsSlide1Desc'); if (el) el.textContent = d.slide1Desc; }
+
+        // Hero Slide 2
+        if (d.slide2Tag) { const el = document.getElementById('cmsSlide2Tag'); if (el) el.textContent = d.slide2Tag; }
+        if (d.slide2Img) { const el = document.getElementById('cmsSlide2Img'); if (el) el.src = d.slide2Img; }
+        if (d.slide2Title) { const el = document.getElementById('cmsSlide2Title'); if (el) el.textContent = d.slide2Title; }
+        if (d.slide2Desc) { const el = document.getElementById('cmsSlide2Desc'); if (el) el.textContent = d.slide2Desc; }
+
+        // Hero Slide 3
+        if (d.slide3Tag) { const el = document.getElementById('cmsSlide3Tag'); if (el) el.textContent = d.slide3Tag; }
+        if (d.slide3Img) { const el = document.getElementById('cmsSlide3Img'); if (el) el.src = d.slide3Img; }
+        if (d.slide3Title) { const el = document.getElementById('cmsSlide3Title'); if (el) el.textContent = d.slide3Title; }
+        if (d.slide3Desc) { const el = document.getElementById('cmsSlide3Desc'); if (el) el.textContent = d.slide3Desc; }
+
+        // Concert Headers
+        if (d.concertHeaderTitle) { const el = document.getElementById('cmsConcertTitle'); if (el) el.textContent = d.concertHeaderTitle; }
+        if (d.concertHeaderDesc) { const el = document.getElementById('cmsConcertDesc'); if (el) el.textContent = d.concertHeaderDesc; }
+
+        // Crowd & GEM
+        if (d.crowdTitle) { const el = document.getElementById('cmsCrowdTitle'); if (el) el.innerHTML = d.crowdTitle; }
+        if (d.crowdDesc) { const el = document.getElementById('cmsCrowdDesc'); if (el) el.textContent = d.crowdDesc; }
+        if (d.gemTitle) { const el = document.getElementById('cmsGemTitle'); if (el) el.textContent = d.gemTitle; }
+        if (d.gemDesc) { const el = document.getElementById('cmsGemDesc'); if (el) el.textContent = d.gemDesc; }
+
+        // Update Concert Tickets
+        if (d.tickets && Array.isArray(d.tickets)) {
+          const cards = document.querySelectorAll('#eventsContainer .event-card');
+          d.tickets.forEach((t, i) => {
+            const card = cards[i];
+            if (!card) return;
+            if (t.name) {
+              const nameEl = card.querySelector('.event-name');
+              if (nameEl) nameEl.textContent = t.name;
+              card.setAttribute('data-name', t.name);
+            }
+            if (t.price) {
+              const priceEl = card.querySelector('.price-value');
+              if (priceEl) priceEl.textContent = t.price;
+            }
+            if (t.date) {
+              const dateEl = card.querySelector('.event-date-row');
+              if (dateEl) dateEl.innerHTML = '<i data-lucide="calendar" style="width:14px;height:14px;"></i> ' + t.date;
+            }
+            if (t.location) {
+              const locEl = card.querySelector('.event-location-row');
+              if (locEl) locEl.innerHTML = '<i data-lucide="map-pin" style="width:14px;height:14px;"></i> ' + t.location;
+            }
+            if (t.img) {
+              const imgEl = card.querySelector('.event-thumbnail img');
+              if (imgEl) imgEl.src = t.img;
+            }
+            if (t.category) {
+              const catEl = card.querySelector('.event-badge-floating');
+              if (catEl) catEl.textContent = t.category;
+            }
+
+            // Update button click handler
+            const btn = card.querySelector('.btn-buy-ticket');
+            if (btn) {
+              btn.onclick = function() {
+                showTicketDetail(t.name, t.price, t.date, t.location, t.img, t.category);
+              };
+            }
+          });
+          if (window.lucide) lucide.createIcons();
         }
       } catch (e) {
-        console.error('Error loading CMS data', e);
+        console.error('Error synchronizing CMS to landing page', e);
       }
     });
   </script>
 </body>
-
-</html>
