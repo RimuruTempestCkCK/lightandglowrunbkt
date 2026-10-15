@@ -111,7 +111,7 @@
           <div class="hero-actions">
             <button class="btn btn--primary" onclick="resetBanners()">
               <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-              Reset Bawaan
+              Reset
             </button>
           </div>
         </section>
@@ -133,7 +133,7 @@
             <label style="display:block; font-size:13px; font-weight:600; color:var(--t-muted); margin-bottom:6px;">Teks Berjalan / Bar Pengumuman Atas</label>
             <input type="text" id="topBarText" class="cms-input" style="width:100%; padding:10px 14px; border-radius:6px; border:1px solid var(--border); background:var(--bg-body); color:var(--t-base);" value="⚡ FLASH SALE PRESALE TIKET LIGHT AND GLOW BUKITTINGGI TELAH DIBUKA! DAPATKAN HARGA SPESIAL SEKARANG!">
           </div>
-          <button class="btn btn--primary" onclick="saveTopBarText()">Simpan Teks Pengumuman</button>
+          <button class="btn btn--primary" onclick="saveTopBarText()">Simpan</button>
         </div>
 
       </main>
@@ -173,7 +173,7 @@
       </div>
       <div class="adminator-modal-foot">
         <button class="btn btn--ghost" onclick="closeBannerAdminModal()">Batal</button>
-        <button class="btn btn--primary" onclick="saveBannerFromModal()">Simpan Banner</button>
+        <button class="btn btn--primary" onclick="saveBannerFromModal()">Simpan</button>
       </div>
     </div>
   </div>
@@ -256,7 +256,7 @@
             <div class="banner-actions">
               <button class="btn btn--primary" style="flex:1; justify-content:center;" onclick="editBanner(${b.id})">
                 <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
-                Edit Banner #${b.id}
+                Edit
               </button>
             </div>
           </div>

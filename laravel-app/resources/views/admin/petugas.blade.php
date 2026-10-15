@@ -40,7 +40,7 @@
           <div class="hero-actions">
             <button class="btn btn--primary" onclick="addStaff()">
               <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Tambah Petugas Baru
+              Tambah
             </button>
           </div>
         </section>
@@ -99,7 +99,7 @@
   <div id="adminatorStaffModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeStaffModal()">
     <div class="adminator-modal">
       <div class="adminator-modal-head">
-        <h3 id="staffModalTitle" class="adminator-modal-title">Tambah Petugas Baru</h3>
+        <h3 id="staffModalTitle" class="adminator-modal-title">Tambah Petugas</h3>
         <button class="adminator-modal-close" onclick="closeStaffModal()" aria-label="Tutup">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -125,7 +125,7 @@
         </div>
         <div class="adminator-modal-foot">
           <button type="button" class="btn btn--ghost" onclick="closeStaffModal()">Batal</button>
-          <button type="submit" class="btn btn--primary">Buat Akun Petugas</button>
+          <button type="submit" class="btn btn--primary">Tambah</button>
         </div>
       </form>
     </div>
