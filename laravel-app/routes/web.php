@@ -63,19 +63,35 @@ Route::get('/register', function () {
 
 // 3. Dashboard Admin Utama (Adminator 4.4.0)
 $adminDashboardHandler = function () {
+    $totalOrdersCount = DB::table('orders')->count();
+    $totalRevenue = DB::table('orders')->where('status', 'Pembayaran disetujui')->sum('total_amount');
+    $activeTicketsCount = DB::table('digital_tickets')->count();
     $pendingCount = DB::table('orders')->where('status', 'Menunggu verifikasi')->count();
     $approvedCount = DB::table('orders')->where('status', 'Pembayaran disetujui')->count();
     $rejectedCount = DB::table('orders')->where('status', 'Pembayaran ditolak')->count();
     $checkInCount = DB::table('check_in_logs')->where('validation_status', 'success')->count();
+
     $recentOrders = DB::table('orders')
         ->join('buyers', 'orders.buyer_id', '=', 'buyers.id')
         ->join('ticket_types', 'orders.ticket_type_id', '=', 'ticket_types.id')
-        ->select('orders.*', 'buyers.name as buyer_name', 'ticket_types.name as ticket_name')
+        ->select('orders.*', 'buyers.name as buyer_name', 'buyers.email as buyer_email', 'ticket_types.name as ticket_name')
         ->orderBy('orders.id', 'desc')
-        ->limit(7)
+        ->limit(10)
         ->get();
 
-    return view('admin.dashboard', compact('pendingCount', 'approvedCount', 'rejectedCount', 'checkInCount', 'recentOrders'));
+    $ticketTypes = DB::table('ticket_types')->get();
+
+    return view('admin.dashboard', compact(
+        'totalOrdersCount',
+        'totalRevenue',
+        'activeTicketsCount',
+        'pendingCount',
+        'approvedCount',
+        'rejectedCount',
+        'checkInCount',
+        'recentOrders',
+        'ticketTypes'
+    ));
 };
 
 Route::get('/admin/dashboard', $adminDashboardHandler)->name('admin.dashboard');
