@@ -54,17 +54,17 @@ Route::get('/dashboard/scanner', function () {
     return view('admin.scanner');
 })->name('admin.scanner');
 
-// 7. Data Pesanan & Kuota Tiket
+// 7. Data Pesanan, Kehadiran, & Petugas
 Route::get('/dashboard/pesanan', function () {
-    return view('admin.verifikasi');
+    return view('admin.pesanan');
 })->name('admin.pesanan');
 
 Route::get('/dashboard/kehadiran', function () {
-    return view('admin.verifikasi');
+    return view('admin.kehadiran');
 })->name('admin.kehadiran');
 
 Route::get('/dashboard/petugas', function () {
-    return view('admin.verifikasi');
+    return view('admin.petugas');
 })->name('admin.petugas');
 
 // 8. Error Pages (Adminator 4.4.0)
