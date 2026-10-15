@@ -798,6 +798,7 @@
         </div>
       </div>
 
+      {{--
       <!-- Payment Methods -->
       <div class="footer-payments">
         <div class="payment-title">Metode Pembayaran Resmi & Terverifikasi:</div>
@@ -814,6 +815,7 @@
           <span class="payment-badge">Kartu Kredit / Visa / Mastercard</span>
         </div>
       </div>
+      --}}
 
       <!-- Footer Bottom -->
       <div class="footer-bottom">
