@@ -102,14 +102,20 @@ function switchBookingStep(step) {
   }
 }
 
-function showTicketDetail(title, price, date, location, imgUrl, category, id) {
+function showTicketDetail(title, price, date, location, imgUrl, category, id, quota) {
   // Wajib login dulu sebelum bisa memesan tiket
   if (!isBuyerLoggedIn()) {
     openRequireLoginModal();
     return;
   }
 
-  currentSelectedTicket = { title, price, date, location, imgUrl, category, id: id || 1 };
+  // Jika tiket habis, jangan izinkan buka modal pemesanan
+  if (quota !== undefined && quota !== null && parseInt(quota) <= 0) {
+    alert('Maaf, kuota tiket ' + title + ' sudah habis terjual!');
+    return;
+  }
+
+  currentSelectedTicket = { title, price, date, location, imgUrl, category, id: id || 1, quota: quota };
 
   document.getElementById('modalTitle').textContent = 'Pemesanan Tiket';
   document.getElementById('modalEventName').textContent = title;

@@ -861,10 +861,72 @@ img {
   padding: 6px 14px;
   border-radius: var(--radius-full);
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-.btn-buy-ticket:hover {
+.btn-buy-ticket:hover:not(:disabled) {
   background: var(--goers-branding-500);
+}
+
+.btn-buy-ticket:disabled,
+.btn-buy-ticket.btn-sold-out {
+  background: #94A3B8 !important;
+  color: #F1F5F9 !important;
+  cursor: not-allowed !important;
+  opacity: 0.85;
+  box-shadow: none !important;
+}
+
+.event-card.is-sold-out {
+  opacity: 0.88;
+}
+
+.event-card.is-sold-out .event-thumbnail img {
+  filter: grayscale(40%);
+}
+
+.ticket-quota-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.ticket-quota-badge.available {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.ticket-quota-badge.low {
+  background: #FFFBEB;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+
+.ticket-quota-badge.sold-out {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECDD3;
+}
+
+.event-badge-sold-out {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #DC2626;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 /* ==========================================================================

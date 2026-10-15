@@ -27,7 +27,23 @@ class OrderController extends Controller
             $ticket = DB::table('ticket_types')->first();
         }
 
-        $quantity    = (int) ($request->input('quantity', 1) ?: 1);
+        $quantity = (int) ($request->input('quantity', 1) ?: 1);
+
+        // Validasi kuota tiket
+        if ($ticket->remaining_quota <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Maaf, kuota tiket "' . $ticket->name . '" sudah habis terjual!'
+            ], 422);
+        }
+
+        if ($ticket->remaining_quota < $quantity) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sisa kuota tiket hanya tersisa ' . $ticket->remaining_quota . ' tiket.'
+            ], 422);
+        }
+
         $totalAmount = $ticket->price * $quantity;
 
         // Gunakan buyer dari session jika ada, jika tidak buat baru (fallback)

@@ -277,120 +277,67 @@
       </div>
 
       <div class="event-grid" id="eventsContainer">
-        <!-- Event Card 1 -->
-        <div class="event-card" data-category="konser" data-name="Early Bird - Festival Pass">
-          <div class="event-thumbnail">
-            <span class="event-badge-floating">Festival Run</span>
-            <span class="event-badge-sale">Early Bird</span>
-            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80" alt="Early Bird" loading="lazy" />
-          </div>
-          <div class="event-body">
-            <div>
-              <div class="event-date-row">
-                <i data-lucide="calendar" style="width:14px;height:14px;"></i>
-                Sabtu, 25 April 2026
-              </div>
-              <h3 class="event-name">Early Bird - Festival Pass</h3>
-              <div class="event-location-row">
-                <i data-lucide="map-pin" style="width:14px;height:14px;"></i>
-                Jam Gadang, Bukittinggi
-              </div>
+        @forelse($tickets as $t)
+          @php
+            $isSoldOut = ($t->remaining_quota <= 0);
+            $quotaClass = $isSoldOut ? 'sold-out' : ($t->remaining_quota <= 15 ? 'low' : 'available');
+            $imgUrl = $t->image ?: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80';
+            $category = $t->category ?: 'Festival Run';
+            $formattedPrice = 'Rp ' . number_format($t->price, 0, ',', '.');
+          @endphp
+          <div class="event-card {{ $isSoldOut ? 'is-sold-out' : '' }}" data-category="konser" data-name="{{ $t->name }}">
+            <div class="event-thumbnail">
+              <span class="event-badge-floating">{{ $category }}</span>
+              @if($isSoldOut)
+                <span class="event-badge-sold-out">HABIS</span>
+              @elseif(!empty($t->benefits))
+                <span class="event-badge-sale">{{ Str::limit($t->benefits, 18) }}</span>
+              @endif
+              <img src="{{ $imgUrl }}" alt="{{ $t->name }}" loading="lazy" />
             </div>
-            <div class="event-footer">
+            <div class="event-body">
               <div>
-                <span class="price-label">Mulai dari</span>
-                <div class="price-value">Rp 99.000</div>
+                <div class="event-date-row">
+                  <i data-lucide="calendar" style="width:14px;height:14px;"></i>
+                  Sabtu, 25 April 2026
+                </div>
+                <h3 class="event-name">{{ $t->name }}</h3>
+                <div class="event-location-row" style="margin-bottom: 8px;">
+                  <i data-lucide="map-pin" style="width:14px;height:14px;"></i>
+                  Jam Gadang, Bukittinggi
+                </div>
+                
+                <!-- Indikator Kuota Tiket Tersisa -->
+                <div style="margin-bottom: 12px;">
+                  @if($isSoldOut)
+                    <span class="ticket-quota-badge sold-out">
+                      <i data-lucide="alert-circle" style="width:12px;height:12px;"></i> Tiket Habis Terjual
+                    </span>
+                  @else
+                    <span class="ticket-quota-badge {{ $quotaClass }}">
+                      <i data-lucide="ticket" style="width:12px;height:12px;"></i> Sisa: {{ $t->remaining_quota }} Tiket
+                    </span>
+                  @endif
+                </div>
               </div>
-              <button class="btn-buy-ticket" onclick="showTicketDetail('Early Bird - Festival Pass', 'Rp 99.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80', 'Festival Run', 1)">Beli Tiket</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Event Card 2 -->
-        <div class="event-card" data-category="konser" data-name="Presale - VIP Glow Run">
-          <div class="event-thumbnail">
-            <span class="event-badge-floating">VIP Access</span>
-            <span class="event-badge-sale">Best Seller</span>
-            <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=600&q=80" alt="VIP Glow Run" loading="lazy" />
-          </div>
-          <div class="event-body">
-            <div>
-              <div class="event-date-row">
-                <i data-lucide="calendar" style="width:14px;height:14px;"></i>
-                Sabtu, 25 April 2026
-              </div>
-              <h3 class="event-name">Presale - VIP Glow Run</h3>
-              <div class="event-location-row">
-                <i data-lucide="map-pin" style="width:14px;height:14px;"></i>
-                Jam Gadang, Bukittinggi
-              </div>
-            </div>
-            <div class="event-footer">
-              <div>
-                <span class="price-label">Mulai dari</span>
-                <div class="price-value">Rp 275.000</div>
-              </div>
-              <button class="btn-buy-ticket" onclick="showTicketDetail('Presale - VIP Glow Run', 'Rp 275.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=600&q=80', 'VIP Access', 2)">Beli Tiket</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Event Card 3 -->
-        <div class="event-card" data-category="konser" data-name="Reguler - 5K Night Run">
-          <div class="event-thumbnail">
-            <span class="event-badge-floating">Reguler Run</span>
-            <img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?auto=format&fit=crop&w=600&q=80" alt="5K Night Run" loading="lazy" />
-          </div>
-          <div class="event-body">
-            <div>
-              <div class="event-date-row">
-                <i data-lucide="calendar" style="width:14px;height:14px;"></i>
-                Sabtu, 25 April 2026
-              </div>
-              <h3 class="event-name">Reguler - 5K Night Run</h3>
-              <div class="event-location-row">
-                <i data-lucide="map-pin" style="width:14px;height:14px;"></i>
-                Jam Gadang, Bukittinggi
+              <div class="event-footer">
+                <div>
+                  <span class="price-label">Mulai dari</span>
+                  <div class="price-value">{{ $formattedPrice }}</div>
+                </div>
+                @if($isSoldOut)
+                  <button class="btn-buy-ticket btn-sold-out" disabled>Tiket Habis</button>
+                @else
+                  <button class="btn-buy-ticket" onclick="showTicketDetail('{{ addslashes($t->name) }}', '{{ $formattedPrice }}', '25 April 2026', 'Jam Gadang, Bukittinggi', '{{ $imgUrl }}', '{{ addslashes($category) }}', {{ $t->id }}, {{ $t->remaining_quota }})">Beli Tiket</button>
+                @endif
               </div>
             </div>
-            <div class="event-footer">
-              <div>
-                <span class="price-label">Mulai dari</span>
-                <div class="price-value">Rp 150.000</div>
-              </div>
-              <button class="btn-buy-ticket" onclick="showTicketDetail('Reguler - 5K Night Run', 'Rp 150.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?auto=format&fit=crop&w=600&q=80', 'Reguler Run', 3)">Beli Tiket</button>
-            </div>
           </div>
-        </div>
-
-        <!-- Event Card 4 -->
-        <div class="event-card" data-category="konser" data-name="Squad / Group Bundle (4 Pax)">
-          <div class="event-thumbnail">
-            <span class="event-badge-floating">Group Bundle</span>
-            <span class="event-badge-sale">Hemat Rp 100k</span>
-            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80" alt="Group Bundle" loading="lazy" />
+        @empty
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748B;">
+            Belum ada tiket yang tersedia saat ini.
           </div>
-          <div class="event-body">
-            <div>
-              <div class="event-date-row">
-                <i data-lucide="calendar" style="width:14px;height:14px;"></i>
-                Sabtu, 25 April 2026
-              </div>
-              <h3 class="event-name">Squad / Group Bundle (4 Pax)</h3>
-              <div class="event-location-row">
-                <i data-lucide="map-pin" style="width:14px;height:14px;"></i>
-                Jam Gadang, Bukittinggi
-              </div>
-            </div>
-            <div class="event-footer">
-              <div>
-                <span class="price-label">Paket 4 Orang</span>
-                <div class="price-value">Rp 500.000</div>
-              </div>
-              <button class="btn-buy-ticket" onclick="showTicketDetail('Squad / Group Bundle (4 Pax)', 'Rp 500.000', '25 April 2026', 'Jam Gadang, Bukittinggi', 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80', 'Group Pass', 4)">Beli Tiket</button>
-            </div>
-          </div>
-        </div>
+        @endforelse
       </div>
     </div>
   </section>
@@ -1036,55 +983,7 @@
         if (d.gemTitle) { const el = document.getElementById('cmsGemTitle'); if (el) el.textContent = d.gemTitle; }
         if (d.gemDesc) { const el = document.getElementById('cmsGemDesc'); if (el) el.textContent = d.gemDesc; }
 
-        // Update Concert Tickets (Dynamic Render & Support New Added Tickets)
-        if (d.tickets && Array.isArray(d.tickets) && d.tickets.length > 0) {
-          const container = document.getElementById('eventsContainer');
-          if (container) {
-            container.innerHTML = '';
-            d.tickets.forEach((t) => {
-              const card = document.createElement('div');
-              card.className = 'event-card';
-              card.setAttribute('data-category', 'konser');
-              card.setAttribute('data-name', t.name || 'Tiket Light & Glow');
-
-              card.innerHTML = `
-                <div class="event-thumbnail">
-                  <span class="event-badge-floating">${t.category || 'Konser Musik'}</span>
-                  <img src="${t.img || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80'}" alt="${t.name || 'Tiket'}" loading="lazy" />
-                </div>
-                <div class="event-body">
-                  <div>
-                    <div class="event-date-row">
-                      <i data-lucide="calendar" style="width:14px;height:14px;"></i>
-                      ${t.date || '25 April 2026'}
-                    </div>
-                    <h3 class="event-name">${t.name || 'Tiket Konser'}</h3>
-                    <div class="event-location-row">
-                      <i data-lucide="map-pin" style="width:14px;height:14px;"></i>
-                      ${t.location || 'Jam Gadang, Bukittinggi'}
-                    </div>
-                  </div>
-                  <div class="event-footer">
-                    <div>
-                      <span class="price-label">Mulai dari</span>
-                      <div class="price-value">${t.price || 'Rp 0'}</div>
-                    </div>
-                    <button class="btn-buy-ticket">Beli Tiket</button>
-                  </div>
-                </div>
-              `;
-
-              const btn = card.querySelector('.btn-buy-ticket');
-              if (btn) {
-                btn.onclick = function() {
-                  showTicketDetail(t.name, t.price, t.date, t.location, t.img, t.category);
-                };
-              }
-              container.appendChild(card);
-            });
-            if (window.lucide) lucide.createIcons();
-          }
-        }
+        // Selesai sinkronisasi konten CMS
       } catch (e) {
         console.error('Error synchronizing CMS to landing page', e);
       }
