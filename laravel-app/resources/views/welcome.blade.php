@@ -33,10 +33,12 @@
         <span id="cmsTopBar">⚡ Jelajah event musik, wisata & aktivitas terbaik. <strong>Diskon s/d 50%</strong></span> <a href="#konser-section">Beli Tiket Sekarang</a>
       </div>
       <div class="top-bar-right">
+        {{--
         <a href="#gem-section" class="top-bar-item">
           <i data-lucide="briefcase" style="width:14px; height:14px;"></i>
           Solusi Bisnis & GEM
         </a>
+        --}}
         <a href="#help-section" class="top-bar-item">
           <i data-lucide="help-circle" style="width:14px; height:14px;"></i>
           Pusat Bantuan
@@ -126,7 +128,7 @@
       <a href="#konser-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">🎵 Konser Musik</a>
       {{-- <a href="#wisata-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">🎡 Tempat Wisata</a> --}}
       <a href="#crowd-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">👥 Crowd Meetup <span class="badge-new">NEW</span></a>
-      <a href="#gem-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">💼 Solusi Bisnis & GEM</a>
+      {{-- <a href="#gem-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">💼 Solusi Bisnis & GEM</a> --}}
       <a href="#help-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">❓ Pusat Bantuan</a>
     </div>
     <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
@@ -677,6 +679,7 @@
     </div>
   </section>
 
+  {{--
   <!-- Section 5: GEM (Goers Experience Manager) Business Solution -->
   <section class="goers-container" id="gem-section">
     <div class="goers-gem-section">
@@ -705,6 +708,7 @@
       </div>
     </div>
   </section>
+  --}}
 
   {{--
   <!-- Section 6: App Download Banner -->
@@ -747,10 +751,18 @@
             GOERS adalah platform terdepan yang menghubungkan orang dengan beragam pengalaman seru. Kami memberikan solusi teknologi untuk experience creators (event organizer dan venue wisata) serta kemudahan pembelian tiket online dan fitur Crowd meetup untuk pengguna.
           </p>
           <div class="social-links">
-            <a href="https://instagram.com/goersapp" target="_blank" class="social-icon-btn"><i data-lucide="instagram" style="width:16px;height:16px;"></i></a>
-            <a href="https://facebook.com/goersapp" target="_blank" class="social-icon-btn"><i data-lucide="facebook" style="width:16px;height:16px;"></i></a>
-            <a href="https://twitter.com/goersapp" target="_blank" class="social-icon-btn"><i data-lucide="twitter" style="width:16px;height:16px;"></i></a>
-            <a href="https://linkedin.com/company/goers" target="_blank" class="social-icon-btn"><i data-lucide="linkedin" style="width:16px;height:16px;"></i></a>
+            <a href="https://instagram.com/goersapp" target="_blank" class="social-icon-btn" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="https://facebook.com/goersapp" target="_blank" class="social-icon-btn" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://twitter.com/goersapp" target="_blank" class="social-icon-btn" aria-label="Twitter / X">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+            </a>
+            <a href="https://linkedin.com/company/goers" target="_blank" class="social-icon-btn" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
           </div>
         </div>
 
@@ -771,7 +783,7 @@
           <h4>Tentang Kami</h4>
           <ul class="footer-links">
             <li><a href="#">Tentang GOERS</a></li>
-            <li><a href="#gem-section">Solusi Bisnis (GEM)</a></li>
+            {{-- <li><a href="#gem-section">Solusi Bisnis (GEM)</a></li> --}}
             <li><a href="#">Karir & Budaya</a></li>
             <li><a href="#">Blog & Berita</a></li>
             <li><a href="#">Pedoman Komunitas</a></li>
