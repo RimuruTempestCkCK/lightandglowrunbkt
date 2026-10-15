@@ -115,27 +115,31 @@ $petugasDashboardHandler = function () {
 Route::get('/petugas/dashboard', $petugasDashboardHandler)->name('petugas.dashboard');
 
 // 4. CMS & Master Data
-Route::get('/dashboard/cms', function () {
+Route::get('/admin/cms', function () {
     return view('admin.cms');
 })->name('admin.cms');
+Route::get('/dashboard/cms', fn() => redirect()->route('admin.cms'));
 
-Route::get('/dashboard/tiket', function () {
+Route::get('/admin/tiket', function () {
     $tickets = DB::table('ticket_types')->get();
     return view('admin.tiket', compact('tickets'));
 })->name('admin.tiket');
+Route::get('/dashboard/tiket', fn() => redirect()->route('admin.tiket'));
 
-Route::get('/dashboard/banner', function () {
+Route::get('/admin/banner', function () {
     $banners = DB::table('banners')->get();
     return view('admin.banner', compact('banners'));
 })->name('admin.banner');
+Route::get('/dashboard/banner', fn() => redirect()->route('admin.banner'));
 
-Route::get('/dashboard/acara', function () {
+Route::get('/admin/acara', function () {
     $event = DB::table('events')->first();
     return view('admin.acara', compact('event'));
 })->name('admin.acara');
+Route::get('/dashboard/acara', fn() => redirect()->route('admin.acara'));
 
 // 5. Verifikasi Pembayaran (Berdasarkan rancangan web.txt)
-Route::get('/dashboard/verifikasi', function () {
+Route::get('/admin/verifikasi', function () {
     $pendingOrders = DB::table('orders')
         ->join('buyers', 'orders.buyer_id', '=', 'buyers.id')
         ->join('ticket_types', 'orders.ticket_type_id', '=', 'ticket_types.id')
@@ -146,14 +150,16 @@ Route::get('/dashboard/verifikasi', function () {
 
     return view('admin.verifikasi', compact('pendingOrders'));
 })->name('admin.verifikasi');
+Route::get('/dashboard/verifikasi', fn() => redirect()->route('admin.verifikasi'));
 
 // 6. Scanner QR Code Petugas Check-in (Berdasarkan rancangan web.txt)
-Route::get('/dashboard/scanner', function () {
+Route::get('/admin/scanner', function () {
     return redirect()->route('petugas.dashboard');
 })->name('admin.scanner');
+Route::get('/dashboard/scanner', fn() => redirect()->route('petugas.dashboard'));
 
 // 7. Data Pesanan, Kehadiran, & Petugas
-Route::get('/dashboard/pesanan', function () {
+Route::get('/admin/pesanan', function () {
     $orders = DB::table('orders')
         ->join('buyers', 'orders.buyer_id', '=', 'buyers.id')
         ->join('ticket_types', 'orders.ticket_type_id', '=', 'ticket_types.id')
@@ -163,8 +169,9 @@ Route::get('/dashboard/pesanan', function () {
 
     return view('admin.pesanan', compact('orders'));
 })->name('admin.pesanan');
+Route::get('/dashboard/pesanan', fn() => redirect()->route('admin.pesanan'));
 
-Route::get('/dashboard/kehadiran', function () {
+Route::get('/admin/kehadiran', function () {
     $logs = DB::table('check_in_logs')
         ->join('digital_tickets', 'check_in_logs.digital_ticket_id', '=', 'digital_tickets.id')
         ->leftJoin('users', 'check_in_logs.staff_id', '=', 'users.id')
@@ -177,11 +184,13 @@ Route::get('/dashboard/kehadiran', function () {
 
     return view('admin.kehadiran', compact('logs', 'totalCheckedIn', 'totalRejected'));
 })->name('admin.kehadiran');
+Route::get('/dashboard/kehadiran', fn() => redirect()->route('admin.kehadiran'));
 
-Route::get('/dashboard/petugas', function () {
+Route::get('/admin/petugas', function () {
     $staff = DB::table('users')->get();
     return view('admin.petugas', compact('staff'));
 })->name('admin.petugas');
+Route::get('/dashboard/petugas', fn() => redirect()->route('admin.petugas'));
 
 // 8. API Endpoints — checkout wajib login sebagai pembeli
 Route::post('/api/checkout', function (\Illuminate\Http\Request $request) {

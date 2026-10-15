@@ -49,45 +49,6 @@
           </div>
         </section>
 
-        <!-- KPI Grid -->
-        <section class="kpi-grid" style="margin-bottom: 24px;">
-          <article class="kpi-card c-primary">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon primary"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
-                <div class="kpi-label">Total Pesanan</div>
-              </div>
-              <span class="kpi-pill up">+24%</span>
-            </div>
-            <div class="kpi-value">163</div>
-            <div class="kpi-compare">Seluruh transaksi terdata</div>
-          </article>
-
-          <article class="kpi-card c-success">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon success"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                <div class="kpi-label">Tiket Terbit (Aktif)</div>
-              </div>
-              <span class="kpi-pill up">158 Tiket</span>
-            </div>
-            <div class="kpi-value">Rp 28.450.000</div>
-            <div class="kpi-compare">Total dana telah masuk</div>
-          </article>
-
-          <article class="kpi-card c-danger">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon danger"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-                <div class="kpi-label">Menunggu Verifikasi</div>
-              </div>
-              <span class="kpi-pill down">3 Antrean</span>
-            </div>
-            <div class="kpi-value">3</div>
-            <div class="kpi-compare">Perlu tindakan di menu Verifikasi</div>
-          </article>
-        </section>
-
         <!-- Table Pesanan -->
         <div class="card" style="padding: 24px;">
           <div class="card-head" style="margin-bottom: 16px;">

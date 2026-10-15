@@ -14,30 +14,30 @@
         text: "Master Data",
         icon: '<path d="M4 7h16M4 12h16M4 17h16"/><rect x="2" y="3" width="20" height="18" rx="2"/>',
         children: [
-          { key: "master_tiket", text: "Tiket", href: "/dashboard/tiket" },
-          { key: "master_banner", text: "Banner", href: "/dashboard/banner" },
-          { key: "master_acara", text: "Acara", href: "/dashboard/acara" },
-          { key: "master_peserta", text: "Pembeli", href: "/dashboard/pesanan" }
+          { key: "master_tiket", text: "Tiket", href: "/admin/tiket" },
+          { key: "master_banner", text: "Banner", href: "/admin/banner" },
+          { key: "master_acara", text: "Acara", href: "/admin/acara" },
+          { key: "master_peserta", text: "Pembeli", href: "/admin/pesanan" }
         ]
       },
-      { key: "tiket_direct", text: "Tiket", href: "/dashboard/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
-      { key: "banner_direct", text: "Banner", href: "/dashboard/banner", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
-      { key: "acara_direct", text: "Konten Acara", href: "/dashboard/acara", icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' }
+      { key: "tiket_direct", text: "Tiket", href: "/admin/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
+      { key: "banner_direct", text: "Banner", href: "/admin/banner", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
+      { key: "acara_direct", text: "Konten Acara", href: "/admin/acara", icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' }
     ]
   },
   {
     label: "Transaksi",
     items: [
-      { key: "verifikasi", text: "Verifikasi Bayar", href: "/dashboard/verifikasi", badge: { kind: "danger", text: "CEK" }, icon: '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>' },
-      { key: "pesanan", text: "Data Pesanan", href: "/dashboard/pesanan", icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>' }
+      { key: "verifikasi", text: "Verifikasi Bayar", href: "/admin/verifikasi", badge: { kind: "danger", text: "CEK" }, icon: '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>' },
+      { key: "pesanan", text: "Data Pesanan", href: "/admin/pesanan", icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>' }
     ]
   },
   {
     label: "Check-in & Gate",
     items: [
       { key: "scanner", text: "Scan QR Tiket", href: "/petugas/dashboard", badge: { kind: "info", text: "SCAN" }, icon: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>' },
-      { key: "kehadiran", text: "Log Kehadiran", href: "/dashboard/kehadiran", icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
-      { key: "petugas", text: "Data Petugas", href: "/dashboard/petugas", icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>' }
+      { key: "kehadiran", text: "Log Kehadiran", href: "/admin/kehadiran", icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
+      { key: "petugas", text: "Data Petugas", href: "/admin/petugas", icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>' }
     ]
   }
 ];function r(e){return`\n    <header class="d-topbar">\n      <div class="crumbs">\n        <button class="hamburger" data-drawer-open aria-label="Open navigation">\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>\n        </button>\n        ${function(e){if(!e)return"";const t=e.split("|").map(e=>e.trim()).filter(Boolean);return t.map((e,a)=>`${a>0?'<svg class="sep" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>':""}<span${a===t.length-1?' class="current"':""}>${e}</span>`).join("")}(e)}\n      </div>\n      <div class="topbar-actions">\n        <button class="cmd" data-palette-open>\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>\n          <span>Search...</span>\n          <kbd class="kbd">⌘K</kbd>\n        </button>\n\n        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme"></button>\n\n        <div class="dd-wrap">\n          <div class="avatar" data-dropdown tabindex="0" role="button" aria-label="Account menu">JD</div>\n          <div class="dd-menu dd-profile" role="menu">\n            <div class="dd-profile-head">\n              <div class="dd-profile-name">John Doe</div>\n              <div class="dd-profile-email">john@adminator.app</div>\n            </div>\n            <a class="dd-menu-item" href="#">\n              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>\n              Settings\n            </a>\n            <a class="dd-menu-item" href="#">\n              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>\n              Profile\n            </a>\n            <a class="dd-menu-item" href="email.html">\n              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>\n              Messages\n            </a>\n            <div class="dd-divider"></div>\n            <a class="dd-menu-item danger" href="#">\n              <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>\n              Logout\n            </a>\n          </div>\n        </div>\n      </div>\n    </header>`}function s(){
@@ -71,30 +71,30 @@
           text: "Master Data",
           icon: '<path d="M4 7h16M4 12h16M4 17h16"/><rect x="2" y="3" width="20" height="18" rx="2"/>',
           children: [
-            { key: "master_tiket", text: "Tiket", href: "/dashboard/tiket" },
-            { key: "master_banner", text: "Banner", href: "/dashboard/banner" },
-            { key: "master_acara", text: "Acara", href: "/dashboard/acara" },
-            { key: "master_peserta", text: "Pembeli", href: "/dashboard/pesanan" }
+            { key: "master_tiket", text: "Tiket", href: "/admin/tiket" },
+            { key: "master_banner", text: "Banner", href: "/admin/banner" },
+            { key: "master_acara", text: "Acara", href: "/admin/acara" },
+            { key: "master_peserta", text: "Pembeli", href: "/admin/pesanan" }
           ]
         },
-        { key: "tiket_direct", text: "Tiket", href: "/dashboard/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
-        { key: "banner_direct", text: "Banner", href: "/dashboard/banner", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
-        { key: "acara_direct", text: "Konten Acara", href: "/dashboard/acara", icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' }
+        { key: "tiket_direct", text: "Tiket", href: "/admin/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
+        { key: "banner_direct", text: "Banner", href: "/admin/banner", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
+        { key: "acara_direct", text: "Konten Acara", href: "/admin/acara", icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' }
       ]
     },
     {
       label: "Transaksi",
       items: [
-        { key: "verifikasi", text: "Verifikasi Bayar", href: "/dashboard/verifikasi", badge: { kind: "danger", text: "CEK" }, icon: '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>' },
-        { key: "pesanan", text: "Data Pesanan", href: "/dashboard/pesanan", icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>' }
+        { key: "verifikasi", text: "Verifikasi Bayar", href: "/admin/verifikasi", badge: { kind: "danger", text: "CEK" }, icon: '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>' },
+        { key: "pesanan", text: "Data Pesanan", href: "/admin/pesanan", icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>' }
       ]
     },
     {
       label: "Check-in & Gate",
       items: [
         { key: "scanner", text: "Scan QR Tiket", href: "/petugas/dashboard", badge: { kind: "info", text: "SCAN" }, icon: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>' },
-        { key: "kehadiran", text: "Log Kehadiran", href: "/dashboard/kehadiran", icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
-        { key: "petugas", text: "Data Petugas", href: "/dashboard/petugas", icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>' }
+        { key: "kehadiran", text: "Log Kehadiran", href: "/admin/kehadiran", icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
+        { key: "petugas", text: "Data Petugas", href: "/admin/petugas", icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>' }
       ]
     }
   ];
