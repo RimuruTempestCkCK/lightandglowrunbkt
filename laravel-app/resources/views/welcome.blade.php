@@ -68,7 +68,7 @@
         <div class="goers-nav-actions">
           <div class="nav-links-desktop" style="display:flex; align-items:center; gap:8px;">
             <a href="#konser-section" class="nav-btn-link">Konser</a>
-            <a href="#wisata-section" class="nav-btn-link">Wisata</a>
+            {{-- <a href="#wisata-section" class="nav-btn-link">Wisata</a> --}}
             <a href="#crowd-section" class="nav-btn-link">
               Crowd
               <span class="badge-new">NEW</span>
@@ -95,7 +95,7 @@
     <div class="mobile-search-row">
       <div class="goers-search-box" style="display:block; max-width:100%;">
         <i data-lucide="search" class="goers-search-icon" style="width:18px; height:18px;"></i>
-        <input type="text" class="goers-search-input" placeholder="Cari konser, tempat wisata..." onkeyup="filterEvents(this.value)" />
+        <input type="text" class="goers-search-input" placeholder="Cari konser, tiket promo..." onkeyup="filterEvents(this.value)" />
       </div>
     </div>
 
@@ -105,7 +105,7 @@
         <ul class="subnav-list">
           <li class="subnav-item active"><a href="#" onclick="selectCategory('all', event)"><i data-lucide="compass" style="width:16px;height:16px;"></i> Semua Acara</a></li>
           <li class="subnav-item"><a href="#konser-section" onclick="selectCategory('konser', event)"><i data-lucide="music" style="width:16px;height:16px;"></i> Konser Musik</a></li>
-          <li class="subnav-item"><a href="#wisata-section" onclick="selectCategory('wisata', event)"><i data-lucide="map-pin" style="width:16px;height:16px;"></i> Tempat Wisata</a></li>
+          {{-- <li class="subnav-item"><a href="#wisata-section" onclick="selectCategory('wisata', event)"><i data-lucide="map-pin" style="width:16px;height:16px;"></i> Tempat Wisata</a></li> --}}
           <li class="subnav-item"><a href="#" onclick="selectCategory('olahraga', event)"><i data-lucide="trophy" style="width:16px;height:16px;"></i> Olahraga & Running</a></li>
           <li class="subnav-item"><a href="#" onclick="selectCategory('pameran', event)"><i data-lucide="image" style="width:16px;height:16px;"></i> Pameran & Art</a></li>
           <li class="subnav-item"><a href="#" onclick="selectCategory('workshop', event)"><i data-lucide="book-open" style="width:16px;height:16px;"></i> Kelas & Workshop</a></li>
@@ -124,7 +124,7 @@
     </div>
     <div style="display:flex; flex-direction:column; gap:14px; margin-top:20px;">
       <a href="#konser-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">🎵 Konser Musik</a>
-      <a href="#wisata-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">🎡 Tempat Wisata</a>
+      {{-- <a href="#wisata-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">🎡 Tempat Wisata</a> --}}
       <a href="#crowd-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">👥 Crowd Meetup <span class="badge-new">NEW</span></a>
       <a href="#gem-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">💼 Solusi Bisnis & GEM</a>
       <a href="#help-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">❓ Pusat Bantuan</a>
@@ -214,12 +214,14 @@
           <span class="category-name">Konser & Musik</span>
         </div>
 
+        {{--
         <div class="category-card" onclick="filterByCategory('wisata')">
           <div class="category-icon-wrapper cat-attraction">
             <i data-lucide="ferris-wheel"></i>
           </div>
           <span class="category-name">Tempat Wisata</span>
         </div>
+        --}}
 
         <div class="category-card" onclick="filterByCategory('olahraga')">
           <div class="category-icon-wrapper cat-sport">
@@ -489,6 +491,7 @@
     </section>
   </div>
 
+  {{--
   <!-- Section 3: Tempat Wisata & Destinasi Liburan -->
   <section class="section-wrap" id="wisata-section">
     <div class="goers-container">
@@ -617,6 +620,7 @@
       </div>
     </div>
   </section>
+  --}}
 
   <!-- Section 4: Kota & Destinasi Populer -->
   <section class="section-wrap">
@@ -753,7 +757,7 @@
           <h4>Jelajah</h4>
           <ul class="footer-links">
             <li><a href="#konser-section">Konser Musik</a></li>
-            <li><a href="#wisata-section">Tempat Wisata</a></li>
+            {{-- <li><a href="#wisata-section">Tempat Wisata</a></li> --}}
             <li><a href="#crowd-section">Crowd Meetup</a></li>
             <li><a href="#eventsContainer">Event Terdekat</a></li>
             <li><a href="#eventsContainer">Pameran & Seni</a></li>
