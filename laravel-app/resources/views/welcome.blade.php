@@ -130,8 +130,8 @@
       <a href="#help-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">❓ Pusat Bantuan</a>
     </div>
     <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
-      <a href="{{ route('register') }}" class="btn-signup" style="width:100%; text-align:center; display:block;">Daftar Akun</a>
-      <a href="{{ route('login') }}" class="btn-login" style="width:100%; text-align:center; display:block;">Masuk</a>
+      <a href="{{ route('buyer.dashboard') }}" class="btn-login" style="width:100%; text-align:center; display:block; border-color:var(--goers-branding-500); color:var(--goers-branding-500);">🎫 Tiket Saya & Riwayat</a>
+      <a href="{{ route('login') }}" class="btn-signup" style="width:100%; text-align:center; display:block;">Admin Portal</a>
     </div>
   </div>
 
@@ -922,47 +922,54 @@
         if (d.gemTitle) { const el = document.getElementById('cmsGemTitle'); if (el) el.textContent = d.gemTitle; }
         if (d.gemDesc) { const el = document.getElementById('cmsGemDesc'); if (el) el.textContent = d.gemDesc; }
 
-        // Update Concert Tickets
-        if (d.tickets && Array.isArray(d.tickets)) {
-          const cards = document.querySelectorAll('#eventsContainer .event-card');
-          d.tickets.forEach((t, i) => {
-            const card = cards[i];
-            if (!card) return;
-            if (t.name) {
-              const nameEl = card.querySelector('.event-name');
-              if (nameEl) nameEl.textContent = t.name;
-              card.setAttribute('data-name', t.name);
-            }
-            if (t.price) {
-              const priceEl = card.querySelector('.price-value');
-              if (priceEl) priceEl.textContent = t.price;
-            }
-            if (t.date) {
-              const dateEl = card.querySelector('.event-date-row');
-              if (dateEl) dateEl.innerHTML = '<i data-lucide="calendar" style="width:14px;height:14px;"></i> ' + t.date;
-            }
-            if (t.location) {
-              const locEl = card.querySelector('.event-location-row');
-              if (locEl) locEl.innerHTML = '<i data-lucide="map-pin" style="width:14px;height:14px;"></i> ' + t.location;
-            }
-            if (t.img) {
-              const imgEl = card.querySelector('.event-thumbnail img');
-              if (imgEl) imgEl.src = t.img;
-            }
-            if (t.category) {
-              const catEl = card.querySelector('.event-badge-floating');
-              if (catEl) catEl.textContent = t.category;
-            }
+        // Update Concert Tickets (Dynamic Render & Support New Added Tickets)
+        if (d.tickets && Array.isArray(d.tickets) && d.tickets.length > 0) {
+          const container = document.getElementById('eventsContainer');
+          if (container) {
+            container.innerHTML = '';
+            d.tickets.forEach((t) => {
+              const card = document.createElement('div');
+              card.className = 'event-card';
+              card.setAttribute('data-category', 'konser');
+              card.setAttribute('data-name', t.name || 'Tiket Light & Glow');
 
-            // Update button click handler
-            const btn = card.querySelector('.btn-buy-ticket');
-            if (btn) {
-              btn.onclick = function() {
-                showTicketDetail(t.name, t.price, t.date, t.location, t.img, t.category);
-              };
-            }
-          });
-          if (window.lucide) lucide.createIcons();
+              card.innerHTML = `
+                <div class="event-thumbnail">
+                  <span class="event-badge-floating">${t.category || 'Konser Musik'}</span>
+                  <img src="${t.img || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80'}" alt="${t.name || 'Tiket'}" loading="lazy" />
+                </div>
+                <div class="event-body">
+                  <div>
+                    <div class="event-date-row">
+                      <i data-lucide="calendar" style="width:14px;height:14px;"></i>
+                      ${t.date || '25 April 2026'}
+                    </div>
+                    <h3 class="event-name">${t.name || 'Tiket Konser'}</h3>
+                    <div class="event-location-row">
+                      <i data-lucide="map-pin" style="width:14px;height:14px;"></i>
+                      ${t.location || 'Jam Gadang, Bukittinggi'}
+                    </div>
+                  </div>
+                  <div class="event-footer">
+                    <div>
+                      <span class="price-label">Mulai dari</span>
+                      <div class="price-value">${t.price || 'Rp 0'}</div>
+                    </div>
+                    <button class="btn-buy-ticket">Beli Tiket</button>
+                  </div>
+                </div>
+              `;
+
+              const btn = card.querySelector('.btn-buy-ticket');
+              if (btn) {
+                btn.onclick = function() {
+                  showTicketDetail(t.name, t.price, t.date, t.location, t.img, t.category);
+                };
+              }
+              container.appendChild(card);
+            });
+            if (window.lucide) lucide.createIcons();
+          }
         }
       } catch (e) {
         console.error('Error synchronizing CMS to landing page', e);
