@@ -706,6 +706,7 @@
     </div>
   </section>
 
+  {{--
   <!-- Section 6: App Download Banner -->
   <section class="goers-container">
     <div class="goers-app-download">
@@ -733,6 +734,7 @@
       </div>
     </div>
   </section>
+  --}}
 
   <!-- Footer -->
   <footer class="goers-footer" id="help-section">
