@@ -9,19 +9,8 @@
   {
     label: "Master Data",
     items: [
-      {
-        key: "master_data",
-        text: "Master Data",
-        icon: '<path d="M4 7h16M4 12h16M4 17h16"/><rect x="2" y="3" width="20" height="18" rx="2"/>',
-        children: [
-          { key: "master_tiket", text: "Tiket", href: "/admin/tiket" },
-          { key: "master_banner", text: "Banner", href: "/admin/banner" },
-          { key: "master_acara", text: "Acara", href: "/admin/acara" },
-          { key: "master_peserta", text: "Pembeli", href: "/admin/pesanan" }
-        ]
-      },
-      { key: "tiket_direct", text: "Tiket", href: "/admin/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
-      { key: "banner_direct", text: "Banner", href: "/admin/banner", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
+      { key: "tiket_direct", text: "Kelola Tiket", href: "/admin/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
+      { key: "banner_direct", text: "Kelola Banner", href: "/admin/banner", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
       { key: "acara_direct", text: "Konten Acara", href: "/admin/acara", icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' }
     ]
   },
@@ -53,7 +42,7 @@
     {
       label: "Kehadiran",
       items: [
-        { key: "kehadiran", text: "Log Kehadiran", href: "/dashboard/kehadiran", icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' }
+        { key: "kehadiran", text: "Log Kehadiran", href: "/admin/kehadiran", icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' }
       ]
     }
   ] : [
@@ -66,19 +55,8 @@
     {
       label: "Master Data",
       items: [
-        {
-          key: "master_data",
-          text: "Master Data",
-          icon: '<path d="M4 7h16M4 12h16M4 17h16"/><rect x="2" y="3" width="20" height="18" rx="2"/>',
-          children: [
-            { key: "master_tiket", text: "Tiket", href: "/admin/tiket" },
-            { key: "master_banner", text: "Banner", href: "/admin/banner" },
-            { key: "master_acara", text: "Acara", href: "/admin/acara" },
-            { key: "master_peserta", text: "Pembeli", href: "/admin/pesanan" }
-          ]
-        },
-        { key: "tiket_direct", text: "Tiket", href: "/admin/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
-        { key: "banner_direct", text: "Banner", href: "/admin/banner", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
+        { key: "tiket_direct", text: "Kelola Tiket", href: "/admin/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
+        { key: "banner_direct", text: "Kelola Banner", href: "/admin/banner", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
         { key: "acara_direct", text: "Konten Acara", href: "/admin/acara", icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' }
       ]
     },
