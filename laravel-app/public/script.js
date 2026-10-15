@@ -222,10 +222,10 @@ function showUploadProofStep(orderNumber, buyer) {
 }
 
 function openLoginModal(action) {
-  const msg = action ? `Silakan masuk untuk ${action}` : 'Masuk atau Buat Akun GOERS baru';
+  const msg = action ? `Silakan masuk untuk ${action}` : 'Portal Akun Light and Glow Bukittinggi';
   Swal.fire({
-    title: 'Akun GOERS',
-    text: msg + '. Fitur akun memungkinkan Anda melihat tiket digital tersimpan dan riwayat transaksi.',
+    title: 'Akun Light & Glow',
+    text: msg + '. Akses tiket digital Anda dan riwayat transaksi pemesanan tiket.',
     icon: 'info',
     showCancelButton: true,
     confirmButtonColor: '#EB1355',
