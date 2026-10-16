@@ -272,6 +272,137 @@
         gap: 10px;
       }
     }
+
+    /* ==========================================================================
+       PRINT SPECIFIC STYLES: Ensures 1 Single Clean Page for PDF & Print
+       ========================================================================== */
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    @media print {
+      /* Hide all website background elements, headers, navbars, tabs, modals except printable area */
+      body, html {
+        background: #ffffff !important;
+        color: #0F172A !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      .top-bar,
+      .goers-header,
+      .buyer-dashboard-wrap,
+      .goers-footer,
+      #proofModal,
+      .modal-header,
+      .modal-footer,
+      .modal-close-btn,
+      .btn-signup,
+      .btn-login {
+        display: none !important;
+      }
+
+      /* Modal Overlay becomes normal container in print */
+      #eTicketModal.modal-overlay {
+        display: block !important;
+        position: static !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        padding: 0 !important;
+        inset: auto !important;
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      #eTicketModal .modal-content {
+        display: block !important;
+        position: static !important;
+        background: #ffffff !important;
+        color: #0F172A !important;
+        border: 2px solid #0284C7 !important;
+        border-radius: 16px !important;
+        max-width: 520px !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        animation: none !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      #printableTicketArea {
+        padding: 24px 28px !important;
+        color: #0F172A !important;
+        background: #ffffff !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      #printableTicketArea h2#modalETicketEventTitle {
+        color: #070B19 !important;
+        font-size: 20px !important;
+        font-weight: 800 !important;
+        margin: 4px 0 !important;
+      }
+
+      #printableTicketArea p {
+        color: #475569 !important;
+        font-size: 13px !important;
+        margin-bottom: 14px !important;
+      }
+
+      .qr-container {
+        border: 2px dashed #0284C7 !important;
+        padding: 12px !important;
+        box-shadow: none !important;
+        background: #F8FAFC !important;
+        display: inline-block !important;
+        margin-bottom: 10px !important;
+      }
+
+      .qr-container img {
+        width: 170px !important;
+        height: 170px !important;
+      }
+
+      #modalETicketCode {
+        color: #0284C7 !important;
+        font-size: 16px !important;
+        font-weight: 800 !important;
+        margin-bottom: 12px !important;
+      }
+
+      #printableTicketArea .print-ticket-info {
+        background: #F8FAFC !important;
+        border: 1px solid #E2E8F0 !important;
+        color: #1E293B !important;
+        border-radius: 10px !important;
+        padding: 14px 16px !important;
+        font-size: 13px !important;
+        line-height: 1.8 !important;
+      }
+
+      #printableTicketArea .print-ticket-info strong {
+        color: #0F172A !important;
+      }
+
+      #printableTicketArea .print-ticket-info span {
+        color: #64748B !important;
+      }
+
+      .print-footer-notice {
+        display: block !important;
+        margin-top: 14px !important;
+        padding-top: 10px !important;
+        border-top: 1px dashed #CBD5E1 !important;
+        font-size: 11px !important;
+        color: #64748B !important;
+        text-align: center !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -573,7 +704,7 @@
       <div class="modal-body" id="printableTicketArea" style="text-align:center; padding:24px 20px;">
         <div style="font-size:11px; letter-spacing:2px; color:#00E5FF; font-weight:800; text-transform:uppercase;">OFFICIAL ENTRANCE PASS</div>
         <h2 id="modalETicketEventTitle" style="font-size:18px; font-weight:800; margin:4px 0 2px; color:#fff;">Light And Glow Bukittinggi 2026</h2>
-        <p style="font-size:12px; color:#94A3B8; margin-bottom:16px;">Sabtu, 28 November 2026 · Lapangan Wirabraja Bukittinggi</p>
+        <p style="font-size:12px; color:#94A3B8; margin-bottom:16px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
 
         <!-- QR Box dengan efek expired bila sudah check-in -->
         <div id="modalQRContainer" class="qr-container" style="margin-bottom:12px;">
@@ -592,7 +723,7 @@
         <div id="modalETicketCode" style="font-family:monospace; font-size:15px; font-weight:800; letter-spacing:1px; margin-bottom:8px; color:#38BDF8;">-</div>
         <div id="modalETicketStatusBadge" style="margin-bottom:16px;"></div>
 
-        <div style="background:#1E293B; border-radius:12px; padding:14px; text-align:left; font-size:12px; color:#CBD5E1; line-height:1.7;">
+        <div class="print-ticket-info" style="background:#1E293B; border-radius:12px; padding:14px; text-align:left; font-size:12px; color:#CBD5E1; line-height:1.7;">
           <div style="display:flex; justify-content:space-between;">
             <span style="color:#94A3B8;">Nama Pemegang:</span>
             <strong id="modalETicketHolder" style="color:#fff;">-</strong>
@@ -609,6 +740,11 @@
             <span style="color:#94A3B8;">Akses Gate:</span>
             <strong id="modalETicketGate" style="color:#fff;">Gate 1 (Utama Jam Gadang)</strong>
           </div>
+        </div>
+
+        <div class="print-footer-notice" style="display:none;">
+          Tunjukkan QR Code ini pada layar atau lembar cetak kepada panitia di Gate Masuk.<br>
+          © 2026 Light And Glow Bukittinggi · Tiket Resmi Terenkripsi QRIS & Database
         </div>
       </div>
       <div class="modal-footer" style="border-top:1px solid #1E293B; background:transparent; display:flex; gap:10px;">
