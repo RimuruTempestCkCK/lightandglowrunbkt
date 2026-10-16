@@ -111,12 +111,12 @@
           </div>
         @endif
 
-        <!-- Hero Section (Bersih tanpa tombol Lihat di Web dan tanpa KPI Card) -->
+        <!-- Header Section Bersih & Ringkas -->
         <section class="hero" style="margin-bottom: 24px;">
           <div class="hero-text">
-            <span class="eyebrow">Database MySQL Real-Time</span>
-            <h1 class="hero-title">Master <span class="accent">Acara & QRIS Pembayaran</span></h1>
-            <p class="hero-sub">Unggah foto/gambar QRIS resmi toko/panitia untuk pembayaran tiket oleh pembeli, informasi merchant, serta jadwal event Light And Glow.</p>
+            <span class="eyebrow">Pengaturan Sistem</span>
+            <h1 class="hero-title">QRIS & <span class="accent">Acara</span></h1>
+            <p class="hero-sub">Kelola barcode QRIS pembayaran tiket dan informasi utama event Light And Glow.</p>
           </div>
           <div class="hero-actions">
             <button type="submit" form="formAcaraDatabase" class="btn btn--primary">
@@ -129,50 +129,37 @@
         <form id="formAcaraDatabase" action="{{ route('admin.acara.update') }}" method="POST" enctype="multipart/form-data">
           @csrf
 
-          <!-- 1. KELOLA QRIS PEMBAYARAN TIKET (UPLOAD GAMBAR & DATABASE) -->
-          <div class="cms-card" style="border: 2px solid var(--primary-soft); background: var(--bg-card);">
-            <div class="cms-section-title" style="color:var(--primary);">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-              1. Upload Gambar Barcode QRIS Pembayaran Tiket (Database)
+          <!-- QRIS PEMBAYARAN TIKET -->
+          <div class="cms-card">
+            <div class="cms-section-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              QRIS Pembayaran Tiket
             </div>
-            <p style="font-size:13px; color:var(--t-muted); margin-bottom:16px;">
-              Gambar QRIS yang Anda unggah di sini akan <strong>langsung tampil di layar pembeli pada saat melakukan checkout pembayaran tiket</strong> untuk di-scan melalui Mobile Banking / E-Wallet.
-            </p>
 
-            <div style="display:grid; grid-template-columns: 220px 1fr; gap:24px; align-items:start;">
+            <div style="display:grid; grid-template-columns: 180px 1fr; gap:20px; align-items:start;">
               <div>
-                <label class="cms-label">Preview Gambar QRIS</label>
-                <div class="qris-preview-box">
-                  <img id="qrisImgPreview" src="{{ !empty($event->qris_image) ? asset($event->qris_image) : 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020101021226680016ID.CO.QRIS.WWW01189360050300000884215204581253033605802ID5914LIGHT%20AND%20GLOW6011BUKITTINGGI630419A8' }}" alt="QRIS Pembayaran">
+                <div class="qris-preview-box" style="width:180px; height:180px;">
+                  <img id="qrisImgPreview" src="{{ !empty($event->qris_image) ? asset($event->qris_image) : 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020101021226680016ID.CO.QRIS.WWW01189360050300000884215204581253033605802ID5914LIGHT%20AND%20GLOW6011BUKITTINGGI630419A8' }}" alt="QRIS">
                 </div>
-                <span style="display:block; font-size:11px; color:var(--t-muted); text-align:center;">QRIS Aktif Halaman Pembeli</span>
+                <span style="display:block; font-size:11px; color:var(--t-muted); text-align:center;">Preview QRIS Aktif</span>
               </div>
 
               <div>
-                <!-- Pilihan 1: Upload File Gambar -->
-                <div class="cms-form-group" style="background:var(--bg-muted); padding:16px; border-radius:8px; border:1px solid var(--border-soft); margin-bottom:16px;">
-                  <label class="cms-label" for="qris_file" style="font-weight:700; color:var(--t-base);">
-                    📁 Upload File Gambar QRIS (PNG, JPG, JPEG, WEBP)
-                  </label>
+                <div class="cms-form-group">
+                  <label class="cms-label" for="qris_file">Unggah Gambar QRIS Baru</label>
                   <input type="file" id="qris_file" name="qris_file" class="cms-input" accept="image/*" onchange="previewUploadedQris(this)">
-                  <span style="font-size:11.5px; color:var(--t-muted); margin-top:6px; display:block;">
-                    Pilih file gambar QRIS toko/rekening resmi dari komputer Anda. Ukuran maksimal 5MB.
+                  <span style="font-size:11px; color:var(--t-muted); margin-top:4px; display:block;">
+                    Format JPG, PNG, atau WEBP. Otomatis tampil di halaman checkout pembeli.
                   </span>
                 </div>
 
-                <!-- Pilihan 2: Atau URL Gambar / Path -->
-                <div class="cms-form-group">
-                  <label class="cms-label" for="qris_image">Atau Masukkan URL / Path Gambar QRIS</label>
-                  <input type="text" id="qris_image" name="qris_image" class="cms-input" placeholder="https://... atau /uploads/qris/..." value="{{ $event->qris_image ?? '' }}" oninput="updateQrisPreview(this.value)">
-                </div>
-
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
                   <div class="cms-form-group">
-                    <label class="cms-label" for="qris_merchant_name">Nama Akun Merchant QRIS</label>
-                    <input type="text" id="qris_merchant_name" name="qris_merchant_name" class="cms-input" value="{{ $event->qris_merchant_name ?? 'LIGHT AND GLOW BUKITTINGGI' }}">
+                    <label class="cms-label" for="qris_merchant_name">Nama Merchant</label>
+                    <input type="text" id="qris_merchant_name" name="qris_merchant_name" class="cms-input" value="{{ $event->qris_merchant_name ?? 'LIGHT AND GLOW BUKITTINGGI' }}" placeholder="LIGHT AND GLOW">
                   </div>
                   <div class="cms-form-group">
-                    <label class="cms-label" for="qris_nmid">NMID QRIS (Nasional Merchant ID)</label>
+                    <label class="cms-label" for="qris_nmid">NMID (Opsional)</label>
                     <input type="text" id="qris_nmid" name="qris_nmid" class="cms-input" placeholder="ID102026xxxxxxxxx" value="{{ $event->qris_nmid ?? '' }}">
                   </div>
                 </div>
@@ -180,17 +167,17 @@
             </div>
           </div>
 
-          <!-- 2. Informasi Utama Event Acara (Database) -->
+          <!-- INFORMASI ACARA -->
           <div class="cms-card">
             <div class="cms-section-title">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              2. Data Jadwal & Lokasi Event Acara
+              Informasi Acara
             </div>
             <div class="cms-form-group">
               <label class="cms-label" for="eventTitle">Nama Acara</label>
               <input type="text" id="eventTitle" name="title" class="cms-input" value="{{ $event->title ?? 'Light And Glow Bukittinggi 2026' }}">
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
               <div class="cms-form-group">
                 <label class="cms-label" for="eventLocation">Lokasi Venue</label>
                 <input type="text" id="eventLocation" name="location" class="cms-input" value="{{ $event->location ?? 'Jam Gadang, Bukittinggi' }}">
@@ -200,13 +187,6 @@
                 <input type="date" id="eventDate" name="event_date" class="cms-input" value="{{ $event->event_date ?? '2026-10-24' }}">
               </div>
             </div>
-          </div>
-
-          <div style="text-align: right; margin-bottom: 40px;">
-            <button type="submit" class="btn btn--primary" style="padding: 12px 24px; font-size: 14px;">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              Simpan Gambar QRIS & Data Acara ke Database
-            </button>
           </div>
         </form>
 
@@ -223,15 +203,6 @@
           document.getElementById('qrisImgPreview').src = e.target.result;
         }
         reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    function updateQrisPreview(val) {
-      const img = document.getElementById('qrisImgPreview');
-      if (val && val.trim() !== '') {
-        img.src = val;
-      } else {
-        img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020101021226680016ID.CO.QRIS.WWW01189360050300000884215204581253033605802ID5914LIGHT%20AND%20GLOW6011BUKITTINGGI630419A8';
       }
     }
   </script>
