@@ -22,201 +22,242 @@
   <script defer="defer" src="{{ asset('adminator/runtime.096d507f.js') }}"></script>
   <script defer="defer" src="{{ asset('adminator/2026.5a84696f.js') }}"></script>
   <link href="{{ asset('adminator/style.76ee5eee.css') }}" rel="stylesheet">
+  <style>
+    .filter-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #printableArea, #printableArea * { visibility: visible; }
+      #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
+  </style>
 </head>
 <body data-active="pesanan" data-crumbs="Transaksi | Data Pesanan & Pembeli">
   <div class="shell">
-    <div data-shell-sidebar></div>
+    <div data-shell-sidebar class="no-print"></div>
     <div class="main">
-      <div data-shell-topbar></div>
+      <div data-shell-topbar class="no-print"></div>
       <main class="content">
         
         <!-- Hero Section -->
-        <section class="hero" style="margin-bottom: 24px;">
+        <section class="hero no-print" style="margin-bottom: 24px;">
           <div class="hero-text">
             <span class="eyebrow">Manajemen Transaksi</span>
             <h1 class="hero-title">Data Pesanan & <span class="accent">Pembeli Tiket</span></h1>
-            <p class="hero-sub">Kelola seluruh riwayat transaksi, informasi data diri pemesan (email, telepon, identitas KTP/SIM), status e-tiket, serta unduh rekap laporan transaksi.</p>
+            <p class="hero-sub">Kelola seluruh riwayat transaksi, filter status pesanan, serta unduh rekap data sesuai hasil filter dalam format CSV dan cetak PDF.</p>
           </div>
           <div class="hero-actions">
-            <button class="btn btn--ghost" onclick="exportData('csv')">
+            <button class="btn btn--ghost" onclick="exportFilteredCSV()">
               <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              CSV
+              Ekspor CSV
             </button>
-            <button class="btn btn--primary" onclick="exportData('excel')">
-              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-              Excel
+            <button class="btn btn--primary" onclick="exportFilteredPDF()">
+              <svg viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+              Cetak PDF
             </button>
           </div>
         </section>
 
+        <!-- Filter & Search Toolbar -->
+        <div class="filter-toolbar no-print">
+          <div class="filter-group">
+            <label style="font-size:12px; font-weight:700; color:var(--t-muted);">Status Pesanan:</label>
+            <select id="statusFilter" class="select" style="width: auto; padding: 7px 32px 7px 12px; font-size:13px;" onchange="applyOrderFilter()">
+              <option value="ALL">Semua Status</option>
+              <option value="Pembayaran disetujui">Pembayaran Disetujui</option>
+              <option value="Menunggu verifikasi">Menunggu Verifikasi</option>
+              <option value="Pembayaran ditolak">Pembayaran Ditolak</option>
+            </select>
+          </div>
+
+          <div class="filter-group" style="flex:1; max-width:380px;">
+            <div class="input-icon" style="width:100%;">
+              <span class="ico">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              </span>
+              <input type="text" id="orderSearch" class="input" placeholder="Cari no. pesanan, nama pembeli, email..." oninput="applyOrderFilter()">
+            </div>
+          </div>
+        </div>
+
         <!-- Table Pesanan -->
-        <div class="card" style="padding: 24px;">
+        <div class="card" id="printableArea" style="padding: 24px;">
           <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
-              <span class="eyebrow">Daftar Transaksi</span>
-              <h2 class="card-title">Data Pesanan & Status QR Code Tiket</h2>
+              <span class="eyebrow">Rekapitulasi Transaksi</span>
+              <h2 class="card-title">Daftar Transaksi Pesanan Tiket (Database Real-time)</h2>
             </div>
-            <div style="display:flex; gap:10px;">
-              <input type="text" id="orderSearch" placeholder="Cari nama, No. Order, atau email..." class="cms-input" style="padding:6px 12px; border:1px solid var(--border); border-radius:6px; background:var(--bg-body); font-size:13px;" onkeyup="filterOrders()">
+            <div style="font-size:12px; color:var(--t-muted);" id="counterInfo">
+              Menampilkan {{ count($orders) }} pesanan
             </div>
           </div>
 
-          <table class="table" style="width: 100%;">
+          <table class="table" style="width: 100%;" id="ordersTable">
             <thead>
               <tr>
                 <th>No. Pesanan</th>
                 <th>Data Pembeli</th>
                 <th>Jenis Tiket</th>
-                <th>Jumlah / Nominal</th>
-                <th>Metode Bayar</th>
+                <th>Total Bayar</th>
+                <th>Metode</th>
                 <th>Status Pembayaran</th>
-                <th>QR Code E-Tiket</th>
-                <th style="text-align:right;">Aksi</th>
+                <th style="text-align:right;" class="no-print">Aksi</th>
               </tr>
             </thead>
             <tbody id="orderTableBody">
-              <tr>
-                <td><strong>#LG-88421</strong><br><small style="color:var(--t-muted);">15 Apr 2026 14:10</small></td>
-                <td>
-                  <strong>Rian Hidayat</strong><br>
-                  <small style="color:var(--t-muted);">rian.h@gmail.com · 081267891234</small>
-                </td>
-                <td>VIP Glow Run</td>
-                <td><strong>1 Tiket</strong><br><span style="color:var(--primary);">Rp 275.000</span></td>
-                <td>QRIS BCA</td>
-                <td><span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span></td>
-                <td><span style="color:var(--t-muted); font-size:12px;">Menunggu verifikasi</span></td>
-                <td style="text-align:right;">
-                  <a href="{{ route('admin.verifikasi') }}" class="btn btn--primary" style="padding:4px 8px; font-size:12px;">Verifikasi</a>
-                </td>
-              </tr>
-
-              <tr>
-                <td><strong>#LG-88415</strong><br><small style="color:var(--t-muted);">15 Apr 2026 11:05</small></td>
-                <td>
-                  <strong>Siti Aisyah</strong><br>
-                  <small style="color:var(--t-muted);">siti.aisyah@yahoo.com · 082199887766</small>
-                </td>
-                <td>Reguler - 5K Night Run</td>
-                <td><strong>2 Tiket</strong><br><span style="color:var(--primary);">Rp 300.000</span></td>
-                <td>Transfer Mandiri</td>
-                <td><span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">Pembayaran Disetujui</span></td>
-                <td><button class="btn btn--ghost" style="padding:3px 8px; font-size:11px;" onclick="showDigitalTicket('#LG-88415', 'Siti Aisyah', 'LG-BKT-2026-77821')">Lihat QR 🎫</button></td>
-                <td style="text-align:right;">
-                  <button class="btn btn--ghost" style="padding:4px 8px; font-size:12px;" onclick="resendTicket('#LG-88415', 'siti.aisyah@yahoo.com')">Kirim Ulang</button>
-                </td>
-              </tr>
-
-              <tr>
-                <td><strong>#LG-88410</strong><br><small style="color:var(--t-muted);">14 Apr 2026 20:30</small></td>
-                <td>
-                  <strong>Doni Pratama</strong><br>
-                  <small style="color:var(--t-muted);">doni.p@gmail.com · 085211223344</small>
-                </td>
-                <td>Early Bird - Festival Pass</td>
-                <td><strong>1 Tiket</strong><br><span style="color:var(--primary);">Rp 99.000</span></td>
-                <td>QRIS GoPay</td>
-                <td><span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">Pembayaran Disetujui</span></td>
-                <td><button class="btn btn--ghost" style="padding:3px 8px; font-size:11px;" onclick="showDigitalTicket('#LG-88410', 'Doni Pratama', 'LG-BKT-2026-66312')">Lihat QR 🎫</button></td>
-                <td style="text-align:right;">
-                  <button class="btn btn--ghost" style="padding:4px 8px; font-size:12px;" onclick="resendTicket('#LG-88410', 'doni.p@gmail.com')">Kirim Ulang</button>
-                </td>
-              </tr>
-
-              <tr>
-                <td><strong>#LG-88402</strong><br><small style="color:var(--t-muted);">14 Apr 2026 15:45</small></td>
-                <td>
-                  <strong>Ahmad Fauzan</strong><br>
-                  <small style="color:var(--t-muted);">fauzan@gmail.com · 081399001122</small>
-                </td>
-                <td>Squad Bundle (4 Pax)</td>
-                <td><strong>4 Tiket</strong><br><span style="color:var(--primary);">Rp 500.000</span></td>
-                <td>Transfer BCA</td>
-                <td><span class="tag t-danger" style="background:rgba(235,19,85,0.2); color:#EB1355; padding:3px 8px; border-radius:4px; font-weight:700;">Pembayaran Ditolak</span></td>
-                <td><span style="color:var(--danger); font-size:12px;">Dibatalkan (Bukti tidak sesuai)</span></td>
-                <td style="text-align:right;">
-                  <button class="btn btn--ghost" style="padding:4px 8px; font-size:12px; color:var(--danger);" onclick="viewRejectReason('Bukti transfer tidak sesuai dengan nominal total pemesanan tiket.')">Alasan</button>
-                </td>
-              </tr>
+              @forelse($orders as $o)
+                <tr class="order-row" 
+                    data-id="{{ $o->id }}"
+                    data-order="{{ $o->order_number }}"
+                    data-name="{{ $o->buyer_name }}"
+                    data-email="{{ $o->buyer_email }}"
+                    data-phone="{{ $o->buyer_phone }}"
+                    data-ticket="{{ $o->ticket_name }}"
+                    data-amount="{{ $o->total_amount }}"
+                    data-method="{{ $o->payment_method }}"
+                    data-status="{{ $o->status }}"
+                    data-search="{{ strtolower($o->order_number . ' ' . $o->buyer_name . ' ' . $o->buyer_email . ' ' . $o->buyer_phone . ' ' . $o->ticket_name) }}">
+                  <td>
+                    <strong>#{{ $o->order_number }}</strong><br>
+                    <small style="color:var(--t-muted);">{{ \Carbon\Carbon::parse($o->created_at)->format('d M Y H:i') }}</small>
+                  </td>
+                  <td>
+                    <strong>{{ $o->buyer_name }}</strong><br>
+                    <small style="color:var(--t-muted);">{{ $o->buyer_email }} · {{ $o->buyer_phone }}</small>
+                  </td>
+                  <td>{{ $o->ticket_name }}</td>
+                  <td><strong style="color:var(--primary);">Rp {{ number_format($o->total_amount, 0, ',', '.') }}</strong></td>
+                  <td>{{ $o->payment_method }}</td>
+                  <td>
+                    @if($o->status === 'Pembayaran disetujui')
+                      <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">Disetujui</span>
+                    @elseif($o->status === 'Menunggu verifikasi')
+                      <span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span>
+                    @else
+                      <span class="tag t-danger" style="background:rgba(239,68,68,0.2); color:#EF4444; padding:3px 8px; border-radius:4px; font-weight:700;">Ditolak</span>
+                    @endif
+                  </td>
+                  <td style="text-align:right;" class="no-print">
+                    @if($o->status === 'Menunggu verifikasi')
+                      <a href="{{ route('admin.verifikasi') }}" class="btn btn--primary" style="padding:4px 8px; font-size:12px;">Verifikasi</a>
+                    @elseif($o->status === 'Pembayaran disetujui')
+                      <span style="color:#10B981; font-weight:600; font-size:12px;">✓ Lunas</span>
+                    @else
+                      <span style="color:var(--t-muted); font-size:12px;">Dibatalkan</span>
+                    @endif
+                  </td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="7" style="text-align:center; padding:32px; color:var(--t-muted);">
+                    Belum ada data pesanan di database MySQL.
+                  </td>
+                </tr>
+              @endforelse
             </tbody>
           </table>
+
+          <div id="noMatchMessage" style="display:none; text-align:center; padding:30px; color:var(--t-muted);">
+            Tidak ada pesanan yang sesuai dengan filter atau kata kunci pencarian.
+          </div>
         </div>
 
       </main>
-      <div data-shell-footer></div>
+      <div data-shell-footer class="no-print"></div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    function showDigitalTicket(orderId, name, qrToken) {
-      Swal.fire({
-        title: `Tiket Digital Resmi`,
-        html: `
-          <div style="text-align:center; padding:10px;">
-            <div style="background:#0F172A; color:#fff; padding:16px; border-radius:12px; margin-bottom:14px; text-align:left;">
-              <div style="font-size:11px; color:#94A3B8; text-transform:uppercase; letter-spacing:1px;">Light And Glow Bukittinggi 2026</div>
-              <div style="font-size:18px; font-weight:800; color:#F8FAFC; margin-top:4px;">${name}</div>
-              <div style="font-size:12px; color:#38BDF8; margin-top:2px;">Pesanan: ${orderId} · 25 April 2026 (Jam Gadang)</div>
-            </div>
-            <div style="background:#fff; padding:16px; border-radius:12px; border:2px dashed #CBD5E1; display:inline-block; margin-bottom:12px;">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${qrToken}" alt="QR Tiket" style="width:160px; height:160px;">
-            </div>
-            <div style="font-size:12px; font-family:monospace; color:#64748B; font-weight:700;">TOKEN: ${qrToken}</div>
-            <p style="font-size:12px; color:#64748B; margin-top:8px;">Tunjukkan QR Code ini pada kamera scanner petugas di gate masuk.</p>
-          </div>
-        `,
-        confirmButtonColor: '#EB1355',
-        confirmButtonText: 'Tutup'
-      });
-    }
+    function applyOrderFilter() {
+      const status = document.getElementById('statusFilter').value;
+      const query = document.getElementById('orderSearch').value.toLowerCase().trim();
+      const rows = document.querySelectorAll('.order-row');
+      let visibleCount = 0;
 
-    function resendTicket(orderId, email) {
-      Swal.fire({
-        title: 'Kirim Ulang E-Tiket?',
-        text: `Kirim salinan tiket digital ber-QR Code ke email ${email}?`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10B981',
-        confirmButtonText: 'Kirim Sekarang',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            icon: 'success',
-            title: 'E-Tiket Terkirim!',
-            text: `Tiket digital untuk pesanan ${orderId} berhasil dikirim ke ${email}.`,
-            confirmButtonColor: '#10B981'
-          });
+      rows.forEach(row => {
+        const rowStatus = row.getAttribute('data-status');
+        const rowSearch = row.getAttribute('data-search') || '';
+
+        const matchesStatus = (status === 'ALL') || (rowStatus === status);
+        const matchesQuery = !query || rowSearch.includes(query);
+
+        if (matchesStatus && matchesQuery) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
         }
       });
+
+      const noMatch = document.getElementById('noMatchMessage');
+      if (visibleCount === 0 && rows.length > 0) {
+        noMatch.style.display = 'block';
+      } else {
+        noMatch.style.display = 'none';
+      }
+
+      document.getElementById('counterInfo').textContent = `Menampilkan ${visibleCount} pesanan`;
     }
 
-    function viewRejectReason(reason) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Alasan Penolakan Pembayaran',
-        text: reason,
-        confirmButtonColor: '#EB1355'
-      });
-    }
+    // Export CSV data sesuai hasil filter
+    function exportFilteredCSV() {
+      const rows = Array.from(document.querySelectorAll('.order-row')).filter(r => r.style.display !== 'none');
+      if (rows.length === 0) {
+        Swal.fire({ icon: 'warning', title: 'Data Kosong', text: 'Tidak ada data pesanan yang tampil untuk diekspor.' });
+        return;
+      }
 
-    function exportData(type) {
-      Swal.fire({
-        icon: 'success',
-        title: `Laporan Siap Diunduh`,
-        text: `Data transaksi pesanan tiket Light And Glow Bukittinggi berhasil diexport ke format .${type.toUpperCase()}.`,
-        confirmButtonColor: '#EB1355'
-      });
-    }
+      let csv = 'No. Pesanan,Nama Pembeli,Email,Telepon,Jenis Tiket,Total Bayar,Metode Bayar,Status\n';
 
-    function filterOrders() {
-      const q = document.getElementById('orderSearch').value.toLowerCase();
-      const rows = document.querySelectorAll('#orderTableBody tr');
       rows.forEach(r => {
-        const text = r.textContent.toLowerCase();
-        r.style.display = text.includes(q) ? '' : 'none';
+        const order = r.getAttribute('data-order');
+        const name = `"${r.getAttribute('data-name')}"`;
+        const email = r.getAttribute('data-email');
+        const phone = `'${r.getAttribute('data-phone')}`;
+        const ticket = `"${r.getAttribute('data-ticket')}"`;
+        const amount = r.getAttribute('data-amount');
+        const method = `"${r.getAttribute('data-method')}"`;
+        const status = `"${r.getAttribute('data-status')}"`;
+
+        csv += `${order},${name},${email},${phone},${ticket},${amount},${method},${status}\n`;
       });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `pesanan_lightandglow_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Cetak PDF data sesuai hasil filter menggunakan window.print
+    function exportFilteredPDF() {
+      const rows = Array.from(document.querySelectorAll('.order-row')).filter(r => r.style.display !== 'none');
+      if (rows.length === 0) {
+        Swal.fire({ icon: 'warning', title: 'Data Kosong', text: 'Tidak ada data pesanan yang tampil untuk dicetak.' });
+        return;
+      }
+      window.print();
     }
   </script>
 </body>

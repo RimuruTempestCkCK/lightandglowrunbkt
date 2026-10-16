@@ -172,7 +172,7 @@
   <!-- Adminator Modal (Create / Edit) -->
   <div id="adminatorSpotModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeSpotModal()">
     <div class="adminator-modal" style="max-width:540px; width:92%;">
-      <form id="modalSpotForm" method="POST" action="{{ route('admin.rute.store') }}">
+      <form id="modalSpotForm" method="POST" action="{{ route('admin.rute.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="adminator-modal-head">
           <h3 id="spotModalTitle" class="adminator-modal-title">Tambah Spot Ikonik Baru</h3>
@@ -194,8 +194,10 @@
 
             <div style="display:grid; grid-template-columns:1fr 100px; gap:12px;">
               <div>
-                <label class="field-label">URL / File Foto Spot <span class="req">*</span></label>
-                <input id="inputSpotImg" name="image" class="input" placeholder="https://images.unsplash.com/..." required oninput="previewSpotImg(this.value)">
+                <label class="field-label">Upload Foto Spot (PNG / JPG) <span class="req">*</span></label>
+                <input type="file" id="inputSpotFile" name="image_file" class="input" accept="image/png,image/jpeg,image/jpg,image/webp" onchange="previewUploadedSpot(this)">
+                <input type="hidden" id="inputSpotImg" name="image" value="">
+                <span style="font-size:11px; color:var(--text-sub); display:block; margin-top:4px;">Format didukung: PNG, JPG, JPEG (Maks. 5MB)</span>
               </div>
               <div>
                 <label class="field-label">Urutan</label>
@@ -205,10 +207,10 @@
 
             <!-- Preview Gambar -->
             <div>
-              <label class="field-label">Preview Foto</label>
-              <div style="border:1px dashed var(--border); border-radius:8px; padding:8px; text-align:center; background:var(--bg-body);">
-                <img id="spotImgPreview" src="" alt="Preview" style="max-height:140px; max-width:100%; border-radius:6px; object-fit:cover; display:none; margin:0 auto;">
-                <span id="spotImgPlaceholder" style="font-size:12px; color:var(--text-sub);">Masukkan URL foto untuk melihat preview</span>
+              <label class="field-label">Preview Foto Spot</label>
+              <div style="border:1px dashed var(--border); border-radius:8px; padding:10px; text-align:center; background:var(--bg-body); min-height:120px; display:flex; align-items:center; justify-content:center;">
+                <img id="spotImgPreview" src="" alt="Preview" style="max-height:150px; max-width:100%; border-radius:6px; object-fit:cover; display:none;">
+                <span id="spotImgPlaceholder" style="font-size:12px; color:var(--text-sub);">Pilih file foto untuk melihat preview</span>
               </div>
             </div>
           </div>
@@ -223,16 +225,17 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    function previewSpotImg(url) {
+    function previewUploadedSpot(input) {
       const img = document.getElementById('spotImgPreview');
       const placeholder = document.getElementById('spotImgPlaceholder');
-      if (url && url.trim().length > 5) {
-        img.src = url;
-        img.style.display = 'block';
-        placeholder.style.display = 'none';
-      } else {
-        img.style.display = 'none';
-        placeholder.style.display = 'inline';
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          img.src = e.target.result;
+          img.style.display = 'block';
+          placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
       }
     }
 
@@ -248,10 +251,17 @@
       document.getElementById('inputSpotName').value = '';
       document.getElementById('inputSpotDesc').value = '';
       document.getElementById('inputSpotImg').value = '';
+      document.getElementById('inputSpotFile').value = '';
+      document.getElementById('inputSpotFile').required = true;
       document.getElementById('inputSpotOrder').value = '1';
       document.getElementById('btnSubmitSpot').textContent = 'Simpan ke Database';
 
-      previewSpotImg('');
+      const img = document.getElementById('spotImgPreview');
+      const placeholder = document.getElementById('spotImgPlaceholder');
+      img.src = '';
+      img.style.display = 'none';
+      placeholder.style.display = 'inline';
+
       document.getElementById('adminatorSpotModal').style.display = 'flex';
     }
 
@@ -263,10 +273,23 @@
       document.getElementById('inputSpotName').value = spot.name || '';
       document.getElementById('inputSpotDesc').value = spot.description || '';
       document.getElementById('inputSpotImg').value = spot.image || '';
+      document.getElementById('inputSpotFile').value = '';
+      document.getElementById('inputSpotFile').required = false;
       document.getElementById('inputSpotOrder').value = spot.order_index || '0';
       document.getElementById('btnSubmitSpot').textContent = 'Simpan Perubahan';
 
-      previewSpotImg(spot.image || '');
+      const img = document.getElementById('spotImgPreview');
+      const placeholder = document.getElementById('spotImgPlaceholder');
+      if (spot.image) {
+        img.src = spot.image;
+        img.style.display = 'block';
+        placeholder.style.display = 'none';
+      } else {
+        img.src = '';
+        img.style.display = 'none';
+        placeholder.style.display = 'inline';
+      }
+
       document.getElementById('adminatorSpotModal').style.display = 'flex';
     }
 

@@ -292,3 +292,44 @@ flowchart TD
     J2 --> K2["Status Tiket Berubah Menjadi: 'Sudah digunakan' (EXPIRED)"]
     I2 -->|Tiket Sudah Di-scan Sebelumnya| L2["Lampu Merah: DITOLAK! (Peringatan Double Entry)"]
 ```
+
+---
+
+## 6. Riwayat Catatan Implementasi & Pembaruan Terkini
+
+Semua pembaruan pada sistem dicatat secara transparan sebagai berikut:
+
+### 6.1 Upload Foto Nyata pada Rute & Spot Ikonik (`/admin/rute`)
+- Input teks URL manual telah digantikan dengan **Upload File Gambar Nyata** (`png`, `jpg`, `jpeg`, `webp`).
+- Dilengkapi fitur *realtime image preview* di modal tambah & edit sebelum disimpan.
+- File otomatis tersimpan ke direktori publik `public/uploads/spots/` dan path tersimpan di tabel `event_spots`.
+
+### 6.2 Pengelolaan Banner Carousel Hero (`/admin/banner`)
+- Bagian "Teks Pengumuman Flash Sale & Promo Bar" telah dibersihkan/dihapus sesuai arahan.
+- Halaman fokus pada **Upload Gambar Banner**, pengurutan prioritas (*Order Index*), dan pengaktifan/penonaktifan banner yang terhubung ke database `banners`.
+
+### 6.3 Prioritas & Filter Verifikasi Pembayaran (`/admin/verifikasi`)
+- Antrian pesanan dengan status **"Menunggu verifikasi"** otomatis diposisikan di baris **paling atas** tabel menggunakan query SQL `ORDER BY CASE WHEN orders.status = 'Menunggu verifikasi' THEN 0 ELSE 1 END, orders.created_at DESC`.
+- Disediakan **Dropdown Filter Status** (Semua, Menunggu Verifikasi, Pembayaran Disetujui, Pembayaran Ditolak) serta **Live Search** untuk mencari berdasarkan nomor pesanan, nama pembeli, email, atau no handphone.
+
+### 6.4 Filter & Ekspor Data Pesanan (`/admin/pesanan`)
+- Disediakan filter status transaksi dan pencarian instan.
+- Ditambahkan tombol **Simpan CSV**: mengekspor seluruh baris data yang sedang aktif difilter ke dalam file `.csv`.
+- Ditambahkan tombol **Cetak PDF**: mencetak atau menyimpan data yang telah difilter ke format dokumen PDF rapi 1 halaman/multi-halaman berorientasi cetak.
+
+### 6.5 Filter, Cetak, & Pembersihan Tombol Scanner pada Kehadiran (`/admin/kehadiran`)
+- **Pembersihan Keamanan**: Tombol "Buka Scanner QR" telah dihapus dari panel Admin Log Kehadiran karena pemindaian hanya diperuntukkan bagi petugas gate.
+- Disediakan filter status validasi (*Semua*, *Sukses Check-in*, *Tiket Sudah Digunakan*, *Tiket Tidak Valid*) dan pencarian live.
+- Fitur ekspor CSV dan cetak PDF sesuai hasil filter.
+
+### 6.6 Manajemen Akun Petugas Scanner (`/admin/petugas`)
+- Sistem CRUD penuh untuk akun petugas/staff (`users` table):
+  - **Tambah Petugas**: input nama, email aktif, dan password (dienkripsi aman menggunakan `Hash::make`).
+  - **Edit Petugas**: modifikasi nama dan email petugas.
+  - **Hapus Petugas**: menghapus akses akun petugas tertentu dengan proteksi keamanan (Admin Utama ID 1 tidak dapat dihapus).
+
+### 6.7 Integrasi Pemindai Kamera Realtime Petugas (`/petugas/dashboard`)
+- Terintegrasi pustaka kamera pemindai QR Code (`html5-qrcode`) yang dapat dinyalakan/dimatikan langsung di peramban petugas (mendukung kamera laptop dan kamera smartphone *environment/back-facing*).
+- Setiap pemindaian QR Code berhasil langsung divalidasi ke endpoint backend `/api/scanner/validate` secara *real-time* dengan feedback visual dan audio status tiket.
+- Input manual kode tiket tetap disediakan sebagai opsi pendukung.
+

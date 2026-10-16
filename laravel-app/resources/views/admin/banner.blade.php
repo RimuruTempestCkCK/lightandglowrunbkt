@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
   <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
   <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
-  <title>Master Banner Hero Carousel · Light And Glow Bukittinggi</title>
+  <title>Master Banner Hero · Light And Glow Bukittinggi</title>
   <script>
     !function(){
       try{
@@ -41,7 +41,7 @@
     .banner-img-wrap {
       position: relative;
       width: 100%;
-      height: 180px;
+      height: 190px;
       background: #111;
       overflow: hidden;
     }
@@ -52,7 +52,7 @@
       transition: transform 0.3s;
     }
     .banner-card:hover .banner-img-wrap img {
-      transform: scale(1.05);
+      transform: scale(1.04);
     }
     .banner-badge {
       position: absolute;
@@ -73,67 +73,106 @@
       display: flex;
       flex-direction: column;
     }
-    .banner-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--t-base);
-      margin-bottom: 8px;
-    }
-    .banner-desc {
-      font-size: 13px;
-      color: var(--t-muted);
-      line-height: 1.5;
-      margin-bottom: 16px;
-      flex: 1;
-    }
     .banner-actions {
       display: flex;
       gap: 8px;
       border-top: 1px solid var(--border-soft);
-      padding-top: 12px;
+      padding-top: 14px;
+      justify-content: flex-end;
+    }
+    .alert-banner {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .alert-success {
+      background: #ECFDF5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+    .alert-danger {
+      background: #FEF2F2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
     }
   </style>
 </head>
-<body data-active="banner_direct" data-crumbs="Master Data | Master Banner Hero">
+<body data-active="banner_direct" data-crumbs="Master Data | Kelola Gambar Banner Hero">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">
       <div data-shell-topbar></div>
       <main class="content">
         
+        <!-- Alerts Notification -->
+        @if(session('success'))
+          <div class="alert-banner alert-success">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ session('success') }}
+          </div>
+        @endif
+        @if(session('error'))
+          <div class="alert-banner alert-danger">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            {{ session('error') }}
+          </div>
+        @endif
+
         <!-- Hero Section -->
         <section class="hero" style="margin-bottom: 24px;">
           <div class="hero-text">
-            <span class="eyebrow">Master Data</span>
-            <h1 class="hero-title">Kelola <span class="accent">Banner Hero Carousel</span></h1>
-            <p class="hero-sub">Atur 3 banner carousel utama pada Landing Page: judul promosi, tagline, deskripsi, dan foto background berkualitas tinggi.</p>
+            <span class="eyebrow">Database MySQL Real-Time</span>
+            <h1 class="hero-title">Kelola <span class="accent">Gambar Banner Hero</span></h1>
+            <p class="hero-sub">Tambah dan edit gambar foto banner carousel yang tampil pada beranda landing page Light And Glow Bukittinggi.</p>
           </div>
           <div class="hero-actions">
-            <button class="btn btn--primary" onclick="resetBanners()">
-              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-              Reset
+            <button class="btn btn--primary" onclick="openAddBannerModal()">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Tambah Gambar Banner
             </button>
           </div>
         </section>
 
         <!-- Banner Grid -->
         <div class="banner-grid" id="bannerContainer">
-          <!-- Rendered via JS -->
-        </div>
-
-        <!-- Section Pengumuman Bar Atas (Flash Sale Announcement) -->
-        <div class="card" style="padding: 24px; margin-top: 12px;">
-          <div class="card-head" style="margin-bottom: 16px;">
-            <div class="card-title-wrap">
-              <span class="eyebrow">Top Header Bar</span>
-              <h2 class="card-title">Teks Pengumuman Flash Sale & Promo Bar</h2>
+          @forelse($banners as $index => $b)
+            <div class="banner-card">
+              <div class="banner-img-wrap">
+                <img src="{{ asset(ltrim($b->image, '/')) }}" alt="Banner Slide {{ $index + 1 }}">
+                <span class="banner-badge">Slide #{{ $b->order_index ?? ($index + 1) }}</span>
+              </div>
+              <div class="banner-content">
+                <div style="font-size:13px; font-weight:700; color:var(--t-base); margin-bottom:4px;">
+                  Urutan Tampil: Urutan ke-{{ $b->order_index ?? ($index + 1) }}
+                </div>
+                <div style="font-size:11.5px; color:var(--t-muted); margin-bottom:12px;">
+                  Status: <span style="color:#10B981; font-weight:600;">● Aktif di Carousel Beranda</span>
+                </div>
+                <div class="banner-actions">
+                  <button class="btn btn--ghost" style="padding:5px 12px; font-size:12px;" onclick='openEditBannerModal(@json($b))'>
+                    Edit Gambar
+                  </button>
+                  <button class="btn btn--ghost" style="padding:5px 12px; font-size:12px; color:var(--danger);" onclick="confirmDeleteBanner({{ $b->id }})">
+                    Hapus
+                  </button>
+                </div>
+                <!-- Form Delete Hidden -->
+                <form id="delete-banner-form-{{ $b->id }}" action="{{ route('admin.banner.delete', $b->id) }}" method="POST" style="display:none;">
+                  @csrf
+                  @method('DELETE')
+                </form>
+              </div>
             </div>
-          </div>
-          <div style="margin-bottom: 16px;">
-            <label style="display:block; font-size:13px; font-weight:600; color:var(--t-muted); margin-bottom:6px;">Teks Berjalan / Bar Pengumuman Atas</label>
-            <input type="text" id="topBarText" class="cms-input" style="width:100%; padding:10px 14px; border-radius:6px; border:1px solid var(--border); background:var(--bg-body); color:var(--t-base);" value="⚡ FLASH SALE PRESALE TIKET LIGHT AND GLOW BUKITTINGGI TELAH DIBUKA! DAPATKAN HARGA SPESIAL SEKARANG!">
-          </div>
-          <button class="btn btn--primary" onclick="saveTopBarText()">Simpan</button>
+          @empty
+            <div style="grid-column: 1 / -1; background:var(--bg-card); border:1px solid var(--border-soft); border-radius:12px; padding:32px; text-align:center; color:var(--t-muted);">
+              Belum ada gambar banner di database. Silakan klik tombol "Tambah Gambar Banner".
+            </div>
+          @endforelse
         </div>
 
       </main>
@@ -141,131 +180,65 @@
     </div>
   </div>
 
-  <!-- Adminator Native Template Modal Popup -->
+  <!-- Adminator Modal (Tambah / Edit Gambar Banner Saja) -->
   <div id="adminatorBannerModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeBannerAdminModal()">
-    <div class="adminator-modal">
-      <div class="adminator-modal-head">
-        <h3 id="adminBannerModalTitle" class="adminator-modal-title">Edit Slide Banner</h3>
-        <button class="adminator-modal-close" onclick="closeBannerAdminModal()" aria-label="Tutup">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div class="adminator-modal-body">
-        <input type="hidden" id="modalBannerId" value="1">
-        <div style="display:flex; flex-direction:column; gap:14px;">
-          <div>
-            <label class="field-label">Tag / Kategori Promosi</label>
-            <input id="inputBannerTag" class="input" placeholder="Contoh: SPECIAL GUEST STARS">
-          </div>
-          <div>
-            <label class="field-label">Judul Utama Slide <span class="req">*</span></label>
-            <input id="inputBannerTitle" class="input" placeholder="Judul slide banner...">
-          </div>
-          <div>
-            <label class="field-label">Deskripsi Promo</label>
-            <textarea id="inputBannerDesc" class="textarea" rows="3" placeholder="Deskripsi..."></textarea>
-          </div>
-          <div>
-            <label class="field-label">URL Foto Background</label>
-            <input id="inputBannerImg" class="input" placeholder="https://images.unsplash.com/...">
+    <div class="adminator-modal" style="max-width:500px; width:92%;">
+      <form id="modalBannerForm" method="POST" action="{{ route('admin.banner.store') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="adminator-modal-head">
+          <h3 id="adminBannerModalTitle" class="adminator-modal-title">Tambah Gambar Banner</h3>
+          <button type="button" class="adminator-modal-close" onclick="closeBannerAdminModal()" aria-label="Tutup">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="adminator-modal-body">
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            
+            <div>
+              <label class="field-label">Unggah Foto / Gambar Banner <span class="req">*</span></label>
+              <input type="file" id="inputBannerFile" name="image_file" class="input" accept="image/png,image/jpeg,image/jpg,image/webp" onchange="previewUploadedBanner(this)">
+              <input type="hidden" id="inputBannerImg" name="image" value="">
+              <span style="font-size:11px; color:var(--t-muted); margin-top:4px; display:block;">
+                Format foto: PNG, JPG, JPEG, atau WEBP. Rekomendasi resolusi lebar (1200x500 px).
+              </span>
+            </div>
+
+            <div>
+              <label class="field-label">Urutan Tampil Slide</label>
+              <input type="number" id="inputBannerOrder" name="order_index" class="input" min="1" value="1">
+            </div>
+
+            <div>
+              <label class="field-label">Preview Gambar Banner</label>
+              <div style="border:1px dashed var(--border); border-radius:10px; padding:10px; text-align:center; background:var(--bg-body); min-height:130px; display:flex; align-items:center; justify-content:center;">
+                <img id="bannerImgPreview" src="" alt="Preview" style="max-height:160px; max-width:100%; border-radius:8px; object-fit:cover; display:none;">
+                <span id="bannerImgPlaceholder" style="font-size:12px; color:var(--t-muted);">Pilih file gambar untuk melihat preview</span>
+              </div>
+            </div>
+
           </div>
         </div>
-      </div>
-      <div class="adminator-modal-foot">
-        <button class="btn btn--ghost" onclick="closeBannerAdminModal()">Batal</button>
-        <button class="btn btn--primary" onclick="saveBannerFromModal()">Simpan</button>
-      </div>
+        <div class="adminator-modal-foot">
+          <button type="button" class="btn btn--ghost" onclick="closeBannerAdminModal()">Batal</button>
+          <button type="submit" class="btn btn--primary" id="btnSubmitBanner">Simpan Banner</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    const DEFAULT_BANNERS = [
-      {
-        id: 1,
-        tag: "NIGHT RUN & CONCERT",
-        img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1200&auto=format&fit=crop",
-        title: "Light And Glow Bukittinggi 2026",
-        desc: "Sensasi lari malam 5K bertabur cahaya neon glow-in-the-dark dan konser spektakuler di Jam Gadang Bukittinggi."
-      },
-      {
-        id: 2,
-        tag: "SPECIAL GUEST STARS",
-        img: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop",
-        title: "Deretan DJ & Artis Ternama",
-        desc: "Panggung musik megah dengan tata cahaya laser visual memukau menemani pesta neon sampai malam."
-      },
-      {
-        id: 3,
-        tag: "LIMITED EARLY BIRD",
-        img: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop",
-        title: "Dapatkan Tiket Spesial Kamu!",
-        desc: "Termasuk Glow Pack eksklusif (Neon Tee, LED Glasses, Glow Stick, Medal Finisher & Refreshment)."
-      }
-    ];
-
-    function getStorageData() {
-      const raw = localStorage.getItem('goers_full_cms');
-      return raw ? JSON.parse(raw) : {};
-    }
-
-    function saveStorageData(cmsData) {
-      localStorage.setItem('goers_full_cms', JSON.stringify(cmsData));
-    }
-
-    function renderBanners() {
-      const cms = getStorageData();
-      const container = document.getElementById('bannerContainer');
-      container.innerHTML = '';
-
-      const banners = [
-        {
-          id: 1,
-          tag: cms.slide1Tag || DEFAULT_BANNERS[0].tag,
-          img: cms.slide1Img || DEFAULT_BANNERS[0].img,
-          title: cms.slide1Title || DEFAULT_BANNERS[0].title,
-          desc: cms.slide1Desc || DEFAULT_BANNERS[0].desc
-        },
-        {
-          id: 2,
-          tag: cms.slide2Tag || DEFAULT_BANNERS[1].tag,
-          img: cms.slide2Img || DEFAULT_BANNERS[1].img,
-          title: cms.slide2Title || DEFAULT_BANNERS[1].title,
-          desc: cms.slide2Desc || DEFAULT_BANNERS[1].desc
-        },
-        {
-          id: 3,
-          tag: cms.slide3Tag || DEFAULT_BANNERS[2].tag,
-          img: cms.slide3Img || DEFAULT_BANNERS[2].img,
-          title: cms.slide3Title || DEFAULT_BANNERS[2].title,
-          desc: cms.slide3Desc || DEFAULT_BANNERS[2].desc
-        }
-      ];
-
-      banners.forEach((b) => {
-        const card = document.createElement('div');
-        card.className = 'banner-card';
-        card.innerHTML = `
-          <div class="banner-img-wrap">
-            <img src="${b.img}" alt="${b.title}">
-            <div class="banner-badge">Slide #${b.id} · ${b.tag}</div>
-          </div>
-          <div class="banner-content">
-            <h3 class="banner-title">${b.title}</h3>
-            <p class="banner-desc">${b.desc}</p>
-            <div class="banner-actions">
-              <button class="btn btn--primary" style="flex:1; justify-content:center;" onclick="editBanner(${b.id})">
-                <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
-                Edit
-              </button>
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      if (cms.topBarText) {
-        document.getElementById('topBarText').value = cms.topBarText;
+    function previewUploadedBanner(input) {
+      const img = document.getElementById('bannerImgPreview');
+      const placeholder = document.getElementById('bannerImgPlaceholder');
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          img.src = e.target.result;
+          img.style.display = 'block';
+          placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
       }
     }
 
@@ -273,91 +246,68 @@
       document.getElementById('adminatorBannerModal').style.display = 'none';
     }
 
-    function editBanner(id) {
-      const cms = getStorageData();
-      const current = {
-        tag: cms[`slide${id}Tag`] || DEFAULT_BANNERS[id - 1].tag,
-        img: cms[`slide${id}Img`] || DEFAULT_BANNERS[id - 1].img,
-        title: cms[`slide${id}Title`] || DEFAULT_BANNERS[id - 1].title,
-        desc: cms[`slide${id}Desc`] || DEFAULT_BANNERS[id - 1].desc
-      };
+    function openAddBannerModal() {
+      const form = document.getElementById('modalBannerForm');
+      form.action = "{{ route('admin.banner.store') }}";
 
-      document.getElementById('modalBannerId').value = id;
-      document.getElementById('adminBannerModalTitle').textContent = `Edit Slide Banner #${id}`;
-      document.getElementById('inputBannerTag').value = current.tag;
-      document.getElementById('inputBannerTitle').value = current.title;
-      document.getElementById('inputBannerDesc').value = current.desc;
-      document.getElementById('inputBannerImg').value = current.img;
+      document.getElementById('adminBannerModalTitle').textContent = 'Tambah Gambar Banner Baru';
+      document.getElementById('inputBannerFile').value = '';
+      document.getElementById('inputBannerFile').required = true;
+      document.getElementById('inputBannerImg').value = '';
+      document.getElementById('inputBannerOrder').value = '1';
+      document.getElementById('btnSubmitBanner').textContent = 'Simpan Banner';
+
+      const img = document.getElementById('bannerImgPreview');
+      const placeholder = document.getElementById('bannerImgPlaceholder');
+      img.src = '';
+      img.style.display = 'none';
+      placeholder.style.display = 'inline';
 
       document.getElementById('adminatorBannerModal').style.display = 'flex';
     }
 
-    function saveBannerFromModal() {
-      const id = document.getElementById('modalBannerId').value;
-      const tag = document.getElementById('inputBannerTag').value;
-      const title = document.getElementById('inputBannerTitle').value;
-      const desc = document.getElementById('inputBannerDesc').value;
-      const img = document.getElementById('inputBannerImg').value;
+    function openEditBannerModal(banner) {
+      const form = document.getElementById('modalBannerForm');
+      form.action = "/admin/banner/" + banner.id + "/update";
 
-      if (!title) {
-        alert('Judul banner tidak boleh kosong!');
-        return;
+      document.getElementById('adminBannerModalTitle').textContent = 'Edit Gambar Banner #' + banner.id;
+      document.getElementById('inputBannerFile').value = '';
+      document.getElementById('inputBannerFile').required = false;
+      document.getElementById('inputBannerImg').value = banner.image || '';
+      document.getElementById('inputBannerOrder').value = banner.order_index || '1';
+      document.getElementById('btnSubmitBanner').textContent = 'Simpan Perubahan';
+
+      const img = document.getElementById('bannerImgPreview');
+      const placeholder = document.getElementById('bannerImgPlaceholder');
+      if (banner.image) {
+        img.src = "{{ asset('') }}" + banner.image.replace(/^\/+/, '');
+        img.style.display = 'block';
+        placeholder.style.display = 'none';
+      } else {
+        img.src = '';
+        img.style.display = 'none';
+        placeholder.style.display = 'inline';
       }
 
-      const cms = getStorageData();
-      cms[`slide${id}Tag`] = tag;
-      cms[`slide${id}Title`] = title;
-      cms[`slide${id}Desc`] = desc;
-      cms[`slide${id}Img`] = img;
-      saveStorageData(cms);
+      document.getElementById('adminatorBannerModal').style.display = 'flex';
+    }
 
-      closeBannerAdminModal();
-      renderBanners();
-
+    function confirmDeleteBanner(id) {
       Swal.fire({
-        icon: 'success',
-        title: 'Berhasil Diedit!',
-        text: `Slide banner #${id} telah berhasil diperbarui.`,
-        timer: 1500,
-        showConfirmButton: false
+        title: 'Hapus Banner?',
+        text: 'Banner ini akan dihapus permanen dari carousel beranda.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#EF4444',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('delete-banner-form-' + id).submit();
+        }
       });
     }
-
-    function saveTopBarText() {
-      const cms = getStorageData();
-      cms.topBarText = document.getElementById('topBarText').value;
-      saveStorageData(cms);
-      Swal.fire({
-        icon: 'success',
-        title: 'Berhasil Diedit!',
-        text: 'Teks bar pengumuman telah diperbarui.',
-        timer: 1500,
-        showConfirmButton: false
-      });
-    }
-
-    function resetBanners() {
-      if (confirm('Kembalikan 3 slide hero carousel ke gambar dan judul default awal?')) {
-        const cms = getStorageData();
-        DEFAULT_BANNERS.forEach((b) => {
-          delete cms[`slide${b.id}Tag`];
-          delete cms[`slide${b.id}Title`];
-          delete cms[`slide${b.id}Desc`];
-          delete cms[`slide${b.id}Img`];
-        });
-        saveStorageData(cms);
-        renderBanners();
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil Direset!',
-          text: 'Slide banner dikembalikan ke konfigurasi default.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', renderBanners);
   </script>
 </body>
 </html>

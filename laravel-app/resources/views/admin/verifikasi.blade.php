@@ -22,8 +22,28 @@
   <script defer="defer" src="{{ asset('adminator/runtime.096d507f.js') }}"></script>
   <script defer="defer" src="{{ asset('adminator/2026.5a84696f.js') }}"></script>
   <link href="{{ asset('adminator/style.76ee5eee.css') }}" rel="stylesheet">
+  <style>
+    .filter-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
-<body data-active="verifikasi" data-crumbs="Manajemen Tiket | Verifikasi Pembayaran">
+<body data-active="verifikasi" data-crumbs="Transaksi | Verifikasi Pembayaran">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">
@@ -34,31 +54,56 @@
           <div class="hero-text">
             <span class="eyebrow">Manajemen Transaksi</span>
             <h1 class="hero-title">Verifikasi <span class="accent">Pembayaran</span></h1>
-            <p class="hero-sub">Periksa bukti transfer atau pembayaran QRIS dari pembeli tiket, setujui untuk menerbitkan tiket digital & QR Code unik, atau tolak disertai alasan.</p>
+            <p class="hero-sub">Periksa bukti transfer atau pembayaran QRIS dari pembeli tiket. Pesanan yang <strong>Menunggu Verifikasi</strong> selalu ditempatkan di paling atas antrean.</p>
           </div>
           <div class="hero-actions">
-            <button class="btn btn--primary" onclick="refreshData()">
+            <button class="btn btn--primary" onclick="location.reload()">
               <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
-              Refresh
+              Refresh Data
             </button>
           </div>
         </section>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="filter-toolbar">
+          <div class="filter-group">
+            <label style="font-size:12px; font-weight:700; color:var(--t-muted);">Filter Status:</label>
+            <select id="statusFilter" class="select" style="width: auto; padding: 7px 32px 7px 12px; font-size:13px;" onchange="applyFilter()">
+              <option value="ALL">Semua Status</option>
+              <option value="Menunggu verifikasi" selected>Menunggu Verifikasi (Prioritas)</option>
+              <option value="Pembayaran disetujui">Pembayaran Disetujui</option>
+              <option value="Pembayaran ditolak">Pembayaran Ditolak</option>
+            </select>
+          </div>
+
+          <div class="filter-group" style="flex:1; max-width:380px;">
+            <div class="input-icon" style="width:100%;">
+              <span class="ico">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              </span>
+              <input type="text" id="searchInput" class="input" placeholder="Cari no. pesanan, nama pembeli, hp..." oninput="applyFilter()">
+            </div>
+          </div>
+        </div>
 
         <!-- Table Verifikasi -->
         <div class="card" style="padding: 24px;">
           <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
-              <span class="eyebrow">Daftar Antrean</span>
-              <h2 class="card-title">Bukti Transfer & QRIS Perlu Diverifikasi</h2>
+              <span class="eyebrow">Daftar Transaksi</span>
+              <h2 class="card-title">Data Pembayaran Masuk</h2>
+            </div>
+            <div style="font-size:12px; color:var(--t-muted);" id="counterInfo">
+              Menampilkan {{ count($orders) }} transaksi
             </div>
           </div>
 
-          <table class="table" style="width: 100%;">
+          <table class="table" style="width: 100%;" id="ordersTable">
             <thead>
               <tr>
                 <th>No. Pesanan</th>
                 <th>Nama Pembeli</th>
-                <th>Jenis Tiket</th>
+                <th>Kategori Tiket</th>
                 <th>Nominal</th>
                 <th>Metode</th>
                 <th>Bukti Bayar</th>
@@ -67,35 +112,58 @@
               </tr>
             </thead>
             <tbody>
-              @forelse($pendingOrders as $order)
-              <tr id="row-{{ $order->id }}">
+              @forelse($orders as $order)
+              <tr id="row-{{ $order->id }}" class="order-row" data-status="{{ $order->status }}" data-search="{{ strtolower($order->order_number . ' ' . $order->buyer_name . ' ' . $order->buyer_email . ' ' . $order->buyer_phone . ' ' . $order->ticket_name) }}">
                 <td><strong>#{{ $order->order_number }}</strong></td>
-                <td>{{ $order->buyer_name }}<br><small style="color:gray;">{{ $order->buyer_phone }}</small></td>
+                <td>
+                  <strong>{{ $order->buyer_name }}</strong><br>
+                  <small style="color:var(--t-muted);">{{ $order->buyer_phone }}</small>
+                </td>
                 <td>{{ $order->ticket_name }}</td>
-                <td><strong>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></td>
+                <td><strong style="color:var(--primary);">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></td>
                 <td>{{ $order->payment_method }}</td>
                 <td>
                   @if($order->payment_proof)
-                    <a href="#" onclick="viewProof('{{ $order->buyer_name }}', '#{{ $order->order_number }}', '{{ $order->payment_proof }}'); return false;" style="color:var(--primary); font-weight:600;">Lihat Bukti 🔍</a>
+                    <a href="#" onclick="viewProof('{{ addslashes($order->buyer_name) }}', '#{{ $order->order_number }}', '{{ asset(ltrim($order->payment_proof, '/')) }}'); return false;" style="color:var(--primary); font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      Lihat Bukti
+                    </a>
                   @else
                     <span style="color:#94A3B8; font-size:12px;">Belum upload</span>
                   @endif
                 </td>
-                <td><span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">{{ $order->status }}</span></td>
+                <td>
+                  @if($order->status === 'Menunggu verifikasi')
+                    <span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span>
+                  @elseif($order->status === 'Pembayaran disetujui')
+                    <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">Disetujui</span>
+                  @else
+                    <span class="tag t-danger" style="background:rgba(239,68,68,0.2); color:#EF4444; padding:3px 8px; border-radius:4px; font-weight:700;">Ditolak</span>
+                  @endif
+                </td>
                 <td style="text-align:right">
-                  <button class="btn btn--primary" style="padding:4px 10px; font-size:12px;" onclick="approvePayment('{{ $order->id }}', '{{ $order->buyer_name }}', 'row-{{ $order->id }}')">Setujui</button>
-                  <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="rejectPayment('{{ $order->id }}', '{{ $order->buyer_name }}', 'row-{{ $order->id }}')">Tolak</button>
+                  @if($order->status === 'Menunggu verifikasi')
+                    <button class="btn btn--primary" style="padding:4px 10px; font-size:12px;" onclick="approvePayment('{{ $order->id }}', '{{ addslashes($order->buyer_name) }}', 'row-{{ $order->id }}')">Setujui</button>
+                    <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="rejectPayment('{{ $order->id }}', '{{ addslashes($order->buyer_name) }}', 'row-{{ $order->id }}')">Tolak</button>
+                  @elseif($order->status === 'Pembayaran disetujui')
+                    <span style="color:#10B981; font-weight:600; font-size:12px;">✓ Tiket Terbit</span>
+                  @else
+                    <span style="color:#EF4444; font-weight:600; font-size:12px;">✕ Ditolak</span>
+                  @endif
                 </td>
               </tr>
               @empty
               <tr>
                 <td colspan="8" style="text-align:center; padding:30px; color:#94A3B8;">
-                  Tidak ada antrean verifikasi pembayaran saat ini. Semua pesanan telah diproses! 🎉
+                  Belum ada transaksi pembayaran di sistem.
                 </td>
               </tr>
               @endforelse
             </tbody>
           </table>
+          <div id="noMatchMessage" style="display:none; text-align:center; padding:30px; color:var(--t-muted);">
+            Tidak ditemukan data yang cocok dengan kata kunci atau filter status yang dipilih.
+          </div>
         </div>
 
       </main>
@@ -105,19 +173,50 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    function refreshData() {
-      location.reload();
+    function applyFilter() {
+      const status = document.getElementById('statusFilter').value;
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const rows = document.querySelectorAll('.order-row');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const rowStatus = row.getAttribute('data-status');
+        const rowSearch = row.getAttribute('data-search') || '';
+
+        const matchesStatus = (status === 'ALL') || (rowStatus === status);
+        const matchesQuery = !query || rowSearch.includes(query);
+
+        if (matchesStatus && matchesQuery) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const noMatch = document.getElementById('noMatchMessage');
+      if (visibleCount === 0 && rows.length > 0) {
+        noMatch.style.display = 'block';
+      } else {
+        noMatch.style.display = 'none';
+      }
+
+      document.getElementById('counterInfo').textContent = `Menampilkan ${visibleCount} transaksi`;
     }
+
+    // Default trigger filter on load
+    document.addEventListener('DOMContentLoaded', () => {
+      applyFilter();
+    });
 
     function viewProof(name, orderId, imgUrl) {
       Swal.fire({
         title: `Bukti Bayar: ${name}`,
         text: `Pesanan ${orderId}`,
         imageUrl: imgUrl,
-        imageWidth: 350,
-        imageHeight: 250,
+        imageWidth: 380,
         imageAlt: 'Bukti Transfer',
-        confirmButtonColor: '#EB1355',
+        confirmButtonColor: '#2563EB',
         confirmButtonText: 'Tutup'
       });
     }
@@ -125,7 +224,7 @@
     function approvePayment(orderId, name, rowId) {
       Swal.fire({
         title: `Setujui Pembayaran?`,
-        html: `Apakah Anda yakin ingin memverifikasi pesanan atas nama <b>${name}</b>?<br><small style="color:gray;">Tiket digital & QR Code resmi akan langsung diterbitkan ke database.</small>`,
+        html: `Apakah Anda yakin ingin memverifikasi pesanan atas nama <b>${name}</b>?<br><small style="color:gray;">Tiket digital & QR Code resmi akan langsung diterbitkan ke akun pembeli.</small>`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#10B981',
@@ -154,13 +253,14 @@
         if (result.isConfirmed) {
           const row = document.getElementById(rowId);
           if (row) {
-            row.style.opacity = '0.5';
+            row.setAttribute('data-status', 'Pembayaran disetujui');
             row.querySelector('.tag').className = 'tag t-success';
             row.querySelector('.tag').style.background = 'rgba(16,185,129,0.2)';
             row.querySelector('.tag').style.color = '#10B981';
             row.querySelector('.tag').textContent = 'Disetujui';
             row.querySelector('td:last-child').innerHTML = '<span style="color:#10B981; font-weight:600; font-size:12px;">✓ Tiket Terbit</span>';
           }
+          applyFilter();
           Swal.fire({
             icon: 'success',
             title: 'Pembayaran Disetujui!',
@@ -176,19 +276,18 @@
         title: `Tolak Pembayaran`,
         text: `Masukkan alasan penolakan untuk pembeli ${name}:`,
         input: 'textarea',
-        inputPlaceholder: 'Contoh: Nominal transfer kurang / bukti bayar tidak jelas / QRIS kedaluwarsa...',
+        inputPlaceholder: 'Contoh: Nominal transfer tidak sesuai / bukti bayar tidak jelas / QRIS kedaluwarsa...',
         showCancelButton: true,
-        confirmButtonColor: '#EB1355',
+        confirmButtonColor: '#EF4444',
         cancelButtonColor: '#71717A',
         confirmButtonText: 'Tolak Pembayaran',
         cancelButtonText: 'Batal',
         showLoaderOnConfirm: true,
-        inputValidator: (value) => {
-          if (!value) {
-            return 'Alasan penolakan wajib diisi!';
-          }
-        },
         preConfirm: (reason) => {
+          if (!reason || reason.trim() === '') {
+            Swal.showValidationMessage('Alasan penolakan wajib diisi!');
+            return false;
+          }
           return fetch(`/api/orders/${orderId}/reject`, {
             method: 'POST',
             headers: {
@@ -210,18 +309,19 @@
         if (result.isConfirmed) {
           const row = document.getElementById(rowId);
           if (row) {
-            row.style.opacity = '0.5';
+            row.setAttribute('data-status', 'Pembayaran ditolak');
             row.querySelector('.tag').className = 'tag t-danger';
-            row.querySelector('.tag').style.background = 'rgba(235,19,85,0.2)';
-            row.querySelector('.tag').style.color = '#EB1355';
+            row.querySelector('.tag').style.background = 'rgba(239,68,68,0.2)';
+            row.querySelector('.tag').style.color = '#EF4444';
             row.querySelector('.tag').textContent = 'Ditolak';
-            row.querySelector('td:last-child').innerHTML = '<span style="color:var(--danger); font-weight:600; font-size:12px;">✕ Dibatalkan</span>';
+            row.querySelector('td:last-child').innerHTML = '<span style="color:#EF4444; font-weight:600; font-size:12px;">✕ Ditolak</span>';
           }
+          applyFilter();
           Swal.fire({
             icon: 'info',
-            title: 'Pembayaran Ditolak',
-            text: `Pesanan telah dibatalkan dengan alasan: "${result.value.reason}".`,
-            confirmButtonColor: '#EB1355'
+            title: 'Pesanan Ditolak',
+            text: `Pesanan telah ditolak dan pembeli telah diberi tahu alasan pembatalannya.`,
+            confirmButtonColor: '#EF4444'
           });
         }
       });

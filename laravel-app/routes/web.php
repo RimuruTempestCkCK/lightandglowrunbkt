@@ -16,8 +16,9 @@ Route::get('/', function () {
     $event = DB::table('events')->first();
     $tickets = DB::table('ticket_types')->where('is_active', true)->get();
     $spots = DB::table('event_spots')->where('is_active', true)->orderBy('order_index', 'asc')->get();
+    $banners = DB::table('banners')->where('is_active', true)->orderBy('order_index', 'asc')->get();
     $buyer = session('buyer');
-    return view('welcome', compact('event', 'tickets', 'spots', 'buyer'));
+    return view('welcome', compact('event', 'tickets', 'spots', 'banners', 'buyer'));
 })->name('home');
 
 // ─── BUYER AUTH ROUTES ─────────────────────────────────────────────────────
@@ -225,10 +226,81 @@ Route::get('/tiket/{id}', function ($id) {
 })->name('buyer.ticket.detail');
 
 Route::get('/admin/banner', function () {
-    $banners = DB::table('banners')->get();
+    $banners = DB::table('banners')->orderBy('order_index', 'asc')->get();
     return view('admin.banner', compact('banners'));
 })->name('admin.banner');
 Route::get('/dashboard/banner', fn() => redirect()->route('admin.banner'));
+
+Route::post('/admin/banner/store', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        'image' => 'nullable|string',
+        'order_index' => 'nullable|integer'
+    ]);
+
+    $imagePath = $request->input('image', '');
+    if ($request->hasFile('image_file')) {
+        $file = $request->file('image_file');
+        $fileName = 'banner_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/banners'), $fileName);
+        $imagePath = '/uploads/banners/' . $fileName;
+    }
+
+    if (empty($imagePath)) {
+        return redirect()->route('admin.banner')->with('error', 'File gambar banner wajib diunggah!');
+    }
+
+    $orderIndex = (int) ($request->input('order_index', 0) ?: 0);
+
+    DB::table('banners')->insert([
+        'tag' => 'PROMO',
+        'title' => 'Banner ' . (DB::table('banners')->count() + 1),
+        'description' => 'Light and Glow Run Bukittinggi 2026',
+        'image' => $imagePath,
+        'order_index' => $orderIndex,
+        'is_active' => true,
+        'created_at' => now(),
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('admin.banner')->with('success', 'Gambar banner baru berhasil ditambahkan!');
+})->name('admin.banner.store');
+
+Route::post('/admin/banner/{id}/update', function (\Illuminate\Http\Request $request, $id) {
+    $request->validate([
+        'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        'image' => 'nullable|string',
+        'order_index' => 'nullable|integer'
+    ]);
+
+    $banner = DB::table('banners')->where('id', $id)->first();
+    if (!$banner) {
+        return redirect()->route('admin.banner')->with('error', 'Banner tidak ditemukan.');
+    }
+
+    $imagePath = $request->input('image', $banner->image);
+    if ($request->hasFile('image_file')) {
+        $file = $request->file('image_file');
+        $fileName = 'banner_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/banners'), $fileName);
+        $imagePath = '/uploads/banners/' . $fileName;
+    }
+
+    $orderIndex = (int) ($request->input('order_index', $banner->order_index) ?: 0);
+
+    DB::table('banners')->where('id', $id)->update([
+        'image' => $imagePath,
+        'order_index' => $orderIndex,
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('admin.banner')->with('success', 'Gambar banner berhasil diperbarui!');
+})->name('admin.banner.update');
+
+Route::delete('/admin/banner/{id}', function ($id) {
+    DB::table('banners')->where('id', $id)->delete();
+    return redirect()->route('admin.banner')->with('success', 'Banner berhasil dihapus dari database.');
+})->name('admin.banner.delete');
 
 // Admin Rute & Spot Ikonik Bukittinggi (Terintegrasi Database MySQL)
 Route::get('/admin/rute', function () {
@@ -241,16 +313,29 @@ Route::post('/admin/rute/store', function (\Illuminate\Http\Request $request) {
     $request->validate([
         'name' => 'required|string|max:100',
         'description' => 'required|string|max:255',
-        'image' => 'required|string',
+        'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        'image' => 'nullable|string',
         'order_index' => 'nullable|integer'
     ]);
+
+    $imagePath = $request->input('image', '');
+    if ($request->hasFile('image_file')) {
+        $file = $request->file('image_file');
+        $fileName = 'spot_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/spots'), $fileName);
+        $imagePath = '/uploads/spots/' . $fileName;
+    }
+
+    if (empty($imagePath)) {
+        return redirect()->route('admin.rute')->with('error', 'File foto spot rute wajib diunggah (format PNG atau JPG)!');
+    }
 
     $orderIndex = (int) ($request->input('order_index', 0) ?: 0);
 
     DB::table('event_spots')->insert([
         'name' => $request->input('name'),
         'description' => $request->input('description'),
-        'image' => $request->input('image'),
+        'image' => $imagePath,
         'order_index' => $orderIndex,
         'is_active' => true,
         'created_at' => now(),
@@ -264,16 +349,30 @@ Route::post('/admin/rute/{id}/update', function (\Illuminate\Http\Request $reque
     $request->validate([
         'name' => 'required|string|max:100',
         'description' => 'required|string|max:255',
-        'image' => 'required|string',
+        'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        'image' => 'nullable|string',
         'order_index' => 'nullable|integer'
     ]);
 
-    $orderIndex = (int) ($request->input('order_index', 0) ?: 0);
+    $spot = DB::table('event_spots')->where('id', $id)->first();
+    if (!$spot) {
+        return redirect()->route('admin.rute')->with('error', 'Spot rute tidak ditemukan.');
+    }
+
+    $imagePath = $request->input('image', $spot->image);
+    if ($request->hasFile('image_file')) {
+        $file = $request->file('image_file');
+        $fileName = 'spot_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/spots'), $fileName);
+        $imagePath = '/uploads/spots/' . $fileName;
+    }
+
+    $orderIndex = (int) ($request->input('order_index', $spot->order_index) ?: 0);
 
     DB::table('event_spots')->where('id', $id)->update([
         'name' => $request->input('name'),
         'description' => $request->input('description'),
-        'image' => $request->input('image'),
+        'image' => $imagePath,
         'order_index' => $orderIndex,
         'updated_at' => now()
     ]);
@@ -334,15 +433,15 @@ Route::post('/admin/acara/update', function (\Illuminate\Http\Request $request) 
 
 // 5. Verifikasi Pembayaran (Berdasarkan rancangan web.txt)
 Route::get('/admin/verifikasi', function () {
-    $pendingOrders = DB::table('orders')
+    $orders = DB::table('orders')
         ->join('buyers', 'orders.buyer_id', '=', 'buyers.id')
         ->join('ticket_types', 'orders.ticket_type_id', '=', 'ticket_types.id')
         ->select('orders.*', 'buyers.name as buyer_name', 'buyers.email as buyer_email', 'buyers.phone as buyer_phone', 'ticket_types.name as ticket_name')
-        ->where('orders.status', 'Menunggu verifikasi')
+        ->orderByRaw("CASE WHEN orders.status = 'Menunggu verifikasi' THEN 0 ELSE 1 END")
         ->orderBy('orders.id', 'desc')
         ->get();
 
-    return view('admin.verifikasi', compact('pendingOrders'));
+    return view('admin.verifikasi', compact('orders'));
 })->name('admin.verifikasi');
 Route::get('/dashboard/verifikasi', fn() => redirect()->route('admin.verifikasi'));
 
@@ -385,6 +484,55 @@ Route::get('/admin/petugas', function () {
     return view('admin.petugas', compact('staff'));
 })->name('admin.petugas');
 Route::get('/dashboard/petugas', fn() => redirect()->route('admin.petugas'));
+
+Route::post('/admin/petugas/store', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'name' => 'required|string|max:150',
+        'email' => 'required|email|max:150|unique:users,email',
+        'password' => 'required|string|min:6'
+    ]);
+
+    DB::table('users')->insert([
+        'name' => $request->input('name'),
+        'email' => $request->input('email'),
+        'password' => Hash::make($request->input('password')),
+        'created_at' => now(),
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('admin.petugas')->with('success', 'Akun petugas baru berhasil ditambahkan!');
+})->name('admin.petugas.store');
+
+Route::post('/admin/petugas/{id}/update', function (\Illuminate\Http\Request $request, $id) {
+    $request->validate([
+        'name' => 'required|string|max:150',
+        'email' => 'required|email|max:150|unique:users,email,' . $id,
+        'password' => 'nullable|string|min:6'
+    ]);
+
+    $updateData = [
+        'name' => $request->input('name'),
+        'email' => $request->input('email'),
+        'updated_at' => now()
+    ];
+
+    if ($request->filled('password')) {
+        $updateData['password'] = Hash::make($request->input('password'));
+    }
+
+    DB::table('users')->where('id', $id)->update($updateData);
+
+    return redirect()->route('admin.petugas')->with('success', 'Data petugas berhasil diperbarui!');
+})->name('admin.petugas.update');
+
+Route::delete('/admin/petugas/{id}', function ($id) {
+    if ($id == 1) {
+        return redirect()->route('admin.petugas')->with('error', 'Akun Admin Utama tidak boleh dihapus demi keamanan sistem.');
+    }
+
+    DB::table('users')->where('id', $id)->delete();
+    return redirect()->route('admin.petugas')->with('success', 'Akun petugas berhasil dihapus dari sistem.');
+})->name('admin.petugas.delete');
 
 // 8. API Endpoints — checkout wajib login sebagai pembeli
 Route::post('/api/checkout', function (\Illuminate\Http\Request $request) {
