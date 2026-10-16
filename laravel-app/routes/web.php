@@ -57,6 +57,7 @@ Route::get('/tiket-saya', function () {
             'users.name as verified_by_name'
         )
         ->where('orders.buyer_id', $buyer['id'])
+        ->whereIn('orders.status', ['Pembayaran disetujui', 'Menunggu verifikasi'])
         ->orderBy('orders.id', 'desc')
         ->get();
 
@@ -172,8 +173,25 @@ Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->name('dashboard');
 
-// 3b. Dashboard Petugas Scanner (Check-in & Gate)
+// 3b. Dashboard Petugas Gate (Ringkasan Statistik & Aktivitas Gate)
 $petugasDashboardHandler = function () use ($ensurePetugas) {
+    if ($redirect = $ensurePetugas()) return $redirect;
+
+    $event = DB::table('events')->first();
+    $todayCheckIns = DB::table('check_in_logs')->where('validation_status', 'success')->count();
+    $totalRejected = DB::table('check_in_logs')->where('validation_status', '!=', 'success')->count();
+    $totalTicketsIssued = DB::table('digital_tickets')->count();
+    $recentLogs = DB::table('check_in_logs')
+        ->join('digital_tickets', 'check_in_logs.digital_ticket_id', '=', 'digital_tickets.id')
+        ->select('check_in_logs.*', 'digital_tickets.holder_name', 'digital_tickets.ticket_code')
+        ->orderBy('check_in_logs.id', 'desc')
+        ->limit(10)
+        ->get();
+    return view('petugas.dashboard', compact('event', 'todayCheckIns', 'totalRejected', 'totalTicketsIssued', 'recentLogs'));
+};
+
+// 3c. Scanner QR Code Petugas Check-in
+$petugasScannerHandler = function () use ($ensurePetugas) {
     if ($redirect = $ensurePetugas()) return $redirect;
 
     $event = DB::table('events')->first();
@@ -184,10 +202,12 @@ $petugasDashboardHandler = function () use ($ensurePetugas) {
         ->orderBy('check_in_logs.id', 'desc')
         ->limit(5)
         ->get();
-    return view('petugas.dashboard', compact('event', 'todayCheckIns', 'recentLogs'));
+    return view('petugas.scanner', compact('event', 'todayCheckIns', 'recentLogs'));
 };
 
 Route::get('/petugas/dashboard', $petugasDashboardHandler)->name('petugas.dashboard');
+Route::get('/petugas/scanner', $petugasScannerHandler)->name('petugas.scanner');
+Route::get('/petugas', fn() => redirect()->route('petugas.dashboard'));
 
 // Redirect legacy CMS to Master Acara & QRIS
 Route::get('/admin/cms', fn() => redirect()->route('admin.acara'));
@@ -515,9 +535,9 @@ Route::get('/dashboard/verifikasi', fn() => redirect()->route('admin.verifikasi'
 
 // 6. Scanner QR Code Petugas Check-in (Berdasarkan rancangan web.txt)
 Route::get('/admin/scanner', function () {
-    return redirect()->route('petugas.dashboard');
+    return redirect()->route('petugas.scanner');
 })->name('admin.scanner');
-Route::get('/dashboard/scanner', fn() => redirect()->route('petugas.dashboard'));
+Route::get('/dashboard/scanner', fn() => redirect()->route('petugas.scanner'));
 
 // 7. Data Pesanan, Kehadiran, & Petugas
 Route::get('/admin/pesanan', function () use ($ensureAdmin) {

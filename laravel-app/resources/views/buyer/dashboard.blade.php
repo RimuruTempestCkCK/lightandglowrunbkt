@@ -576,7 +576,7 @@
               @elseif($ord->status === 'Menunggu verifikasi')
                 <span class="status-pill pending">
                   <i data-lucide="clock" style="width:14px;height:14px;"></i>
-                  Menunggu Verifikasi Admin
+                  Menunggu Pembayaran Diverifikasi oleh Admin
                 </span>
               @elseif($ord->status === 'Pembayaran ditolak')
                 <span class="status-pill danger">
