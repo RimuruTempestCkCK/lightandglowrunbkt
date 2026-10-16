@@ -635,6 +635,59 @@ Route::delete('/admin/petugas/{id}', function ($id) use ($ensureAdmin) {
     return redirect()->route('admin.petugas')->with('success', 'Akun petugas berhasil dihapus dari sistem.');
 })->name('admin.petugas.delete');
 
+// Data Pengguna / Buyer & Transaksi Pesertanya
+Route::get('/admin/users', function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
+
+    $buyers = DB::table('buyers')
+        ->leftJoin('orders', 'buyers.id', '=', 'orders.buyer_id')
+        ->select(
+            'buyers.id',
+            'buyers.name',
+            'buyers.email',
+            'buyers.phone',
+            'buyers.nik',
+            'buyers.address',
+            'buyers.created_at',
+            DB::raw('COUNT(orders.id) as total_orders'),
+            DB::raw('COALESCE(SUM(orders.total_amount), 0) as total_spent'),
+            DB::raw("COUNT(CASE WHEN orders.status = 'Pembayaran disetujui' THEN 1 END) as approved_orders")
+        )
+        ->groupBy(
+            'buyers.id',
+            'buyers.name',
+            'buyers.email',
+            'buyers.phone',
+            'buyers.nik',
+            'buyers.address',
+            'buyers.created_at'
+        )
+        ->orderBy('buyers.id', 'desc')
+        ->get();
+
+    // Ambil seluruh orders & tiket untuk relasi pop-up detail pengguna
+    $buyerIds = $buyers->pluck('id')->toArray();
+
+    $allOrders = DB::table('orders')
+        ->join('ticket_types', 'orders.ticket_type_id', '=', 'ticket_types.id')
+        ->whereIn('orders.buyer_id', $buyerIds)
+        ->select('orders.*', 'ticket_types.name as ticket_name')
+        ->orderBy('orders.id', 'desc')
+        ->get()
+        ->groupBy('buyer_id');
+
+    $allTickets = DB::table('digital_tickets')
+        ->join('orders', 'digital_tickets.order_id', '=', 'orders.id')
+        ->join('ticket_types', 'digital_tickets.ticket_type_id', '=', 'ticket_types.id')
+        ->whereIn('orders.buyer_id', $buyerIds)
+        ->select('digital_tickets.*', 'orders.buyer_id', 'ticket_types.name as ticket_name')
+        ->get()
+        ->groupBy('buyer_id');
+
+    return view('admin.users', compact('buyers', 'allOrders', 'allTickets'));
+})->name('admin.users');
+Route::get('/dashboard/users', fn() => redirect()->route('admin.users'));
+
 // 8. API Endpoints — checkout wajib login sebagai pembeli
 Route::post('/api/checkout', function (\Illuminate\Http\Request $request) {
     if (!session('buyer')) {
