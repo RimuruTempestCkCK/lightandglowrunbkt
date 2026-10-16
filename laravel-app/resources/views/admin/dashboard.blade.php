@@ -231,8 +231,9 @@
             <div style="padding: 0.5rem 0 1.25rem 0;">
               @foreach($ticketTypes as $ticket)
                 @php
-                  $sold = max(0, $ticket->total_quota - $ticket->remaining_quota);
-                  $percentage = $ticket->total_quota > 0 ? round(($sold / $ticket->total_quota) * 100) : 0;
+                  $totalQ = $ticket->quota ?? $ticket->total_quota ?? 0;
+                  $sold = max(0, $totalQ - $ticket->remaining_quota);
+                  $percentage = $totalQ > 0 ? round(($sold / $totalQ) * 100) : 0;
                 @endphp
                 <div style="margin-bottom: 1.25rem;">
                   <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
@@ -241,7 +242,7 @@
                       <span style="font-size: 0.75rem; color: var(--text-muted, #94a3b8); margin-left: 6px;">{{ $ticket->category }}</span>
                     </div>
                     <div style="font-size: 0.8rem; font-weight: 600;">
-                      {{ $sold }} / {{ $ticket->total_quota }}
+                      {{ $sold }} / {{ $totalQ }}
                     </div>
                   </div>
                   <div class="progress-bar-container">

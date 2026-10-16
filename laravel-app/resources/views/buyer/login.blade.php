@@ -18,7 +18,7 @@
     }
     .auth-buyer-left {
       flex: 1;
-      background: linear-gradient(145deg, #0F172A 0%, #1E1B4B 50%, #881337 100%);
+      background: linear-gradient(145deg, #070B19 0%, #0F172A 40%, #023E8A 100%);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -27,29 +27,31 @@
       color: #fff;
       position: relative;
       overflow: hidden;
+      border-right: 1px solid rgba(0, 229, 255, 0.2);
     }
     .auth-buyer-left::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: url('https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=800&q=40') center/cover no-repeat;
-      opacity: 0.12;
+      background: url('{{ asset('poster-lightandglowrun.jpeg') }}') center/cover no-repeat;
+      opacity: 0.25;
     }
     .auth-buyer-left > * { position: relative; z-index: 1; }
     .auth-left-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(235,19,85,0.2);
-      border: 1px solid rgba(235,19,85,0.4);
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.4);
       border-radius: 999px;
       padding: 6px 14px;
       font-size: 12px;
       font-weight: 700;
-      color: #FF8CB4;
+      color: #00E5FF;
       letter-spacing: 0.05em;
       text-transform: uppercase;
       margin-bottom: 24px;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.3);
     }
     .auth-left-title {
       font-family: 'Montserrat', sans-serif;
@@ -58,7 +60,10 @@
       line-height: 1.2;
       margin-bottom: 16px;
     }
-    .auth-left-title span { color: #EB1355; }
+    .auth-left-title span {
+      color: #00E5FF;
+      text-shadow: 0 0 16px rgba(0, 229, 255, 0.6);
+    }
     .auth-left-desc {
       font-size: 15px;
       color: rgba(255,255,255,0.75);
@@ -144,8 +149,8 @@
       outline: none;
     }
     .buyer-form-input:focus {
-      border-color: var(--goers-branding-500);
-      box-shadow: 0 0 0 3px rgba(235,19,85,0.1);
+      border-color: #00B4D8;
+      box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.18);
     }
     .buyer-form-input.is-error { border-color: #EF4444; }
 
@@ -156,19 +161,24 @@
     .buyer-form-submit {
       width: 100%;
       padding: 13px;
-      background: var(--goers-branding-500);
-      color: #fff;
+      background: linear-gradient(135deg, #00E5FF 0%, #00B4D8 100%);
+      color: #070B19;
       font-weight: 800; font-size: 15px;
       border-radius: 10px;
       border: none;
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
       letter-spacing: 0.02em;
-      transition: background 0.2s, transform 0.1s;
+      transition: all 0.2s, transform 0.1s;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       margin-top: 8px;
+      box-shadow: 0 4px 14px rgba(0, 229, 255, 0.35);
     }
-    .buyer-form-submit:hover { background: var(--goers-branding-600); }
+    .buyer-form-submit:hover {
+      background: linear-gradient(135deg, #76FF03 0%, #00E5FF 100%);
+      box-shadow: 0 6px 20px rgba(118, 255, 3, 0.45);
+      color: #070B19;
+    }
     .buyer-form-submit:active { transform: scale(0.99); }
 
     .auth-divider {
@@ -221,26 +231,6 @@
       <h1 class="auth-left-title">
         Event Spektakuler<br>di <span>Jam Gadang</span><br>Bukittinggi!
       </h1>
-      <p class="auth-left-desc">
-        Masuk ke akun Anda untuk memesan tiket 5K Night Run & Konser Musik
-        Light and Glow Bukittinggi 2026. Dapatkan e-tiket digital ber-QR Code yang aman dan resmi.
-      </p>
-      <div class="auth-left-features">
-        <div class="auth-left-feature">
-          <span>🏃</span> Lari Malam 5K Bertabur Neon Glow
-        </div>
-        <div class="auth-left-feature">
-          <span>🎸</span> Konser Musik Live di Panggung Utama
-        </div>
-        <div class="auth-left-feature">
-          <span>🎟️</span> E-Tiket Digital dengan QR Code Unik
-        </div>
-        {{--
-        <div class="auth-left-feature">
-          <span>📍</span> Pelataran Jam Gadang, Bukittinggi
-        </div>
-        --}}
-      </div>
     </div>
 
     <!-- Right Panel / Form -->
@@ -251,11 +241,12 @@
           Kembali ke Beranda
         </a>
 
-        {{--
-        <div class="auth-buyer-logo">
-          LIGHT & GLOW<span class="dot">.</span>
+        <div class="auth-buyer-logo" style="margin-bottom:28px;">
+          <a href="{{ route('home') }}" style="display:inline-flex; align-items:center; gap:10px;">
+            <img src="{{ asset('logo-lightandrun.png') }}" alt="Light and Glow" style="height:44px; width:auto; filter:drop-shadow(0 2px 8px rgba(0,229,255,0.4));" />
+            <span style="font-weight:800; font-size:20px; color:var(--goers-navy-900);">LIGHT & GLOW<span style="color:#00B4D8;">.</span></span>
+          </a>
         </div>
-        --}}
 
         <h2 class="auth-form-title">Masuk ke Akun Anda</h2>
         <p class="auth-form-sub">Login untuk memesan tiket, melihat e-tiket, dan riwayat transaksi Anda.</p>

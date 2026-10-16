@@ -2,22 +2,29 @@
    GOERS DESIGN SYSTEM & DESIGN TOKENS (Extracted from official Goers Bundle)
    ========================================================================== */
 :root {
-  /* Branding Primary Reds / Pinks */
-  --goers-branding-100: #FDE7EE;
-  --goers-branding-200: #F9B8CC;
-  --goers-branding-300: #F15A88;
-  --goers-branding-400: #EF4377;
-  --goers-branding-500: #EB1355;
-  --goers-branding-600: #CF2B5D;
-  --goers-branding-700: #B51244;
-  --goers-branding-800: #9C002A;
-  --goers-branding-900: #690000;
+  /* Branding Light & Glow Poster Tone: Electric Neon Cyan & Magenta/Laser Pink */
+  --goers-branding-100: #E0F9FE;
+  --goers-branding-200: #BAF2FD;
+  --goers-branding-300: #67E4FB;
+  --goers-branding-400: #06D4F6;
+  --goers-branding-500: #00B4D8; /* Electric Cyan Accent */
+  --goers-branding-600: #0096C7;
+  --goers-branding-700: #0077B6;
+  --goers-branding-800: #023E8A;
+  --goers-branding-900: #03045E;
   
-  /* Primary Navy Blue */
-  --goers-navy-900: #001F5C;
-  --goers-navy-800: #0E2F72;
-  --goers-navy-500: #284892;
-  --goers-navy-100: #D5E4F9;
+  /* Primary Deep Space / Night Run Blue */
+  --goers-navy-900: #070B19; /* Deep Night Space */
+  --goers-navy-800: #0C1227;
+  --goers-navy-500: #1B254B;
+  --goers-navy-100: #D8E7FA;
+
+  /* Neon Accents from Poster */
+  --glow-cyan: #00E5FF;
+  --glow-lime: #76FF03;
+  --glow-yellow: #FFFF00;
+  --glow-pink: #FF007F;
+  --glow-purple: #7928CA;
 
   /* Basics Grayscale */
   --goers-white: #ffffff;
@@ -33,10 +40,10 @@
   --goers-black: #1E1E1E;
 
   /* Functional */
-  --goers-teal: #00A490;
-  --goers-teal-light: #E8FCF9;
-  --goers-blue-info: #17A9EF;
-  --goers-orange-warning: #F29A4C;
+  --goers-teal: #00E5FF;
+  --goers-teal-light: #E0F9FE;
+  --goers-blue-info: #00B4D8;
+  --goers-orange-warning: #FFB703;
 
   --font-family-base: 'Karla', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-family-heading: 'Montserrat', 'Plus Jakarta Sans', sans-serif;
@@ -44,7 +51,7 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-  --shadow-card: 0 4px 20px rgba(0, 31, 92, 0.06);
+  --shadow-card: 0 4px 20px rgba(0, 229, 255, 0.08);
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
@@ -173,12 +180,24 @@ img {
 .goers-brand-logo {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 10px;
   font-family: var(--font-family-heading);
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  color: var(--goers-branding-500);
+  color: var(--goers-navy-900);
+}
+
+.goers-brand-logo img.brand-logo-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 229, 255, 0.35));
+  transition: transform 0.2s ease;
+}
+
+.goers-brand-logo:hover img.brand-logo-img {
+  transform: scale(1.05);
 }
 
 .goers-brand-logo span.dot {
@@ -265,62 +284,129 @@ img {
 
 .btn-login {
   border: 1.5px solid var(--goers-branding-500);
-  color: var(--goers-branding-500);
+  color: #0077B6;
   font-weight: 700;
   font-size: 14px;
   padding: 8px 18px;
   border-radius: var(--radius-full);
   background: transparent;
+  transition: all 0.2s ease;
 }
 
 .btn-login:hover {
   background-color: var(--goers-branding-500);
   color: #ffffff;
+  box-shadow: 0 0 14px rgba(0, 180, 216, 0.4);
 }
 
 .btn-signup {
-  background-color: var(--goers-branding-500);
-  color: #ffffff;
-  font-weight: 700;
+  background: linear-gradient(135deg, #00E5FF 0%, #00B4D8 100%);
+  color: #070B19;
+  font-weight: 800;
   font-size: 14px;
   padding: 9px 20px;
   border-radius: var(--radius-full);
-  box-shadow: 0 4px 12px rgba(235, 19, 85, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 229, 255, 0.35);
+  transition: all 0.25s ease;
 }
 
 .btn-signup:hover {
-  background-color: var(--goers-branding-600);
-  box-shadow: 0 6px 16px rgba(235, 19, 85, 0.35);
+  background: linear-gradient(135deg, #76FF03 0%, #00E5FF 100%);
+  box-shadow: 0 6px 20px rgba(118, 255, 3, 0.45);
+  transform: translateY(-1px);
+  color: #070B19;
 }
 
 .mobile-menu-toggle {
   display: none;
-  padding: 8px;
+  background: var(--goers-gray-100);
+  border: 1px solid var(--goers-gray-400);
   color: var(--goers-navy-900);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-toggle:hover,
+.mobile-menu-toggle:active {
+  background: var(--goers-branding-100);
+  border-color: #00B4D8;
+  color: #0077B6;
+}
+
+.mobile-drawer-close {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: #475569;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mobile-drawer-close:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+.mobile-drawer-nav-link {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--goers-navy-900);
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.mobile-drawer-nav-link:hover {
+  background: var(--goers-branding-100);
+  color: #0077B6;
 }
 
 @media (max-width: 992px) {
+  .top-bar {
+    display: none !important;
+  }
   .goers-search-box {
-    display: none;
+    display: none !important;
+  }
+  .mobile-search-row {
+    display: none !important;
   }
   .nav-links-desktop {
-    display: none;
+    display: none !important;
+  }
+  .goers-nav-actions .btn-login,
+  .goers-nav-actions .btn-signup {
+    display: none !important;
   }
   .mobile-menu-toggle {
-    display: block;
-  }
-}
-
-@media (max-width: 576px) {
-  .btn-login,
-  .btn-signup {
-    display: none; /* Accessible inside the mobile slide-out drawer */
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
   }
   .goers-nav-wrapper {
     height: 60px;
+    padding: 0 4px;
+    gap: 12px;
   }
   .goers-brand-logo {
-    font-size: 22px;
+    font-size: 15px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .goers-brand-logo img.brand-logo-img {
+    height: 34px;
+  }
+  .mobile-menu-toggle {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 800;
+    flex-shrink: 0;
   }
 }
 
@@ -492,18 +578,21 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--goers-branding-500);
-  color: #fff;
-  font-weight: 700;
+  background: linear-gradient(135deg, #00E5FF 0%, #00B4D8 100%);
+  color: #070B19;
+  font-weight: 800;
   font-size: 15px;
-  padding: 12px 24px;
+  padding: 12px 26px;
   border-radius: var(--radius-full);
-  box-shadow: 0 4px 14px rgba(235, 19, 85, 0.4);
+  box-shadow: 0 4px 18px rgba(0, 229, 255, 0.5);
+  transition: all 0.25s ease;
 }
 
 .btn-hero-action:hover {
-  background: var(--goers-branding-600);
+  background: linear-gradient(135deg, #76FF03 0%, #00E5FF 100%);
+  box-shadow: 0 6px 24px rgba(118, 255, 3, 0.6);
   transform: translateY(-2px);
+  color: #070B19;
 }
 
 /* Slider Controls */
@@ -850,7 +939,7 @@ img {
   font-family: var(--font-family-heading);
   font-size: 16px;
   font-weight: 800;
-  color: var(--goers-branding-500);
+  color: #0077B6;
 }
 
 .btn-buy-ticket {
@@ -865,7 +954,9 @@ img {
 }
 
 .btn-buy-ticket:hover:not(:disabled) {
-  background: var(--goers-branding-500);
+  background: linear-gradient(135deg, #00E5FF 0%, #00B4D8 100%);
+  color: #070B19;
+  box-shadow: 0 2px 10px rgba(0, 229, 255, 0.4);
 }
 
 .btn-buy-ticket:disabled,
@@ -933,13 +1024,15 @@ img {
    CROWD SECTION (Goers Unique Feature)
    ========================================================================== */
 .goers-crowd-section {
-  background: linear-gradient(135deg, #001F5C 0%, #17387E 100%);
+  background: linear-gradient(135deg, #070B19 0%, #0F172A 50%, #023E8A 100%);
   color: #ffffff;
   padding: 60px 0;
   position: relative;
   overflow: hidden;
   margin: 40px 0;
   border-radius: 24px;
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .crowd-shapes {
@@ -947,7 +1040,7 @@ img {
   width: 400px;
   height: 400px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(235,19,85,0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.25) 0%, transparent 70%);
   top: -100px;
   right: -100px;
   pointer-events: none;
@@ -972,9 +1065,9 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(235, 19, 85, 0.2);
-  color: #F9B8CC;
-  border: 1px solid rgba(235, 19, 85, 0.4);
+  background: rgba(0, 229, 255, 0.15);
+  color: #67E4FB;
+  border: 1px solid rgba(0, 229, 255, 0.4);
   padding: 6px 14px;
   border-radius: var(--radius-full);
   font-size: 13px;
@@ -1005,7 +1098,8 @@ img {
 }
 
 .crowd-title span {
-  color: #F15A88;
+  color: #00E5FF;
+  text-shadow: 0 0 16px rgba(0, 229, 255, 0.5);
 }
 
 .crowd-description {
@@ -1034,8 +1128,10 @@ img {
 }
 
 .crowd-chip:hover {
-  background: var(--goers-branding-500);
-  border-color: var(--goers-branding-500);
+  background: #00E5FF;
+  color: #070B19;
+  border-color: #00E5FF;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
   cursor: pointer;
 }
 
@@ -1047,20 +1143,22 @@ img {
 }
 
 .btn-crowd-app {
-  background: var(--goers-branding-500);
-  color: #fff;
+  background: linear-gradient(135deg, #00E5FF 0%, #00B4D8 100%);
+  color: #070B19;
   font-weight: 800;
   padding: 14px 28px;
   border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 20px rgba(235, 19, 85, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 229, 255, 0.45);
 }
 
 .btn-crowd-app:hover {
-  background: var(--goers-branding-600);
+  background: linear-gradient(135deg, #76FF03 0%, #00E5FF 100%);
+  color: #070B19;
   transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(118, 255, 3, 0.55);
 }
 
 /* Crowd Interactive Preview Card */
@@ -1373,7 +1471,7 @@ img {
    APP DOWNLOAD CALL TO ACTION
    ========================================================================== */
 .goers-app-download {
-  background: linear-gradient(90deg, #FDE7EE 0%, #FFEAF8 100%);
+  background: linear-gradient(135deg, #070B19 0%, #0F172A 60%, #03045E 100%);
   border-radius: 20px;
   padding: 40px;
   display: flex;
@@ -1381,7 +1479,16 @@ img {
   justify-content: space-between;
   gap: 30px;
   margin-bottom: 40px;
-  border: 1px solid var(--goers-branding-200);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.goers-app-download .download-text h3 {
+  color: #ffffff;
+}
+
+.goers-app-download .download-text p {
+  color: #D8E7FA;
 }
 
 @media (max-width: 768px) {
@@ -1490,7 +1597,8 @@ img {
 }
 
 .footer-brand h2 span {
-  color: var(--goers-branding-500);
+  color: #00E5FF;
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
 }
 
 .footer-brand p {
@@ -1500,12 +1608,21 @@ img {
   color: #9CA3AF;
 }
 
+.footer-brand img.footer-logo-img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 2px 10px rgba(0, 229, 255, 0.4));
+}
+
 .footer-col h4 {
   font-family: var(--font-family-heading);
   color: #ffffff;
   font-size: 15px;
   font-weight: 700;
   margin-bottom: 16px;
+  letter-spacing: 0.02em;
 }
 
 .footer-links {
@@ -1517,13 +1634,13 @@ img {
 
 .footer-links a {
   color: #9CA3AF;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
   font-size: 13px;
 }
 
 .footer-links a:hover {
-  color: #ffffff;
-  padding-left: 2px;
+  color: #00E5FF;
+  padding-left: 4px;
 }
 
 .newsletter-form {

@@ -58,13 +58,14 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #EB1355, #FF5B84);
-      color: #fff;
+      background: linear-gradient(135deg, #00E5FF, #0077B6);
+      color: #070B19;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
       font-size: 20px;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.45);
     }
     .buyer-nav-tabs {
       display: flex;
@@ -86,8 +87,8 @@
       transition: all 0.2s;
     }
     .buyer-tab-item.active {
-      color: var(--goers-branding-500);
-      border-bottom-color: var(--goers-branding-500);
+      color: #0077B6;
+      border-bottom-color: #00E5FF;
     }
     .order-card {
       background: #ffffff;
@@ -218,6 +219,59 @@
       border: 1px solid var(--goers-gray-300);
       background: #F8FAFC;
     }
+
+    /* Mobile Enhancements */
+    @media (max-width: 768px) {
+      .buyer-dashboard-wrap {
+        padding: 20px 0 40px;
+      }
+      .buyer-header-card {
+        padding: 18px;
+        margin-bottom: 20px;
+      }
+      .buyer-nav-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        gap: 6px;
+        padding-bottom: 2px;
+      }
+      .buyer-tab-item {
+        padding: 10px 14px;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .order-card {
+        padding: 16px;
+      }
+      .order-card-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .order-thumb {
+        width: 100%;
+        height: 160px;
+      }
+      .order-card-body {
+        flex-direction: column;
+      }
+      .order-card-action-col {
+        text-align: left !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        border-top: 1px dashed #E2E8F0;
+        padding-top: 14px;
+        margin-top: 8px;
+      }
+      .goers-header .goers-nav-wrapper {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 0;
+        gap: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -242,16 +296,17 @@
     <div class="goers-container">
       <div class="goers-nav-wrapper">
         <a href="{{ route('home') }}" class="goers-brand-logo">
-          <span id="cmsBrandLogoText">GOERS</span><span class="dot">.</span>
+          <img src="{{ asset('logo-lightandrun.png') }}" alt="Light and Glow" class="brand-logo-img" />
+          <span id="cmsBrandLogoText">LIGHT & GLOW</span><span class="dot">.</span>
         </a>
 
         <div style="font-size:14px; font-weight:700; color:var(--goers-navy-900); display:flex; align-items:center; gap:8px;">
-          <i data-lucide="ticket" style="width:18px;height:18px; color:var(--goers-branding-500);"></i>
+          <i data-lucide="ticket" style="width:18px;height:18px; color:#00B4D8;"></i>
           Dashboard Tiket & Transaksi Saya
         </div>
 
         <div class="goers-nav-actions">
-          <a href="{{ route('home') }}#konser-section" class="btn-signup" style="padding:8px 16px; font-size:13px;">
+          <a href="{{ route('home') }}#tiket-section" class="btn-signup" style="padding:8px 16px; font-size:13px;">
             + Beli Tiket Lain
           </a>
           <a href="{{ route('login') }}" class="btn-login" style="padding:8px 16px; font-size:13px;">
@@ -353,7 +408,7 @@
                   @endif
                 </div>
               </div>
-              <div style="text-align:right; display:flex; flex-direction:column; justify-content:space-between;">
+              <div class="order-card-action-col" style="text-align:right; display:flex; flex-direction:column; justify-content:space-between;">
                 <div>
                   <span style="font-size:11px; color:#64748B;">Total Tagihan:</span>
                   <div style="font-size:18px; font-weight:800; color:var(--goers-branding-500);">Rp {{ number_format($ord->total_amount ?? 0, 0, ',', '.') }}</div>
@@ -510,15 +565,15 @@
     <div class="modal-content" style="max-width: 440px; background:#0F172A; color:#fff; border:1px solid #334155;">
       <div class="modal-header" style="border-bottom:1px solid #1E293B; background:transparent;">
         <div style="display:flex; align-items:center; gap:8px;">
-          <i data-lucide="ticket" style="width:20px;height:20px; color:#EB1355;"></i>
+          <i data-lucide="ticket" style="width:20px;height:20px; color:#00E5FF;"></i>
           <h3 style="margin:0; font-size:15px; font-weight:800; color:#fff;">E-Tiket Light & Glow Bukittinggi</h3>
         </div>
         <button class="modal-close-btn" onclick="closeETicketModal()" style="color:#94A3B8;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
       </div>
       <div class="modal-body" id="printableTicketArea" style="text-align:center; padding:24px 20px;">
-        <div style="font-size:11px; letter-spacing:2px; color:#F43F5E; font-weight:800; text-transform:uppercase;">OFFICIAL ENTRANCE PASS</div>
+        <div style="font-size:11px; letter-spacing:2px; color:#00E5FF; font-weight:800; text-transform:uppercase;">OFFICIAL ENTRANCE PASS</div>
         <h2 id="modalETicketEventTitle" style="font-size:18px; font-weight:800; margin:4px 0 2px; color:#fff;">Light And Glow Bukittinggi 2026</h2>
-        <p style="font-size:12px; color:#94A3B8; margin-bottom:16px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
+        <p style="font-size:12px; color:#94A3B8; margin-bottom:16px;">Sabtu, 28 November 2026 · Lapangan Wirabraja Bukittinggi</p>
 
         <!-- QR Box dengan efek expired bila sudah check-in -->
         <div id="modalQRContainer" class="qr-container" style="margin-bottom:12px;">

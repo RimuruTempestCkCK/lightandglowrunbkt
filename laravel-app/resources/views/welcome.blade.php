@@ -49,6 +49,7 @@
       <div class="goers-nav-wrapper">
         <!-- Logo -->
         <a href="{{ route('home') }}" class="goers-brand-logo" id="cmsBrandLogoLink">
+          <img src="{{ asset('logo-lightandrun.png') }}" alt="Light and Glow Bukittinggi" class="brand-logo-img" />
           <span id="cmsBrandLogoText">LIGHT & GLOW</span><span class="dot">.</span>
         </a>
 
@@ -87,8 +88,8 @@
             <a href="{{ route('buyer.register') }}" class="btn-signup">Daftar</a>
           @endif
           
-          <button class="mobile-menu-toggle" onclick="toggleMobileDrawer()">
-            <i data-lucide="menu" style="width:24px; height:24px;"></i>
+          <button class="mobile-menu-toggle" onclick="toggleMobileDrawer()" aria-label="Buka Menu">
+            <span class="mobile-menu-text">Menu</span>
           </button>
         </div>
       </div>
@@ -106,15 +107,26 @@
   <!-- Mobile Drawer -->
   <div class="drawer-overlay" id="drawerOverlay" onclick="toggleMobileDrawer()"></div>
   <div class="mobile-drawer" id="mobileDrawer">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <a href="{{ route('home') }}" class="goers-brand-logo">LIGHT & GLOW<span class="dot">.</span></a>
-      <button onclick="toggleMobileDrawer()"><i data-lucide="x" style="width:24px;height:24px;"></i></button>
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--goers-gray-300); padding-bottom:16px;">
+      <a href="{{ route('home') }}" class="goers-brand-logo">
+        <img src="{{ asset('logo-lightandrun.png') }}" alt="Light and Glow" class="brand-logo-img" style="height:32px;" />
+        <span style="font-size:16px;">LIGHT & GLOW</span><span class="dot">.</span>
+      </a>
+      <button onclick="toggleMobileDrawer()" class="mobile-drawer-close">Tutup</button>
     </div>
-    <div style="display:flex; flex-direction:column; gap:14px; margin-top:20px;">
-      <a href="#tiket-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">🎟️ Kategori Tiket</a>
-      <a href="#highlight-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">✨ Highlight Acara</a>
-      <a href="#rute-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">📍 Rute & Venue</a>
-      <a href="#help-section" onclick="toggleMobileDrawer()" style="font-weight:700; font-size:16px;">❓ Informasi Acara</a>
+    <!-- Search inside Mobile Drawer -->
+    <div style="margin-top:16px;">
+      <div style="position:relative; width:100%;">
+        <input type="text" class="goers-search-input" placeholder="Cari tiket..." onkeyup="filterEvents(this.value)" style="height:40px; padding:0 16px; font-size:13px; background:#F8FAFC;" />
+      </div>
+    </div>
+
+    <!-- Navigation links -->
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+      <a href="#tiket-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Kategori Tiket</a>
+      <a href="#highlight-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Highlight Acara</a>
+      <a href="#rute-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Rute & Venue</a>
+      <a href="#help-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Informasi Acara</a>
     </div>
     <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
       @if(!empty($buyer))
@@ -140,12 +152,12 @@
           
           <!-- Slide 1: Light and Glow Main -->
           <div class="hero-slide">
-            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1200&auto=format&fit=crop" alt="Hero Slide 1" id="cmsSlide1Img" class="hero-slide-bg" />
-            <div class="hero-slide-overlay"></div>
+            <img src="{{ asset('poster-lightandglowrun.jpeg') }}" alt="Poster Light and Glow Run Bukittinggi 2026" id="cmsSlide1Img" class="hero-slide-bg" style="object-position: top center;" />
+            <div class="hero-slide-overlay" style="background: linear-gradient(90deg, rgba(7, 11, 25, 0.92) 0%, rgba(7, 11, 25, 0.65) 50%, rgba(7, 11, 25, 0.25) 100%);"></div>
             <div class="hero-slide-content">
-              <span class="hero-tag" id="cmsSlide1Tag">Event Akbar Bukittinggi 2026</span>
-              <h1 class="hero-title" id="cmsSlide1Title">Light And Glow Bukittinggi 2026: 5K Night Run & Concert</h1>
-              <p class="hero-desc" id="cmsSlide1Desc">Sensasi lari malam 5K bertabur cahaya neon glow-in-the-dark dan konser musik spektakuler di Jam Gadang Bukittinggi!</p>
+              <span class="hero-tag" id="cmsSlide1Tag" style="background:linear-gradient(135deg, #00E5FF, #00B4D8); color:#070B19; font-weight:800; box-shadow:0 0 12px rgba(0,229,255,0.5);">⚡ Run • Light • Music • Together</span>
+              <h1 class="hero-title" id="cmsSlide1Title" style="color:#ffffff;">LIGHT AND GLOW RUN <span style="color:#00E5FF; text-shadow:0 0 20px rgba(0,229,255,0.7);">BUKITTINGGI 2026</span></h1>
+              <p class="hero-desc" id="cmsSlide1Desc" style="color:#D8E7FA;">Lari malam 5K bertabur cahaya neon bersinar bersama ribuan pelari, LED stick, dan berujung konser DJ spektakuler di Lapangan Wirabraja Bukittinggi!</p>
               <a href="#tiket-section" class="btn-hero-action">
                 <i data-lucide="ticket" style="width:18px;height:18px;"></i>
                 Beli Tiket Sekarang
@@ -351,23 +363,22 @@
           <!-- Left: Copy & Explanation -->
           <div>
             <div class="crowd-tag">
-              <i data-lucide="sparkles" style="width:14px;height:14px;"></i>
-              Sensasi Terbesar di Bukittinggi
+              Agenda Resmi Acara
             </div>
             <h2 class="crowd-title" id="cmsCrowdTitle">
-              Rasakan Atmosfer Pesta Cahaya <span>& Musik Spektakuler Terbesar!</span>
+              Atmosfer Pesta Cahaya <span>& Musik Spektakuler</span>
             </h2>
             <p class="crowd-description" id="cmsCrowdDesc">
-              Bergabung bersama ribuan runners dan pecinta musik di bawah gemerlap langit malam Jam Gadang Bukittinggi. Nikmati pengalaman lari 5K dengan neon glow, holi color powder, pesta laser, dan dentuman musik panggung spektakuler!
+              Bergabung bersama ribuan pelari dan penikmat musik di Lapangan Wirabraja, Bukittinggi. Nikmati pengalaman 5K Night Run berlampu neon, pertunjukan laser, serta panggung DJ performance spektakuler.
             </p>
 
             <div class="crowd-chips">
-              <span class="crowd-chip">🏃 5K Night Run</span>
-              <span class="crowd-chip">✨ Neon Glow Show</span>
-              <span class="crowd-chip">🎸 Live Concert Stage</span>
-              <span class="crowd-chip">🥇 Medali Finisher Logam</span>
-              <span class="crowd-chip">📸 Glow Photobooth</span>
-              <span class="crowd-chip">🍔 Bazaar Kuliner Malam</span>
+              <span class="crowd-chip">5K Night Run</span>
+              <span class="crowd-chip">Glow Stick & LED Glasses</span>
+              <span class="crowd-chip">DJ & Live Music</span>
+              <span class="crowd-chip">Medali Finisher</span>
+              <span class="crowd-chip">Glow Photobooth</span>
+              <span class="crowd-chip">Bazaar Kuliner</span>
             </div>
           </div>
 
@@ -380,27 +391,24 @@
                 </div>
                 <div class="crowd-author-info">
                   <h4>Panitia Light & Glow 2026</h4>
-                  <span>Informasi Resmi Penyelenggara</span>
+                  <span>Penyelenggara Acara</span>
                 </div>
               </div>
 
               <div class="crowd-meetup-body">
-                <div class="meetup-title">🏃 5K Night Run & Concert Jam Gadang</div>
-                <p style="font-size:13px; color:#D5E4F9; margin-bottom:12px;">
-                  "Pengambilan race pack dimulai pukul 14:00 WIB di pelataran Jam Gadang. Acara lari malam start tepat pukul 19:30 WIB dilanjutkan panggung live concert hingga tengah malam!"
+                <div class="meetup-title">5K Night Run & Concert Bukittinggi</div>
+                <p style="font-size:13px; color:#D5E4F9; margin-bottom:12px; line-height:1.6;">
+                  "Pengambilan race pack dimulai pukul 14:00 WIB di lokasi acara. Lari malam start pukul 19:45 WIB dan dilanjutkan panggung DJ performance spektakuler!"
                 </p>
                 <div class="meetup-meta">
                   <div class="meetup-meta-item">
-                    <i data-lucide="map-pin" style="width:14px;height:14px; color:#F15A88;"></i>
-                    Jam Gadang Gate 1
+                    Lapangan Wirabraja
                   </div>
                   <div class="meetup-meta-item">
-                    <i data-lucide="clock" style="width:14px;height:14px; color:#F15A88;"></i>
-                    Sabtu, 25 April 2026 (17:00 WIB)
+                    Sabtu, 28 November 2026
                   </div>
                   <div class="meetup-meta-item">
-                    <i data-lucide="users" style="width:14px;height:14px; color:#F15A88;"></i>
-                    Kuota 1.500 Runners
+                    Start 19:45 WIB
                   </div>
                 </div>
               </div>
@@ -413,7 +421,7 @@
                     <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" alt="User 3" />
                     <div class="more-count">+500</div>
                   </div>
-                  <span style="font-size:12px; color:#ADC9F4;">85% Kuota Terisi</span>
+                  <span style="font-size:12px; color:#ADC9F4;">Peserta Terdaftar</span>
                 </div>
 
                 <a href="#tiket-section" class="btn-buy-ticket" style="background:var(--goers-branding-500); padding:8px 18px; text-decoration:none;">
@@ -619,6 +627,7 @@
       <div class="footer-top-grid">
         <!-- Brand & Description -->
         <div class="footer-brand">
+          <img src="{{ asset('logo-lightandrun.png') }}" alt="Light and Glow Bukittinggi" class="footer-logo-img" />
           <h2>LIGHT & GLOW<span>.</span></h2>
           <p>
             Light and Glow Bukittinggi 2026 adalah perayaan akbar lari malam 5K dan konser spektakuler bertabur cahaya neon terbesar di Kota Bukittinggi, Sumatera Barat. Menyatukan semangat olahraga, pesona visual cahaya, dan hiburan panggung berkelas.
