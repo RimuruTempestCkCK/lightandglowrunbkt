@@ -98,69 +98,71 @@
             </div>
           </div>
 
-          <table class="table" style="width: 100%;" id="ordersTable">
-            <thead>
-              <tr>
-                <th>No. Pesanan</th>
-                <th>Nama Pembeli</th>
-                <th>Kategori Tiket</th>
-                <th>Nominal</th>
-                <th>Metode</th>
-                <th>Bukti Bayar</th>
-                <th>Status</th>
-                <th style="text-align:right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse($orders as $order)
-              <tr id="row-{{ $order->id }}" class="order-row" data-status="{{ $order->status }}" data-search="{{ strtolower($order->order_number . ' ' . $order->buyer_name . ' ' . $order->buyer_email . ' ' . $order->buyer_phone . ' ' . $order->ticket_name) }}">
-                <td><strong>#{{ $order->order_number }}</strong></td>
-                <td>
-                  <strong>{{ $order->buyer_name }}</strong><br>
-                  <small style="color:var(--t-muted);">{{ $order->buyer_phone }}</small>
-                </td>
-                <td>{{ $order->ticket_name }}</td>
-                <td><strong style="color:var(--primary);">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></td>
-                <td>{{ $order->payment_method }}</td>
-                <td>
-                  @if($order->payment_proof)
-                    <a href="#" onclick="viewProof('{{ addslashes($order->buyer_name) }}', '#{{ $order->order_number }}', '{{ asset(ltrim($order->payment_proof, '/')) }}'); return false;" style="color:var(--primary); font-weight:600; display:inline-flex; align-items:center; gap:4px;">
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                      Lihat Bukti
-                    </a>
-                  @else
-                    <span style="color:#94A3B8; font-size:12px;">Belum upload</span>
-                  @endif
-                </td>
-                <td>
-                  @if($order->status === 'Menunggu verifikasi')
-                    <span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span>
-                  @elseif($order->status === 'Pembayaran disetujui')
-                    <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">Disetujui</span>
-                  @else
-                    <span class="tag t-danger" style="background:rgba(239,68,68,0.2); color:#EF4444; padding:3px 8px; border-radius:4px; font-weight:700;">Ditolak</span>
-                  @endif
-                </td>
-                <td style="text-align:right">
-                  @if($order->status === 'Menunggu verifikasi')
-                    <button class="btn btn--primary" style="padding:4px 10px; font-size:12px;" onclick="approvePayment('{{ $order->id }}', '{{ addslashes($order->buyer_name) }}', 'row-{{ $order->id }}')">Setujui</button>
-                    <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="rejectPayment('{{ $order->id }}', '{{ addslashes($order->buyer_name) }}', 'row-{{ $order->id }}')">Tolak</button>
-                  @elseif($order->status === 'Pembayaran disetujui')
-                    <span style="color:#10B981; font-weight:600; font-size:12px;">✓ Tiket Terbit</span>
-                  @else
-                    <span style="color:#EF4444; font-weight:600; font-size:12px;">✕ Ditolak</span>
-                  @endif
-                </td>
-              </tr>
-              @empty
-              <tr>
-                <td colspan="8" style="text-align:center; padding:30px; color:#94A3B8;">
-                  Belum ada transaksi pembayaran di sistem.
-                </td>
-              </tr>
-              @endforelse
-            </tbody>
-          </table>
+          <div class="table-scroll">
+            <table class="table" style="width: 100%; min-width: 850px;" id="ordersTable">
+              <thead>
+                <tr>
+                  <th style="white-space: nowrap;">No. Pesanan</th>
+                  <th style="white-space: nowrap;">Nama Pembeli</th>
+                  <th style="white-space: nowrap;">Kategori Tiket</th>
+                  <th style="white-space: nowrap;">Nominal</th>
+                  <th style="white-space: nowrap;">Metode</th>
+                  <th style="white-space: nowrap;">Bukti Bayar</th>
+                  <th style="white-space: nowrap;">Status</th>
+                  <th style="text-align:right; white-space: nowrap;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($orders as $order)
+                <tr id="row-{{ $order->id }}" class="order-row" data-status="{{ $order->status }}" data-search="{{ strtolower($order->order_number . ' ' . $order->buyer_name . ' ' . $order->buyer_email . ' ' . $order->buyer_phone . ' ' . $order->ticket_name) }}">
+                  <td><strong>#{{ $order->order_number }}</strong></td>
+                  <td>
+                    <strong>{{ $order->buyer_name }}</strong><br>
+                    <small style="color:var(--t-muted);">{{ $order->buyer_phone }}</small>
+                  </td>
+                  <td>{{ $order->ticket_name }}</td>
+                  <td><strong style="color:var(--primary);">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></td>
+                  <td>{{ $order->payment_method }}</td>
+                  <td>
+                    @if($order->payment_proof)
+                      <a href="#" onclick="viewProof('{{ addslashes($order->buyer_name) }}', '#{{ $order->order_number }}', '{{ asset(ltrim($order->payment_proof, '/')) }}'); return false;" style="color:var(--primary); font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Lihat Bukti
+                      </a>
+                    @else
+                      <span style="color:#94A3B8; font-size:12px;">Belum upload</span>
+                    @endif
+                  </td>
+                  <td>
+                    @if($order->status === 'Menunggu verifikasi')
+                      <span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span>
+                    @elseif($order->status === 'Pembayaran disetujui')
+                      <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">Disetujui</span>
+                    @else
+                      <span class="tag t-danger" style="background:rgba(239,68,68,0.2); color:#EF4444; padding:3px 8px; border-radius:4px; font-weight:700;">Ditolak</span>
+                    @endif
+                  </td>
+                  <td style="text-align:right">
+                    @if($order->status === 'Menunggu verifikasi')
+                      <button class="btn btn--primary" style="padding:4px 10px; font-size:12px;" onclick="approvePayment('{{ $order->id }}', '{{ addslashes($order->buyer_name) }}', 'row-{{ $order->id }}')">Setujui</button>
+                      <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="rejectPayment('{{ $order->id }}', '{{ addslashes($order->buyer_name) }}', 'row-{{ $order->id }}')">Tolak</button>
+                    @elseif($order->status === 'Pembayaran disetujui')
+                      <span style="color:#10B981; font-weight:600; font-size:12px;">✓ Tiket Terbit</span>
+                    @else
+                      <span style="color:#EF4444; font-weight:600; font-size:12px;">✕ Ditolak</span>
+                    @endif
+                  </td>
+                </tr>
+                @empty
+                <tr>
+                  <td colspan="8" style="text-align:center; padding:30px; color:#94A3B8;">
+                    Belum ada transaksi pembayaran di sistem.
+                  </td>
+                </tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
           <div id="noMatchMessage" style="display:none; text-align:center; padding:30px; color:var(--t-muted);">
             Tidak ditemukan data yang cocok dengan kata kunci atau filter status yang dipilih.
           </div>

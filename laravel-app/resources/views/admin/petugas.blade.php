@@ -90,65 +90,67 @@
             </div>
           </div>
 
-          <table class="table" style="width: 100%;">
-            <thead>
-              <tr>
-                <th style="width:60px;">ID</th>
-                <th>Nama Lengkap</th>
-                <th>Email Akses Login</th>
-                <th>Peran / Role</th>
-                <th>Status</th>
-                <th style="text-align:right;">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse($staff as $u)
+          <div class="table-scroll">
+            <table class="table" style="width: 100%; min-width: 700px;">
+              <thead>
                 <tr>
-                  <td><strong>#{{ $u->id }}</strong></td>
-                  <td>
-                    <strong style="font-size:14px; color:var(--t-base);">{{ $u->name }}</strong>
-                    @if($u->id == 1)
-                      <span class="tag" style="background:rgba(37,99,235,0.12); color:var(--primary); font-size:10px; margin-left:6px;">Utama</span>
-                    @endif
-                  </td>
-                  <td>{{ $u->email }}</td>
-                  <td>
-                    @if($u->id == 1)
-                      <span class="tag" style="background:rgba(139,92,246,0.15); color:#8B5CF6; font-weight:700;">Super Administrator</span>
-                    @else
-                      <span class="tag" style="background:rgba(14,165,233,0.15); color:#0284C7; font-weight:700;">Petugas Scanner Gate</span>
-                    @endif
-                  </td>
-                  <td>
-                    <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; font-weight:700;">Aktif</span>
-                  </td>
-                  <td style="text-align:right;">
-                    <div style="display:inline-flex; gap:6px;">
-                      <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px;" onclick='openEditStaffModal(@json($u))'>
-                        Edit
-                      </button>
-                      @if($u->id != 1)
-                        <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="confirmDeleteStaff({{ $u->id }}, '{{ addslashes($u->name) }}')">
-                          Hapus
-                        </button>
-                        <!-- Form Delete Hidden -->
-                        <form id="delete-staff-form-{{ $u->id }}" action="{{ route('admin.petugas.delete', $u->id) }}" method="POST" style="display:none;">
-                          @csrf
-                          @method('DELETE')
-                        </form>
+                  <th style="width:60px; white-space:nowrap;">ID</th>
+                  <th style="white-space:nowrap;">Nama Lengkap</th>
+                  <th style="white-space:nowrap;">Email Akses Login</th>
+                  <th style="white-space:nowrap;">Peran / Role</th>
+                  <th style="white-space:nowrap;">Status</th>
+                  <th style="text-align:right; white-space:nowrap;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($staff as $u)
+                  <tr>
+                    <td><strong>#{{ $u->id }}</strong></td>
+                    <td>
+                      <strong style="font-size:14px; color:var(--t-base);">{{ $u->name }}</strong>
+                      @if($u->id == 1)
+                        <span class="tag" style="background:rgba(37,99,235,0.12); color:var(--primary); font-size:10px; margin-left:6px;">Utama</span>
                       @endif
-                    </div>
-                  </td>
-                </tr>
-              @empty
-                <tr>
-                  <td colspan="6" style="text-align:center; padding:32px; color:var(--t-muted);">
-                    Belum ada data petugas di database.
-                  </td>
-                </tr>
-              @endforelse
-            </tbody>
-          </table>
+                    </td>
+                    <td>{{ $u->email }}</td>
+                    <td>
+                      @if($u->id == 1)
+                        <span class="tag" style="background:rgba(139,92,246,0.15); color:#8B5CF6; font-weight:700;">Super Administrator</span>
+                      @else
+                        <span class="tag" style="background:rgba(14,165,233,0.15); color:#0284C7; font-weight:700;">Petugas Scanner Gate</span>
+                      @endif
+                    </td>
+                    <td>
+                      <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; font-weight:700;">Aktif</span>
+                    </td>
+                    <td style="text-align:right;">
+                      <div style="display:inline-flex; gap:6px;">
+                        <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px;" onclick='openEditStaffModal(@json($u))'>
+                          Edit
+                        </button>
+                        @if($u->id != 1)
+                          <button class="btn btn--ghost" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="confirmDeleteStaff({{ $u->id }}, '{{ addslashes($u->name) }}')">
+                            Hapus
+                          </button>
+                          <!-- Form Delete Hidden -->
+                          <form id="delete-staff-form-{{ $u->id }}" action="{{ route('admin.petugas.delete', $u->id) }}" method="POST" style="display:none;">
+                            @csrf
+                            @method('DELETE')
+                          </form>
+                        @endif
+                      </div>
+                    </td>
+                  </tr>
+                @empty
+                  <tr>
+                    <td colspan="6" style="text-align:center; padding:32px; color:var(--t-muted);">
+                      Belum ada data petugas di database.
+                    </td>
+                  </tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </main>

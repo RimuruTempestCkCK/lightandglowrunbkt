@@ -333,3 +333,9 @@ Semua pembaruan pada sistem dicatat secara transparan sebagai berikut:
 - Setiap pemindaian QR Code berhasil langsung divalidasi ke endpoint backend `/api/scanner/validate` secara *real-time* dengan feedback visual dan audio status tiket.
 - Input manual kode tiket tetap disediakan sebagai opsi pendukung.
 
+### 6.8 Standardisasi Tabel Responsif & Horizontal Scrollbar Sesuai Desain Adminator
+- Seluruh tabel di panel admin dan panel petugas telah distandarisasi agar **tidak terpotong** pada resolusi layar berapa pun (laptop, tablet, maupun smartphone).
+- Setiap tabel dibungkus dengan kontainer `.table-scroll` / `.spot-table-wrap` / `.tiket-table-wrap` / `.acara-table-wrap` yang memiliki properti `overflow-x: auto` dan styling scrollbar tipis halus bawaan Adminator.
+- Ditambahkan batas lebar minimum (`min-width: 600px - 850px`) serta `white-space: nowrap` pada header kolom untuk memastikan teks dan aksi tombol tetap rapi, presisi, dan tidak bertumpukan.
+
+

@@ -149,15 +149,15 @@
             </div>
 
             <div class="table-scroll">
-              <table class="table">
+              <table class="table" style="min-width: 620px;">
                 <thead>
                   <tr>
-                    <th>No. Pesanan</th>
-                    <th>Pembeli</th>
-                    <th>Kategori Tiket</th>
-                    <th style="text-align:center">Qty</th>
-                    <th style="text-align:right">Total Bayar</th>
-                    <th style="text-align:right">Status</th>
+                    <th style="white-space: nowrap;">No. Pesanan</th>
+                    <th style="white-space: nowrap;">Pembeli</th>
+                    <th style="white-space: nowrap;">Kategori Tiket</th>
+                    <th style="text-align:center; white-space: nowrap;">Qty</th>
+                    <th style="text-align:right; white-space: nowrap;">Total Bayar</th>
+                    <th style="text-align:right; white-space: nowrap;">Status</th>
                   </tr>
                 </thead>
                 <tbody>

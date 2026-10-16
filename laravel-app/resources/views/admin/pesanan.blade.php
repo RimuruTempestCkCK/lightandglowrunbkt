@@ -109,70 +109,72 @@
             </div>
           </div>
 
-          <table class="table" style="width: 100%;" id="ordersTable">
-            <thead>
-              <tr>
-                <th>No. Pesanan</th>
-                <th>Data Pembeli</th>
-                <th>Jenis Tiket</th>
-                <th>Total Bayar</th>
-                <th>Metode</th>
-                <th>Status Pembayaran</th>
-                <th style="text-align:right;" class="no-print">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="orderTableBody">
-              @forelse($orders as $o)
-                <tr class="order-row" 
-                    data-id="{{ $o->id }}"
-                    data-order="{{ $o->order_number }}"
-                    data-name="{{ $o->buyer_name }}"
-                    data-email="{{ $o->buyer_email }}"
-                    data-phone="{{ $o->buyer_phone }}"
-                    data-ticket="{{ $o->ticket_name }}"
-                    data-amount="{{ $o->total_amount }}"
-                    data-method="{{ $o->payment_method }}"
-                    data-status="{{ $o->status }}"
-                    data-search="{{ strtolower($o->order_number . ' ' . $o->buyer_name . ' ' . $o->buyer_email . ' ' . $o->buyer_phone . ' ' . $o->ticket_name) }}">
-                  <td>
-                    <strong>#{{ $o->order_number }}</strong><br>
-                    <small style="color:var(--t-muted);">{{ \Carbon\Carbon::parse($o->created_at)->format('d M Y H:i') }}</small>
-                  </td>
-                  <td>
-                    <strong>{{ $o->buyer_name }}</strong><br>
-                    <small style="color:var(--t-muted);">{{ $o->buyer_email }} · {{ $o->buyer_phone }}</small>
-                  </td>
-                  <td>{{ $o->ticket_name }}</td>
-                  <td><strong style="color:var(--primary);">Rp {{ number_format($o->total_amount, 0, ',', '.') }}</strong></td>
-                  <td>{{ $o->payment_method }}</td>
-                  <td>
-                    @if($o->status === 'Pembayaran disetujui')
-                      <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">Disetujui</span>
-                    @elseif($o->status === 'Menunggu verifikasi')
-                      <span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span>
-                    @else
-                      <span class="tag t-danger" style="background:rgba(239,68,68,0.2); color:#EF4444; padding:3px 8px; border-radius:4px; font-weight:700;">Ditolak</span>
-                    @endif
-                  </td>
-                  <td style="text-align:right;" class="no-print">
-                    @if($o->status === 'Menunggu verifikasi')
-                      <a href="{{ route('admin.verifikasi') }}" class="btn btn--primary" style="padding:4px 8px; font-size:12px;">Verifikasi</a>
-                    @elseif($o->status === 'Pembayaran disetujui')
-                      <span style="color:#10B981; font-weight:600; font-size:12px;">✓ Lunas</span>
-                    @else
-                      <span style="color:var(--t-muted); font-size:12px;">Dibatalkan</span>
-                    @endif
-                  </td>
-                </tr>
-              @empty
+          <div class="table-scroll">
+            <table class="table" style="width: 100%; min-width: 850px;" id="ordersTable">
+              <thead>
                 <tr>
-                  <td colspan="7" style="text-align:center; padding:32px; color:var(--t-muted);">
-                    Belum ada data pesanan di database MySQL.
-                  </td>
+                  <th style="white-space: nowrap;">No. Pesanan</th>
+                  <th style="white-space: nowrap;">Data Pembeli</th>
+                  <th style="white-space: nowrap;">Jenis Tiket</th>
+                  <th style="white-space: nowrap;">Total Bayar</th>
+                  <th style="white-space: nowrap;">Metode</th>
+                  <th style="white-space: nowrap;">Status Pembayaran</th>
+                  <th style="text-align:right; white-space: nowrap;" class="no-print">Aksi</th>
                 </tr>
-              @endforelse
-            </tbody>
-          </table>
+              </thead>
+              <tbody id="orderTableBody">
+                @forelse($orders as $o)
+                  <tr class="order-row" 
+                      data-id="{{ $o->id }}"
+                      data-order="{{ $o->order_number }}"
+                      data-name="{{ $o->buyer_name }}"
+                      data-email="{{ $o->buyer_email }}"
+                      data-phone="{{ $o->buyer_phone }}"
+                      data-ticket="{{ $o->ticket_name }}"
+                      data-amount="{{ $o->total_amount }}"
+                      data-method="{{ $o->payment_method }}"
+                      data-status="{{ $o->status }}"
+                      data-search="{{ strtolower($o->order_number . ' ' . $o->buyer_name . ' ' . $o->buyer_email . ' ' . $o->buyer_phone . ' ' . $o->ticket_name) }}">
+                    <td>
+                      <strong>#{{ $o->order_number }}</strong><br>
+                      <small style="color:var(--t-muted);">{{ \Carbon\Carbon::parse($o->created_at)->format('d M Y H:i') }}</small>
+                    </td>
+                    <td>
+                      <strong>{{ $o->buyer_name }}</strong><br>
+                      <small style="color:var(--t-muted);">{{ $o->buyer_email }} · {{ $o->buyer_phone }}</small>
+                    </td>
+                    <td>{{ $o->ticket_name }}</td>
+                    <td><strong style="color:var(--primary);">Rp {{ number_format($o->total_amount, 0, ',', '.') }}</strong></td>
+                    <td>{{ $o->payment_method }}</td>
+                    <td>
+                      @if($o->status === 'Pembayaran disetujui')
+                        <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">Disetujui</span>
+                      @elseif($o->status === 'Menunggu verifikasi')
+                        <span class="tag t-warn" style="background:rgba(242,154,76,0.2); color:#F29A4C; padding:3px 8px; border-radius:4px; font-weight:700;">Menunggu Verifikasi</span>
+                      @else
+                        <span class="tag t-danger" style="background:rgba(239,68,68,0.2); color:#EF4444; padding:3px 8px; border-radius:4px; font-weight:700;">Ditolak</span>
+                      @endif
+                    </td>
+                    <td style="text-align:right;" class="no-print">
+                      @if($o->status === 'Menunggu verifikasi')
+                        <a href="{{ route('admin.verifikasi') }}" class="btn btn--primary" style="padding:4px 8px; font-size:12px;">Verifikasi</a>
+                      @elseif($o->status === 'Pembayaran disetujui')
+                        <span style="color:#10B981; font-weight:600; font-size:12px;">✓ Lunas</span>
+                      @else
+                        <span style="color:var(--t-muted); font-size:12px;">Dibatalkan</span>
+                      @endif
+                    </td>
+                  </tr>
+                @empty
+                  <tr>
+                    <td colspan="7" style="text-align:center; padding:32px; color:var(--t-muted);">
+                      Belum ada data pesanan di database MySQL.
+                    </td>
+                  </tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
 
           <div id="noMatchMessage" style="display:none; text-align:center; padding:30px; color:var(--t-muted);">
             Tidak ada pesanan yang sesuai dengan filter atau kata kunci pencarian.

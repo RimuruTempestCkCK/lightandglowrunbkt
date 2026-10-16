@@ -168,6 +168,49 @@
           <div id="scanResult" class="scan-result-card"></div>
         </div>
 
+        @if(isset($recentLogs) && count($recentLogs) > 0)
+          <section class="card" style="max-width: 780px; margin: 24px auto 0; padding: 20px;">
+            <div class="card-head" style="margin-bottom: 14px;">
+              <div class="card-title-wrap">
+                <span class="eyebrow">Riwayat Terakhir Gate</span>
+                <h2 class="card-title" style="font-size:16px;">Pemindaian Terbaru Petugas</h2>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="table" style="width: 100%; min-width: 600px;">
+                <thead>
+                  <tr>
+                    <th style="white-space: nowrap;">Waktu</th>
+                    <th style="white-space: nowrap;">Kode Tiket</th>
+                    <th style="white-space: nowrap;">Peserta</th>
+                    <th style="white-space: nowrap;">Gate</th>
+                    <th style="text-align:right; white-space: nowrap;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($recentLogs as $log)
+                    <tr>
+                      <td style="font-size:12px; color:var(--t-muted);">{{ \Carbon\Carbon::parse($log->scanned_at)->format('H:i:s') }}</td>
+                      <td><code>{{ $log->ticket_code }}</code></td>
+                      <td><strong>{{ $log->holder_name }}</strong></td>
+                      <td>{{ $log->gate_location }}</td>
+                      <td style="text-align:right;">
+                        @if($log->validation_status === 'success')
+                          <span class="badge success dot">Berhasil</span>
+                        @elseif($log->validation_status === 'rejected_used')
+                          <span class="badge danger dot">Duplikat</span>
+                        @else
+                          <span class="badge warning dot">Tidak Valid</span>
+                        @endif
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </section>
+        @endif
+
       </main>
       <div data-shell-footer></div>
     </div>

@@ -109,14 +109,14 @@
             </div>
           </div>
 
-          <table class="table" style="width: 100%;">
+          <table class="table" style="width: 100%; min-width: 750px;">
             <thead>
               <tr>
-                <th style="width: 90px;">Foto Spot</th>
-                <th>Nama Spot</th>
-                <th>Keterangan / Aktivitas</th>
-                <th style="width: 80px; text-align:center;">Urutan</th>
-                <th style="text-align: right; width: 140px;">Aksi</th>
+                <th style="width: 90px; white-space:nowrap;">Foto Spot</th>
+                <th style="white-space:nowrap;">Nama Spot</th>
+                <th style="white-space:nowrap;">Keterangan / Aktivitas</th>
+                <th style="width: 80px; text-align:center; white-space:nowrap;">Urutan</th>
+                <th style="text-align: right; width: 140px; white-space:nowrap;">Aksi</th>
               </tr>
             </thead>
             <tbody>

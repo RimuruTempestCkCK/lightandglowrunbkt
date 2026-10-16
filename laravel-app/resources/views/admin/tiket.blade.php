@@ -121,16 +121,16 @@
             </div>
           </div>
 
-          <table class="table" style="width: 100%;">
+          <table class="table" style="width: 100%; min-width: 850px;">
             <thead>
               <tr>
-                <th style="width: 60px;">Foto</th>
-                <th>Nama Tiket</th>
-                <th>Kategori</th>
-                <th>Harga</th>
-                <th>Kuota / Sisa</th>
-                <th>Benefit Peserta (Pamflet)</th>
-                <th style="text-align: right; width: 180px;">Aksi</th>
+                <th style="width: 60px; white-space:nowrap;">Foto</th>
+                <th style="white-space:nowrap;">Nama Tiket</th>
+                <th style="white-space:nowrap;">Kategori</th>
+                <th style="white-space:nowrap;">Harga</th>
+                <th style="white-space:nowrap;">Kuota / Sisa</th>
+                <th style="white-space:nowrap;">Benefit Peserta (Pamflet)</th>
+                <th style="text-align: right; width: 180px; white-space:nowrap;">Aksi</th>
               </tr>
             </thead>
             <tbody>

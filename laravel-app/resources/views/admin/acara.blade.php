@@ -130,14 +130,14 @@
             </div>
           </div>
 
-          <table class="table" style="width: 100%;">
+          <table class="table" style="width: 100%; min-width: 750px;">
             <thead>
               <tr>
-                <th style="width: 80px;">Barcode QRIS</th>
-                <th>Nama Akun Merchant</th>
-                <th>Status Tampil</th>
-                <th>Terakhir Diperbarui</th>
-                <th style="text-align: right; width: 100px;">Aksi</th>
+                <th style="width: 80px; white-space:nowrap;">Barcode QRIS</th>
+                <th style="white-space:nowrap;">Nama Akun Merchant</th>
+                <th style="white-space:nowrap;">Status Tampil</th>
+                <th style="white-space:nowrap;">Terakhir Diperbarui</th>
+                <th style="text-align: right; width: 100px; white-space:nowrap;">Aksi</th>
               </tr>
             </thead>
             <tbody>

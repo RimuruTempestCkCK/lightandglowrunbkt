@@ -109,68 +109,70 @@
             </div>
           </div>
 
-          <table class="table" style="width: 100%;" id="attendanceTable">
-            <thead>
-              <tr>
-                <th>Waktu Scan</th>
-                <th>Kode Tiket / Token</th>
-                <th>Nama Peserta</th>
-                <th>Lokasi Gate</th>
-                <th>Petugas Scan</th>
-                <th>Status Validasi</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse($logs as $log)
-                <tr class="attendance-row"
-                    data-time="{{ $log->scanned_at }}"
-                    data-code="{{ $log->ticket_code }}"
-                    data-name="{{ $log->holder_name }}"
-                    data-gate="{{ $log->gate_location }}"
-                    data-staff="{{ $log->staff_name ?? 'Petugas Gate' }}"
-                    data-status="{{ $log->validation_status }}"
-                    data-search="{{ strtolower($log->ticket_code . ' ' . $log->holder_name . ' ' . $log->gate_location . ' ' . ($log->staff_name ?? '')) }}">
-                  <td>
-                    <strong>{{ \Carbon\Carbon::parse($log->scanned_at)->format('H:i') }} WIB</strong><br>
-                    <small style="color:var(--t-muted);">{{ \Carbon\Carbon::parse($log->scanned_at)->format('d M Y') }}</small>
-                  </td>
-                  <td>
-                    <code style="background:var(--bg-muted); padding:3px 7px; border-radius:4px; font-weight:600;">
-                      {{ $log->ticket_code }}
-                    </code>
-                  </td>
-                  <td>
-                    <strong style="color:var(--t-base);">{{ $log->holder_name }}</strong>
-                  </td>
-                  <td>{{ $log->gate_location }}</td>
-                  <td>
-                    <span style="font-size:12.5px; color:var(--t-muted);">{{ $log->staff_name ?? 'Petugas Scanner' }}</span>
-                  </td>
-                  <td>
-                    @if($log->validation_status === 'success')
-                      <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">
-                        ✓ Check-in Berhasil
-                      </span>
-                    @elseif($log->validation_status === 'rejected_used')
-                      <span class="tag t-danger" style="background:rgba(235,19,85,0.2); color:#EB1355; padding:3px 8px; border-radius:4px; font-weight:700;">
-                        ✕ Ditolak: Tiket Sudah Dipakai
-                      </span>
-                    @else
-                      <span class="tag t-danger" style="background:rgba(235,19,85,0.2); color:#EB1355; padding:3px 8px; border-radius:4px; font-weight:700;">
-                        ✕ Ditolak: Tidak Valid
-                      </span>
-                    @endif
-                  </td>
-                </tr>
-              @empty
+          <div class="table-scroll">
+            <table class="table" style="width: 100%; min-width: 850px;" id="attendanceTable">
+              <thead>
                 <tr>
-                  <td colspan="6" style="text-align:center; padding:32px; color:var(--t-muted);">
-                    Belum ada riwayat check-in pemindaian tiket di gate masuk.
-                  </td>
+                  <th style="white-space: nowrap;">Waktu Scan</th>
+                  <th style="white-space: nowrap;">Kode Tiket / Token</th>
+                  <th style="white-space: nowrap;">Nama Peserta</th>
+                  <th style="white-space: nowrap;">Lokasi Gate</th>
+                  <th style="white-space: nowrap;">Petugas Scan</th>
+                  <th style="white-space: nowrap;">Status Validasi</th>
                 </tr>
-              @endforelse
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                @forelse($logs as $log)
+                  <tr class="attendance-row"
+                      data-time="{{ $log->scanned_at }}"
+                      data-code="{{ $log->ticket_code }}"
+                      data-name="{{ $log->holder_name }}"
+                      data-gate="{{ $log->gate_location }}"
+                      data-staff="{{ $log->staff_name ?? 'Petugas Gate' }}"
+                      data-status="{{ $log->validation_status }}"
+                      data-search="{{ strtolower($log->ticket_code . ' ' . $log->holder_name . ' ' . $log->gate_location . ' ' . ($log->staff_name ?? '')) }}">
+                    <td>
+                      <strong>{{ \Carbon\Carbon::parse($log->scanned_at)->format('H:i') }} WIB</strong><br>
+                      <small style="color:var(--t-muted);">{{ \Carbon\Carbon::parse($log->scanned_at)->format('d M Y') }}</small>
+                    </td>
+                    <td>
+                      <code style="background:var(--bg-muted); padding:3px 7px; border-radius:4px; font-weight:600;">
+                        {{ $log->ticket_code }}
+                      </code>
+                    </td>
+                    <td>
+                      <strong style="color:var(--t-base);">{{ $log->holder_name }}</strong>
+                    </td>
+                    <td>{{ $log->gate_location }}</td>
+                    <td>
+                      <span style="font-size:12.5px; color:var(--t-muted);">{{ $log->staff_name ?? 'Petugas Scanner' }}</span>
+                    </td>
+                    <td>
+                      @if($log->validation_status === 'success')
+                        <span class="tag t-success" style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:4px; font-weight:700;">
+                          ✓ Check-in Berhasil
+                        </span>
+                      @elseif($log->validation_status === 'rejected_used')
+                        <span class="tag t-danger" style="background:rgba(235,19,85,0.2); color:#EB1355; padding:3px 8px; border-radius:4px; font-weight:700;">
+                          ✕ Ditolak: Tiket Sudah Dipakai
+                        </span>
+                      @else
+                        <span class="tag t-danger" style="background:rgba(235,19,85,0.2); color:#EB1355; padding:3px 8px; border-radius:4px; font-weight:700;">
+                          ✕ Ditolak: Tidak Valid
+                        </span>
+                      @endif
+                    </td>
+                  </tr>
+                @empty
+                  <tr>
+                    <td colspan="6" style="text-align:center; padding:32px; color:var(--t-muted);">
+                      Belum ada riwayat check-in pemindaian tiket di gate masuk.
+                    </td>
+                  </tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
 
           <div id="noMatchMessage" style="display:none; text-align:center; padding:30px; color:var(--t-muted);">
             Tidak ditemukan data kehadiran yang sesuai dengan filter atau pencarian.
