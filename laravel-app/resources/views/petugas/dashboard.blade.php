@@ -117,15 +117,11 @@
 
         <!-- Tabel Riwayat Pemindaian Terakhir -->
         <section class="card" style="padding: 24px;">
-          <div class="card-head" style="margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
+          <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
               <span class="eyebrow">Aktivitas Gerbang Masuk</span>
               <h2 class="card-title" style="font-size:18px;">Log Pemindaian Terbaru</h2>
             </div>
-            <a href="{{ route('petugas.scanner') }}" class="btn btn--primary" style="font-size: 13px;">
-              <svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-              Scan E-Tiket Sekarang
-            </a>
           </div>
 
           @if(isset($recentLogs) && count($recentLogs) > 0)
