@@ -126,6 +126,92 @@ Route::get('/admin/tiket', function () {
 })->name('admin.tiket');
 Route::get('/dashboard/tiket', fn() => redirect()->route('admin.tiket'));
 
+// Admin Ticket CRUD (Integrasi Database MySQL)
+Route::post('/admin/tiket/store', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'name' => 'required|string|max:150',
+        'price' => 'required|numeric|min:0',
+        'category' => 'nullable|string|max:50',
+        'quota' => 'nullable|integer|min:0',
+        'benefits' => 'nullable|string',
+        'image' => 'nullable|string'
+    ]);
+
+    $quota = (int) ($request->input('quota', 100) ?: 100);
+    $price = (float) str_replace(['Rp', '.', ' '], '', $request->input('price'));
+
+    DB::table('ticket_types')->insert([
+        'event_id' => 1,
+        'name' => $request->input('name'),
+        'category' => $request->input('category', 'Reguler'),
+        'price' => $price,
+        'quota' => $quota,
+        'remaining_quota' => $quota,
+        'benefits' => $request->input('benefits'),
+        'image' => $request->input('image') ?: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=60',
+        'is_active' => true,
+        'created_at' => now(),
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('admin.tiket')->with('success', 'Tiket baru berhasil ditambahkan ke database MySQL!');
+})->name('admin.tiket.store');
+
+Route::post('/admin/tiket/{id}/update', function (\Illuminate\Http\Request $request, $id) {
+    $request->validate([
+        'name' => 'required|string|max:150',
+        'price' => 'required',
+        'category' => 'nullable|string|max:50',
+        'quota' => 'nullable|integer|min:0',
+        'benefits' => 'nullable|string',
+        'image' => 'nullable|string'
+    ]);
+
+    $ticket = DB::table('ticket_types')->where('id', $id)->first();
+    if (!$ticket) {
+        return redirect()->route('admin.tiket')->with('error', 'Tiket tidak ditemukan.');
+    }
+
+    $rawPrice = $request->input('price');
+    $cleanPrice = (float) preg_replace('/[^0-9]/', '', $rawPrice);
+    if ($cleanPrice == 0 && is_numeric($rawPrice)) {
+        $cleanPrice = (float) $rawPrice;
+    }
+
+    $newQuota = (int) ($request->input('quota', $ticket->quota) ?: $ticket->quota);
+    $sold = max(0, $ticket->quota - $ticket->remaining_quota);
+    $newRemaining = max(0, $newQuota - $sold);
+
+    DB::table('ticket_types')->where('id', $id)->update([
+        'name' => $request->input('name'),
+        'category' => $request->input('category', $ticket->category),
+        'price' => $cleanPrice,
+        'quota' => $newQuota,
+        'remaining_quota' => $newRemaining,
+        'benefits' => $request->input('benefits'),
+        'image' => $request->input('image') ?: $ticket->image,
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('admin.tiket')->with('success', 'Data tiket dan daftar benefit berhasil diperbarui di database MySQL!');
+})->name('admin.tiket.update');
+
+Route::delete('/admin/tiket/{id}', function ($id) {
+    DB::table('ticket_types')->where('id', $id)->delete();
+    return redirect()->route('admin.tiket')->with('success', 'Tiket berhasil dihapus dari database.');
+})->name('admin.tiket.delete');
+
+// Halaman Preview Tiket & Benefit Khusus Pembeli (1 Halaman Penuh, Bukan Modal)
+Route::get('/tiket/{id}', function ($id) {
+    $ticket = DB::table('ticket_types')->where('id', $id)->first();
+    if (!$ticket) {
+        return redirect()->route('home')->with('error', 'Kategori tiket tidak ditemukan.');
+    }
+    $event = DB::table('events')->first();
+    $buyer = session('buyer');
+    return view('buyer.ticket-detail', compact('ticket', 'event', 'buyer'));
+})->name('buyer.ticket.detail');
+
 Route::get('/admin/banner', function () {
     $banners = DB::table('banners')->get();
     return view('admin.banner', compact('banners'));

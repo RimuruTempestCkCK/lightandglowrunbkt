@@ -340,7 +340,9 @@
                 @if($isSoldOut)
                   <button class="btn-buy-ticket btn-sold-out" disabled>Tiket Habis</button>
                 @else
-                  <button class="btn-buy-ticket" onclick="showTicketDetail('{{ addslashes($t->name) }}', '{{ $formattedPrice }}', '25 April 2026', 'Jam Gadang, Bukittinggi', '{{ $imgUrl }}', '{{ addslashes($category) }}', {{ $t->id }}, {{ $t->remaining_quota }})">Beli Tiket</button>
+                  <a href="{{ route('buyer.ticket.detail', $t->id) }}" class="btn-buy-ticket" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
+                    Lihat Benefit & Beli
+                  </a>
                 @endif
               </div>
             </div>

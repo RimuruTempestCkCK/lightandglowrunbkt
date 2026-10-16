@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
   <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
   <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
-  <title>Master Tiket & Kuota · Light And Glow Bukittinggi</title>
+  <title>Master Tiket & Benefit · Light And Glow Bukittinggi</title>
   <script>
     !function(){
       try{
@@ -31,40 +31,87 @@
       padding: 20px;
     }
     .thumb-preview {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       border-radius: 8px;
       object-fit: cover;
+      border: 1px solid var(--border-soft);
     }
     .btn-action-group {
       display: flex;
       gap: 6px;
       justify-content: flex-end;
     }
+    .benefit-tag-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(14, 165, 233, 0.12);
+      color: #0284c7;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 600;
+      margin: 2px;
+    }
+    .alert-banner {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .alert-success {
+      background: #ECFDF5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+    .alert-danger {
+      background: #FEF2F2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+    }
   </style>
 </head>
-<body data-active="tiket_direct" data-crumbs="Master Data | Master Tiket & Kuota">
+<body data-active="tiket_direct" data-crumbs="Master Data | Master Tiket & Benefit">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">
       <div data-shell-topbar></div>
       <main class="content">
         
+        <!-- Alerts Notification -->
+        @if(session('success'))
+          <div class="alert-banner alert-success">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ session('success') }}
+          </div>
+        @endif
+        @if(session('error'))
+          <div class="alert-banner alert-danger">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            {{ session('error') }}
+          </div>
+        @endif
+
         <!-- Hero Section -->
         <section class="hero" style="margin-bottom: 24px;">
           <div class="hero-text">
-            <span class="eyebrow">Master Data</span>
-            <h1 class="hero-title">Kelola <span class="accent">Tiket & Harga</span></h1>
-            <p class="hero-sub">Kelola kategori tiket, harga, kuota, tanggal event, serta gambar tiket yang tampil di Landing Page secara real-time.</p>
+            <span class="eyebrow">Database MySQL Real-Time</span>
+            <h1 class="hero-title">Kelola <span class="accent">Tiket & Benefit</span></h1>
+            <p class="hero-sub">Kelola kategori tiket, harga, kuota, serta daftar benefit pamflet resmi yang langsung tersinkronisasi ke Halaman Detail & Preview Pembeli.</p>
           </div>
           <div class="hero-actions">
-            <button class="btn btn--ghost" onclick="resetTickets()">
-              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-              Reset
-            </button>
+            <a href="{{ route('home') }}#tiket-section" target="_blank" class="btn btn--ghost">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Lihat di Web
+            </a>
             <button class="btn btn--primary" onclick="openAddTicketModal()">
-              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Tambah
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Tambah Tiket Baru
             </button>
           </div>
         </section>
@@ -73,8 +120,8 @@
         <div class="tiket-table-wrap">
           <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
-              <span class="eyebrow">Daftar Master Tiket</span>
-              <h2 class="card-title">Katalog Tiket Light And Glow Bukittinggi</h2>
+              <span class="eyebrow">Data Database Terkini</span>
+              <h2 class="card-title">Katalog Tiket & Paket Peserta Light And Glow</h2>
             </div>
           </div>
 
@@ -83,15 +130,82 @@
               <tr>
                 <th style="width: 60px;">Foto</th>
                 <th>Nama Tiket</th>
-                <th>Kategori / Benefit</th>
+                <th>Kategori</th>
                 <th>Harga</th>
-                <th>Tanggal Acara</th>
-                <th>Lokasi</th>
-                <th style="text-align: right;">Aksi</th>
+                <th>Kuota / Sisa</th>
+                <th>Benefit Peserta (Pamflet)</th>
+                <th style="text-align: right; width: 180px;">Aksi</th>
               </tr>
             </thead>
-            <tbody id="ticketTableBody">
-              <!-- Rendered via JS -->
+            <tbody>
+              @forelse($tickets as $t)
+                @php
+                  $benefitsArr = array_filter(array_map('trim', preg_split('/[\r\n,]+/', $t->benefits ?? '')));
+                @endphp
+                <tr>
+                  <td>
+                    <img src="{{ $t->image ?: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=60' }}" class="thumb-preview" alt="{{ $t->name }}">
+                  </td>
+                  <td>
+                    <strong style="font-size:14px; display:block;">{{ $t->name }}</strong>
+                    <span style="font-size:11px; color:var(--text-sub);">ID Tiket: #{{ $t->id }}</span>
+                  </td>
+                  <td>
+                    <span class="tag" style="background:rgba(235,19,85,0.12); color:var(--primary); font-weight:600; padding:3px 8px; border-radius:4px;">
+                      {{ $t->category ?: 'Reguler' }}
+                    </span>
+                  </td>
+                  <td>
+                    <strong style="color:var(--primary); font-size:15px;">
+                      Rp {{ number_format($t->price, 0, ',', '.') }}
+                    </strong>
+                  </td>
+                  <td>
+                    <div style="font-size:13px; font-weight:600;">
+                      {{ $t->remaining_quota }} <span style="font-weight:400; color:var(--text-sub);">/ {{ $t->quota }}</span>
+                    </div>
+                    @if($t->remaining_quota <= 0)
+                      <span style="display:inline-block; font-size:10px; font-weight:700; color:#EF4444; background:#FEE2E2; padding:1px 6px; border-radius:3px; margin-top:2px;">HABIS</span>
+                    @endif
+                  </td>
+                  <td>
+                    <div style="max-width: 280px; display:flex; flex-wrap:wrap;">
+                      @if(count($benefitsArr) > 0)
+                        @foreach($benefitsArr as $b)
+                          <span class="benefit-tag-item">✓ {{ $b }}</span>
+                        @endforeach
+                      @else
+                        <span style="color:var(--text-sub); font-size:12px; font-style:italic;">Belum ada benefit</span>
+                      @endif
+                    </div>
+                  </td>
+                  <td style="text-align: right;">
+                    <div class="btn-action-group">
+                      <a href="{{ route('buyer.ticket.detail', $t->id) }}" target="_blank" class="btn btn--ghost" style="padding:5px 9px; font-size:12px;" title="Preview Halaman Pembeli">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Preview
+                      </a>
+                      <button class="btn btn--ghost" style="padding:5px 9px; font-size:12px;" onclick='openEditTicketModal(@json($t))'>
+                        Edit
+                      </button>
+                      <button class="btn btn--ghost" style="padding:5px 9px; font-size:12px; color:var(--danger);" onclick="confirmDeleteTicket({{ $t->id }}, '{{ addslashes($t->name) }}')">
+                        Hapus
+                      </button>
+                    </div>
+                    <!-- Form Delete Hidden -->
+                    <form id="delete-form-{{ $t->id }}" action="{{ route('admin.tiket.delete', $t->id) }}" method="POST" style="display:none;">
+                      @csrf
+                      @method('DELETE')
+                    </form>
+                  </td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="7" style="text-align:center; padding:32px; color:var(--text-sub);">
+                    Belum ada data tiket di database MySQL. Silakan klik tombol "Tambah Tiket Baru".
+                  </td>
+                </tr>
+              @endforelse
             </tbody>
           </table>
         </div>
@@ -101,244 +215,125 @@
     </div>
   </div>
 
-  <!-- Adminator Native Template Modal Popup -->
+  <!-- Adminator Modal (Create / Edit) -->
   <div id="adminatorTicketModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeTicketAdminModal()">
-    <div class="adminator-modal">
-      <div class="adminator-modal-head">
-        <h3 id="adminModalTitle" class="adminator-modal-title">Kelola Tiket</h3>
-        <button class="adminator-modal-close" onclick="closeTicketAdminModal()" aria-label="Tutup">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div class="adminator-modal-body">
-        <input type="hidden" id="modalTicketIndex" value="-1">
-        <div style="display:flex; flex-direction:column; gap:14px;">
-          <div>
-            <label class="field-label">Nama Tiket <span class="req">*</span></label>
-            <input id="inputTicketName" class="input" placeholder="Contoh: VIP Neon Glowing Pass">
-          </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+    <div class="adminator-modal" style="max-width:580px; width:92%;">
+      <form id="modalTicketForm" method="POST" action="{{ route('admin.tiket.store') }}">
+        @csrf
+        <div class="adminator-modal-head">
+          <h3 id="adminModalTitle" class="adminator-modal-title">Tambah Tiket Baru</h3>
+          <button type="button" class="adminator-modal-close" onclick="closeTicketAdminModal()" aria-label="Tutup">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="adminator-modal-body">
+          <div style="display:flex; flex-direction:column; gap:14px;">
             <div>
-              <label class="field-label">Harga <span class="req">*</span></label>
-              <input id="inputTicketPrice" class="input" placeholder="Contoh: Rp 250.000">
+              <label class="field-label">Nama Tiket <span class="req">*</span></label>
+              <input id="inputTicketName" name="name" class="input" placeholder="Contoh: Reguler atau VIP" required>
             </div>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div>
+                <label class="field-label">Harga (Rp) <span class="req">*</span></label>
+                <input id="inputTicketPrice" name="price" type="number" step="1000" class="input" placeholder="Contoh: 100000" required>
+              </div>
+              <div>
+                <label class="field-label">Kategori / Tipe</label>
+                <input id="inputTicketCategory" name="category" class="input" placeholder="Contoh: Reguler / VIP">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div>
+                <label class="field-label">Total Kuota Tiket <span class="req">*</span></label>
+                <input id="inputTicketQuota" name="quota" type="number" min="1" class="input" placeholder="Contoh: 500" required>
+              </div>
+              <div>
+                <label class="field-label">URL / Path Foto Sampul</label>
+                <input id="inputTicketImg" name="image" class="input" placeholder="https://images.unsplash.com/...">
+              </div>
+            </div>
+
             <div>
-              <label class="field-label">Kategori / Benefit</label>
-              <input id="inputTicketCategory" class="input" placeholder="Contoh: Akses Depan">
+              <label class="field-label">
+                Daftar Benefit Peserta <span class="req">*</span> 
+                <span style="font-weight:400; color:var(--text-sub); font-size:12px;">(Tulis 1 benefit per baris)</span>
+              </label>
+              <textarea id="inputTicketBenefits" name="benefits" class="input" rows="5" style="resize:vertical; font-family:inherit; line-height:1.5;" placeholder="Contoh:&#10;Jersey Eksklusif&#10;Medali Finisher&#10;Stick Glow&#10;E-Sertifikat"></textarea>
+              <small style="color:var(--text-sub); font-size:11px; display:block; margin-top:4px;">
+                💡 Sesuai pamflet: Reguler dapat Jersey, Medali Finisher, E-Sertifikat. VIP dapat Goodie Bag, Jersey, Stick Glow, Kaca Mata Lampu, Barisan Paling Depan, Medali Finisher, E-Sertifikat.
+              </small>
             </div>
-          </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-            <div>
-              <label class="field-label">Tanggal</label>
-              <input id="inputTicketDate" class="input" value="25 Apr 2026">
-            </div>
-            <div>
-              <label class="field-label">Lokasi</label>
-              <input id="inputTicketLocation" class="input" value="Jam Gadang, Bukittinggi">
-            </div>
-          </div>
-          <div>
-            <label class="field-label">URL Foto Tiket</label>
-            <input id="inputTicketImg" class="input" placeholder="https://images.unsplash.com/...">
           </div>
         </div>
-      </div>
-      <div class="adminator-modal-foot">
-        <button class="btn btn--ghost" onclick="closeTicketAdminModal()">Batal</button>
-        <button class="btn btn--primary" onclick="saveTicketFromModal()">Simpan</button>
-      </div>
+        <div class="adminator-modal-foot">
+          <button type="button" class="btn btn--ghost" onclick="closeTicketAdminModal()">Batal</button>
+          <button type="submit" class="btn btn--primary" id="btnSubmitModal">Simpan ke Database</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    const DEFAULT_TICKETS = [
-      {
-        name: "Early Bird - Festival Pass",
-        price: "Rp 99.000",
-        date: "25 Apr 2026",
-        location: "Jam Gadang, Bukittinggi",
-        img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&auto=format&fit=crop&q=60",
-        category: "Lari Santai + Neon Pack"
-      },
-      {
-        name: "Presale - VIP Glow Run",
-        price: "Rp 275.000",
-        date: "25 Apr 2026",
-        location: "Jam Gadang, Bukittinggi",
-        img: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=500&auto=format&fit=crop&q=60",
-        category: "Akses VIP Depan Panggung"
-      },
-      {
-        name: "Reguler - 5K Night Run",
-        price: "Rp 150.000",
-        date: "25 Apr 2026",
-        location: "Jam Gadang, Bukittinggi",
-        img: "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&auto=format&fit=crop&q=60",
-        category: "Jersey + Medali Finisher"
-      },
-      {
-        name: "Squad / Group Bundle (4 Pax)",
-        price: "Rp 500.000",
-        date: "25 Apr 2026",
-        location: "Jam Gadang, Bukittinggi",
-        img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=60",
-        category: "Paket Hemat 4 Peserta"
-      }
-    ];
-
-    function getStorageData() {
-      const raw = localStorage.getItem('goers_full_cms');
-      return raw ? JSON.parse(raw) : {};
-    }
-
-    function saveStorageData(cmsData) {
-      localStorage.setItem('goers_full_cms', JSON.stringify(cmsData));
-    }
-
-    function renderTickets() {
-      const cms = getStorageData();
-      const tickets = (cms.tickets && cms.tickets.length > 0) ? cms.tickets : DEFAULT_TICKETS;
-      
-      const tbody = document.getElementById('ticketTableBody');
-      tbody.innerHTML = '';
-
-      tickets.forEach((t, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><img src="${t.img}" class="thumb-preview" alt="${t.name}"></td>
-          <td><strong>${t.name}</strong></td>
-          <td><span class="tag" style="background:rgba(235,19,85,0.15); color:var(--primary); font-weight:600; padding:3px 8px; border-radius:4px;">${t.category}</span></td>
-          <td><strong style="color:var(--primary);">${t.price}</strong></td>
-          <td>${t.date}</td>
-          <td>${t.location}</td>
-          <td style="text-align: right;">
-            <div class="btn-action-group">
-              <button class="btn btn--ghost" style="padding:4px 8px; font-size:12px;" onclick="editTicket(${index})">Edit</button>
-              <button class="btn btn--ghost" style="padding:4px 8px; font-size:12px; color:var(--danger);" onclick="deleteTicket(${index})">Hapus</button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
     function closeTicketAdminModal() {
       document.getElementById('adminatorTicketModal').style.display = 'none';
     }
 
     function openAddTicketModal() {
-      document.getElementById('modalTicketIndex').value = '-1';
+      const form = document.getElementById('modalTicketForm');
+      form.action = "{{ route('admin.tiket.store') }}";
+      
       document.getElementById('adminModalTitle').textContent = 'Tambah Tiket Baru';
       document.getElementById('inputTicketName').value = '';
       document.getElementById('inputTicketPrice').value = '';
-      document.getElementById('inputTicketCategory').value = '';
-      document.getElementById('inputTicketDate').value = '25 Apr 2026';
-      document.getElementById('inputTicketLocation').value = 'Jam Gadang, Bukittinggi';
+      document.getElementById('inputTicketCategory').value = 'Reguler';
+      document.getElementById('inputTicketQuota').value = '250';
       document.getElementById('inputTicketImg').value = 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=60';
+      document.getElementById('inputTicketBenefits').value = "Jersey\nMedali Finisher\nE-Sertifikat";
+      document.getElementById('btnSubmitModal').textContent = 'Tambah Tiket Baru';
+
+      document.getElementById('adminatorTicketModal').style.display = 'flex';
+    }
+
+    function openEditTicketModal(ticket) {
+      const form = document.getElementById('modalTicketForm');
+      form.action = "/admin/tiket/" + ticket.id + "/update";
+
+      document.getElementById('adminModalTitle').textContent = 'Edit Tiket #' + ticket.id + ' (' + ticket.name + ')';
+      document.getElementById('inputTicketName').value = ticket.name || '';
+      document.getElementById('inputTicketPrice').value = ticket.price || 0;
+      document.getElementById('inputTicketCategory').value = ticket.category || '';
+      document.getElementById('inputTicketQuota').value = ticket.quota || 100;
+      document.getElementById('inputTicketImg').value = ticket.image || '';
       
-      document.getElementById('adminatorTicketModal').style.display = 'flex';
-    }
+      // Format benefits if separated by comma or newline
+      let rawBenefits = ticket.benefits || '';
+      let formatted = rawBenefits.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean).join('\n');
+      document.getElementById('inputTicketBenefits').value = formatted;
 
-    function editTicket(index) {
-      const cms = getStorageData();
-      const tickets = (cms.tickets && cms.tickets.length > 0) ? cms.tickets : DEFAULT_TICKETS;
-      const t = tickets[index];
-
-      document.getElementById('modalTicketIndex').value = index;
-      document.getElementById('adminModalTitle').textContent = 'Edit Data Tiket';
-      document.getElementById('inputTicketName').value = t.name;
-      document.getElementById('inputTicketPrice').value = t.price;
-      document.getElementById('inputTicketCategory').value = t.category;
-      document.getElementById('inputTicketDate').value = t.date;
-      document.getElementById('inputTicketLocation').value = t.location;
-      document.getElementById('inputTicketImg').value = t.img;
+      document.getElementById('btnSubmitModal').textContent = 'Simpan Perubahan';
 
       document.getElementById('adminatorTicketModal').style.display = 'flex';
     }
 
-    function saveTicketFromModal() {
-      const name = document.getElementById('inputTicketName').value;
-      const price = document.getElementById('inputTicketPrice').value;
-      const category = document.getElementById('inputTicketCategory').value || 'Tiket Masuk';
-      const date = document.getElementById('inputTicketDate').value;
-      const location = document.getElementById('inputTicketLocation').value;
-      const img = document.getElementById('inputTicketImg').value || 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=60';
-      const index = parseInt(document.getElementById('modalTicketIndex').value);
-
-      if (!name || !price) {
-        alert('Nama tiket dan harga wajib diisi!');
-        return;
-      }
-
-      const ticketObj = { name, price, category, date, location, img };
-      const cms = getStorageData();
-      const tickets = (cms.tickets && cms.tickets.length > 0) ? cms.tickets : [...DEFAULT_TICKETS];
-
-      closeTicketAdminModal();
-
-      if (index >= 0) {
-        tickets[index] = ticketObj;
-        cms.tickets = tickets;
-        saveStorageData(cms);
-        renderTickets();
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil Diedit!',
-          text: 'Data tiket berhasil diperbarui.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      } else {
-        tickets.push(ticketObj);
-        cms.tickets = tickets;
-        saveStorageData(cms);
-        renderTickets();
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil Ditambahkan!',
-          text: 'Tiket baru telah berhasil ditambahkan.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      }
+    function confirmDeleteTicket(id, name) {
+      Swal.fire({
+        title: 'Hapus Tiket?',
+        text: `Apakah Anda yakin ingin menghapus tiket "${name}"? Data di database akan dihapus permanen.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#EF4444',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('delete-form-' + id).submit();
+        }
+      });
     }
-
-    function deleteTicket(index) {
-      if (confirm('Yakin ingin menghapus tiket ini?')) {
-        const cms = getStorageData();
-        const tickets = (cms.tickets && cms.tickets.length > 0) ? cms.tickets : [...DEFAULT_TICKETS];
-        tickets.splice(index, 1);
-        cms.tickets = tickets;
-        saveStorageData(cms);
-        renderTickets();
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil Dihapus!',
-          text: 'Tiket telah berhasil dihapus.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      }
-    }
-
-    function resetTickets() {
-      if (confirm('Kembalikan seluruh daftar tiket ke default awal?')) {
-        const cms = getStorageData();
-        cms.tickets = [...DEFAULT_TICKETS];
-        saveStorageData(cms);
-        renderTickets();
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil Direset!',
-          text: 'Daftar tiket telah dikembalikan ke bawaan.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', renderTickets);
   </script>
 </body>
 </html>
