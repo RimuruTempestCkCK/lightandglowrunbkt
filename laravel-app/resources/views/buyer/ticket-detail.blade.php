@@ -662,7 +662,10 @@
         <!-- Form Upload Bukti -->
         <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:14px; text-align:left; margin-bottom:16px;">
           <label style="display:block; font-size:12px; font-weight:700; color:#0F172A; margin-bottom:6px;">Unggah Bukti Transfer / Screenshot Pembayaran:</label>
-          <input type="file" id="proofFileInput" accept="image/*" style="font-size:12px; width:100%;" />
+          <input type="file" id="proofFileInput" accept="image/*" style="font-size:12px; width:100%;" onchange="previewSelectedProof(this)" />
+          <div id="proofPreviewWrap" style="display:none; margin-top:10px; text-align:center;">
+            <img id="proofPreviewImg" src="" alt="Pratinjau Bukti" style="max-height:160px; max-width:100%; border-radius:8px; border:1px solid #CBD5E1; margin:0 auto;" />
+          </div>
         </div>
 
         <button type="button" id="btnUploadProof" class="btn-checkout-action" onclick="submitPaymentProof()">
@@ -780,10 +783,30 @@
       });
     }
 
+    function previewSelectedProof(input) {
+      const wrap = document.getElementById('proofPreviewWrap');
+      const img = document.getElementById('proofPreviewImg');
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          img.src = e.target.result;
+          wrap.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        wrap.style.display = 'none';
+      }
+    }
+
     function submitPaymentProof() {
       const fileInput = document.getElementById('proofFileInput');
       if (!fileInput.files || fileInput.files.length === 0) {
-        alert('Silakan pilih file bukti transfer terlebih dahulu!');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Perhatian',
+          text: 'Silakan pilih file bukti transfer atau screenshot QRIS terlebih dahulu!',
+          confirmButtonColor: '#00B4D8'
+        });
         return;
       }
 
@@ -792,16 +815,23 @@
       btn.textContent = 'Mengunggah Bukti...';
 
       const formData = new FormData();
-      formData.append('proof_of_payment', fileInput.files[0]);
+      formData.append('payment_proof', fileInput.files[0]);
 
       fetch(`/api/orders/${currentOrderId}/upload-proof`, {
         method: 'POST',
         headers: {
+          'Accept': 'application/json',
           'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
         body: formData
       })
-      .then(res => res.json())
+      .then(async res => {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.message || 'Gagal mengunggah bukti pembayaran.');
+        }
+        return data;
+      })
       .then(data => {
         btn.disabled = false;
         btn.textContent = 'Kirim Bukti Pembayaran';
@@ -811,13 +841,23 @@
           document.getElementById('modalStepSuccess').style.display = 'flex';
           if (window.lucide) lucide.createIcons();
         } else {
-          alert(data.message || 'Gagal mengunggah bukti.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: data.message || 'Gagal mengunggah bukti.',
+            confirmButtonColor: '#EB1355'
+          });
         }
       })
       .catch(err => {
         btn.disabled = false;
         btn.textContent = 'Kirim Bukti Pembayaran';
-        alert('Terjadi kesalahan saat mengunggah bukti.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Kesalahan',
+          text: err.message || 'Terjadi kesalahan saat mengunggah bukti.',
+          confirmButtonColor: '#EB1355'
+        });
       });
     }
   </script>
