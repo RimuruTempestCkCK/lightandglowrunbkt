@@ -34,7 +34,7 @@
         <section class="hero" style="margin-bottom: 24px;">
           <div class="hero-text">
             <span class="eyebrow" id="heroDate">Panel Petugas Gate</span>
-            <h1 class="hero-title">Dashboard <span class="accent">Petugas Masuk</span></h1>
+            <h1 class="hero-title">Dashboard <span class="accent">{{ Auth::check() ? Auth::user()->name : 'Petugas Masuk' }}</span></h1>
             <p class="hero-sub">Ringkasan operasional check-in gerbang masuk venue Light And Glow Bukittinggi 2026. Pantau arus peserta dan mulai pemindaian e-tiket di menu Scanner.</p>
           </div>
           <div class="hero-actions">

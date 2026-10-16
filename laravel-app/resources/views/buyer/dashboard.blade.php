@@ -527,9 +527,9 @@
       <!-- Buyer Profile Card -->
       @php
         $latestBuyer = $orders->first();
-        $buyerName = $latestBuyer ? $latestBuyer->buyer_name : 'Sahabat Light and Glow';
-        $buyerEmail = $latestBuyer ? $latestBuyer->buyer_email : 'info@lightandglow.id';
-        $buyerPhone = $latestBuyer ? $latestBuyer->buyer_phone : '-';
+        $buyerName = !empty($buyer['name']) ? $buyer['name'] : ($latestBuyer ? $latestBuyer->buyer_name : 'Sahabat Light and Glow');
+        $buyerEmail = !empty($buyer['email']) ? $buyer['email'] : ($latestBuyer ? $latestBuyer->buyer_email : 'info@lightandglow.id');
+        $buyerPhone = !empty($buyer['phone']) ? $buyer['phone'] : ($latestBuyer ? $latestBuyer->buyer_phone : '-');
         $initials = collect(explode(' ', $buyerName))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
       @endphp
       <div class="buyer-header-card">

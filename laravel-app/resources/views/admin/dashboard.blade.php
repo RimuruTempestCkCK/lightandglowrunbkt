@@ -35,7 +35,7 @@
         <section class="hero">
           <div class="hero-text">
             <span class="eyebrow" id="heroDate">Light and Glow Run Bukittinggi 2026</span>
-            <h1 class="hero-title">Selamat Datang, <span class="accent">Admin Light & Glow</span></h1>
+            <h1 class="hero-title">Selamat Datang, <span class="accent">{{ Auth::check() ? Auth::user()->name : 'Admin Light & Glow' }}</span></h1>
             <p class="hero-sub">Ringkasan transaksi penjualan tiket, status antrean verifikasi pembayaran, dan log gate masuk real-time dari database.</p>
           </div>
           <div class="hero-actions">
