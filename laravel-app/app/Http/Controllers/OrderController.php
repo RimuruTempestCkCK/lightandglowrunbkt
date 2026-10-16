@@ -169,51 +169,66 @@ class OrderController extends Controller
      */
     public function verifyPayment(Request $request, $id)
     {
-        $order = DB::table('orders')
-            ->where('id', $id)
-            ->orWhere('order_number', $id)
-            ->orWhere('order_number', ltrim($id, '#'))
-            ->first();
+        return DB::transaction(function () use ($request, $id) {
+            $order = DB::table('orders')
+                ->where('id', $id)
+                ->orWhere('order_number', $id)
+                ->orWhere('order_number', ltrim($id, '#'))
+                ->lockForUpdate()
+                ->first();
 
-        if (!$order) {
-            return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan!'], 404);
-        }
+            if (!$order) {
+                return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan!'], 404);
+            }
 
-        // 1. Update status pesanan
-        DB::table('orders')->where('id', $order->id)->update([
-            'status' => 'Pembayaran disetujui',
-            'verified_at' => now(),
-            'verified_by' => 1,
-            'updated_at' => now(),
-        ]);
+            // Cegah verifikasi ganda / penerbitan tiket ganda
+            if ($order->status === 'Pembayaran disetujui') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pembayaran pesanan #' . $order->order_number . ' sebelumnya sudah disetujui.',
+                    'order_number' => '#' . $order->order_number
+                ]);
+            }
 
-        // 2. Ambil data pembeli
-        $buyer = DB::table('buyers')->where('id', $order->buyer_id)->first();
-
-        // 3. Terbitkan Tiket Digital ber-QR Code unik sebanyak quantity
-        for ($i = 1; $i <= $order->quantity; $i++) {
-            $randomToken = strtoupper(Str::random(8));
-            $ticketCode = "LG-BKT-2026-" . mt_rand(10000, 99999);
-            $qrToken = "LG-BKT-{$order->id}-{$ticketCode}-" . hash('sha256', Str::random(16) . time());
-
-            DB::table('digital_tickets')->insert([
-                'order_id' => $order->id,
-                'ticket_type_id' => $order->ticket_type_id,
-                'ticket_code' => $ticketCode,
-                'qr_token' => $qrToken,
-                'holder_name' => $buyer ? $buyer->name : 'Peserta Light & Glow',
-                'status' => 'Aktif dan belum digunakan',
-                'activated_at' => now(),
-                'created_at' => now(),
+            // 1. Update status pesanan
+            DB::table('orders')->where('id', $order->id)->update([
+                'status' => 'Pembayaran disetujui',
+                'verified_at' => now(),
+                'verified_by' => 1,
                 'updated_at' => now(),
             ]);
-        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pembayaran pesanan #' . $order->order_number . ' disetujui. Tiket digital & QR Code resmi telah diterbitkan!',
-            'order_number' => '#' . $order->order_number
-        ]);
+            // 2. Ambil data pembeli
+            $buyer = DB::table('buyers')->where('id', $order->buyer_id)->first();
+
+            // 3. Cek apakah tiket digital sudah pernah dibuat sebelumnya
+            $existingTicketsCount = DB::table('digital_tickets')->where('order_id', $order->id)->count();
+            if ($existingTicketsCount < $order->quantity) {
+                $needed = $order->quantity - $existingTicketsCount;
+                for ($i = 1; $i <= $needed; $i++) {
+                    $ticketCode = "LG-BKT-2026-" . mt_rand(10000, 99999);
+                    $qrToken = "LG-BKT-{$order->id}-{$ticketCode}-" . hash('sha256', Str::random(16) . microtime(true) . $i);
+
+                    DB::table('digital_tickets')->insert([
+                        'order_id' => $order->id,
+                        'ticket_type_id' => $order->ticket_type_id,
+                        'ticket_code' => $ticketCode,
+                        'qr_token' => $qrToken,
+                        'holder_name' => $buyer ? $buyer->name : 'Peserta Light & Glow',
+                        'status' => 'Aktif dan belum digunakan',
+                        'activated_at' => now(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pembayaran pesanan #' . $order->order_number . ' disetujui. Tiket digital & QR Code resmi telah diterbitkan!',
+                'order_number' => '#' . $order->order_number
+            ]);
+        });
     }
 
     /**
@@ -221,34 +236,46 @@ class OrderController extends Controller
      */
     public function rejectPayment(Request $request, $id)
     {
-        $order = DB::table('orders')
-            ->where('id', $id)
-            ->orWhere('order_number', $id)
-            ->orWhere('order_number', ltrim($id, '#'))
-            ->first();
+        return DB::transaction(function () use ($request, $id) {
+            $order = DB::table('orders')
+                ->where('id', $id)
+                ->orWhere('order_number', $id)
+                ->orWhere('order_number', ltrim($id, '#'))
+                ->lockForUpdate()
+                ->first();
 
-        if (!$order) {
-            return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan!'], 404);
-        }
+            if (!$order) {
+                return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan!'], 404);
+            }
 
-        $reason = $request->input('reason', 'Bukti mutasi transfer / QRIS tidak valid atau dana belum masuk.');
+            // Cegah penolakan berulang yang mengembalikan kuota berkali-kali
+            if ($order->status === 'Pembayaran ditolak') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pesanan #' . $order->order_number . ' sebelumnya sudah ditolak.',
+                    'order_number' => '#' . $order->order_number
+                ]);
+            }
 
-        // 1. Kembalikan kuota tiket
-        DB::table('ticket_types')->where('id', $order->ticket_type_id)->increment('remaining_quota', $order->quantity);
+            $reason = $request->input('reason', 'Bukti mutasi transfer / QRIS tidak valid atau dana belum masuk.');
 
-        // 2. Update status order
-        DB::table('orders')->where('id', $order->id)->update([
-            'status' => 'Pembayaran ditolak',
-            'rejection_reason' => $reason,
-            'updated_at' => now(),
-        ]);
+            // 1. Kembalikan kuota tiket hanya jika sebelumnya kuota berkurang saat order
+            DB::table('ticket_types')->where('id', $order->ticket_type_id)->increment('remaining_quota', $order->quantity);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pesanan #' . $order->order_number . ' telah ditolak.',
-            'order_number' => '#' . $order->order_number,
-            'reason' => $reason
-        ]);
+            // 2. Update status order
+            DB::table('orders')->where('id', $order->id)->update([
+                'status' => 'Pembayaran ditolak',
+                'rejection_reason' => $reason,
+                'updated_at' => now(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesanan #' . $order->order_number . ' telah ditolak.',
+                'order_number' => '#' . $order->order_number,
+                'reason' => $reason
+            ]);
+        });
     }
 
     /**
@@ -264,47 +291,79 @@ class OrderController extends Controller
         $gate = $request->input('gate', 'Gate 1 (Utama Jam Gadang)');
         $staffId = $request->input('staff_id', 2);
 
-        // 1. Cari tiket berdasarkan qr_token atau ticket_code
-        $ticket = DB::table('digital_tickets')
-            ->join('ticket_types', 'digital_tickets.ticket_type_id', '=', 'ticket_types.id')
-            ->join('orders', 'digital_tickets.order_id', '=', 'orders.id')
-            ->select('digital_tickets.*', 'ticket_types.name as ticket_name', 'ticket_types.category as ticket_category', 'orders.order_number', 'orders.status as order_status')
-            ->where('digital_tickets.qr_token', $tokenInput)
-            ->orWhere('digital_tickets.ticket_code', $tokenInput)
-            ->first();
+        return DB::transaction(function () use ($request, $tokenInput, $gate, $staffId) {
+            // 1. Cari tiket berdasarkan qr_token atau ticket_code dengan lock
+            $ticket = DB::table('digital_tickets')
+                ->join('ticket_types', 'digital_tickets.ticket_type_id', '=', 'ticket_types.id')
+                ->join('orders', 'digital_tickets.order_id', '=', 'orders.id')
+                ->select('digital_tickets.*', 'ticket_types.name as ticket_name', 'ticket_types.category as ticket_category', 'orders.order_number', 'orders.status as order_status')
+                ->where('digital_tickets.qr_token', $tokenInput)
+                ->orWhere('digital_tickets.ticket_code', $tokenInput)
+                ->lockForUpdate()
+                ->first();
 
-        // Kasus 1: Tiket Tidak Ditemukan / Tidak Valid
-        if (!$ticket) {
-            DB::table('check_in_logs')->insert([
-                'digital_ticket_id' => 1,
-                'event_id' => 1,
-                'staff_id' => $staffId,
-                'gate_location' => $gate,
-                'validation_status' => 'rejected_invalid',
-                'notes' => 'QR Code atau nomor tiket palsu/tidak terdaftar: ' . $tokenInput,
-                'ip_address' => $request->ip(),
-                'scanned_at' => now(),
-                'created_at' => now(),
+            // Kasus 1: Tiket Tidak Ditemukan / Tidak Valid
+            if (!$ticket) {
+                return response()->json([
+                    'success' => false,
+                    'status' => 'rejected_invalid',
+                    'title' => 'Tiket Tidak Valid!',
+                    'message' => 'QR Code atau nomor tiket tidak ditemukan di sistem database resmi Light and Glow Bukittinggi.'
+                ], 400);
+            }
+
+            // Kasus 2: Tiket Sudah Pernah Digunakan (Anti Double Check-in)
+            if ($ticket->status === 'Sudah digunakan') {
+                DB::table('check_in_logs')->insert([
+                    'digital_ticket_id' => $ticket->id,
+                    'event_id' => 1,
+                    'staff_id' => $staffId,
+                    'gate_location' => $gate,
+                    'validation_status' => 'rejected_used',
+                    'notes' => "Peringatan duplikasi: Tiket {$ticket->ticket_code} sudah pernah digunakan pada " . ($ticket->used_at ?: 'sebelumnya'),
+                    'ip_address' => $request->ip(),
+                    'scanned_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'status' => 'rejected_used',
+                    'title' => 'Tiket Sudah Digunakan!',
+                    'message' => "PERINGATAN: Tiket atas nama {$ticket->holder_name} ({$ticket->ticket_code}) sudah dipakai check-in sebelumnya pada {$ticket->used_at}!",
+                    'data' => [
+                        'attendee_name' => $ticket->holder_name,
+                        'ticket_code' => $ticket->ticket_code,
+                        'used_at' => $ticket->used_at ? \Carbon\Carbon::parse($ticket->used_at)->format('d M Y, H:i') : 'Sebelumnya'
+                    ]
+                ], 409);
+            }
+
+            // Kasus 3: Status Pembayaran Belum Disetujui
+            if ($ticket->order_status !== 'Pembayaran disetujui') {
+                return response()->json([
+                    'success' => false,
+                    'status' => 'rejected_invalid',
+                    'title' => 'Pembayaran Belum Disetujui!',
+                    'message' => "Tiket ini belum aktif karena pembayaran pesanan #{$ticket->order_number} belum disetujui oleh admin."
+                ], 400);
+            }
+
+            // Kasus 4: Tiket Valid & Sukses Masuk
+            DB::table('digital_tickets')->where('id', $ticket->id)->update([
+                'status' => 'Sudah digunakan',
+                'used_at' => now(),
                 'updated_at' => now(),
             ]);
 
-            return response()->json([
-                'success' => false,
-                'status' => 'rejected_invalid',
-                'title' => 'Tiket Tidak Valid!',
-                'message' => 'QR Code atau nomor tiket tidak ditemukan di sistem database resmi Light and Glow Bukittinggi.'
-            ], 400);
-        }
-
-        // Kasus 2: Tiket Sudah Pernah Digunakan (Anti Double Check-in)
-        if ($ticket->status === 'Sudah digunakan') {
             DB::table('check_in_logs')->insert([
                 'digital_ticket_id' => $ticket->id,
                 'event_id' => 1,
                 'staff_id' => $staffId,
                 'gate_location' => $gate,
-                'validation_status' => 'rejected_used',
-                'notes' => "Peringatan duplikasi: Tiket {$ticket->ticket_code} sudah pernah digunakan pada " . ($ticket->used_at ?: 'sebelumnya'),
+                'validation_status' => 'success',
+                'notes' => "Check-in Berhasil. Race pack & neon wristband diserahkan kepada {$ticket->holder_name}.",
                 'ip_address' => $request->ip(),
                 'scanned_at' => now(),
                 'created_at' => now(),
@@ -312,62 +371,20 @@ class OrderController extends Controller
             ]);
 
             return response()->json([
-                'success' => false,
-                'status' => 'rejected_used',
-                'title' => 'Tiket Sudah Digunakan!',
-                'message' => "PERINGATAN: Tiket atas nama {$ticket->holder_name} ({$ticket->ticket_code}) sudah dipakai check-in sebelumnya pada {$ticket->used_at}!",
+                'success' => true,
+                'status' => 'valid',
+                'title' => 'Check-in Berhasil Disetujui! ✅',
+                'message' => "Selamat datang, {$ticket->holder_name}! Silakan masuk melalui {$gate}.",
                 'data' => [
                     'attendee_name' => $ticket->holder_name,
                     'ticket_code' => $ticket->ticket_code,
-                    'used_at' => $ticket->used_at ? \Carbon\Carbon::parse($ticket->used_at)->format('d M Y, H:i') : 'Sebelumnya'
+                    'ticket_name' => $ticket->ticket_name,
+                    'ticket_category' => $ticket->ticket_category,
+                    'order_number' => '#' . $ticket->order_number,
+                    'gate' => $gate,
+                    'time' => now()->format('H:i:s WIB')
                 ]
-            ], 409);
-        }
-
-        // Kasus 3: Status Pembayaran Belum Disetujui
-        if ($ticket->order_status !== 'Pembayaran disetujui') {
-            return response()->json([
-                'success' => false,
-                'status' => 'rejected_invalid',
-                'title' => 'Pembayaran Belum Disetujui!',
-                'message' => "Tiket ini belum aktif karena pembayaran pesanan #{$ticket->order_number} belum disetujui oleh admin."
-            ], 400);
-        }
-
-        // Kasus 4: Tiket Valid & Sukses Masuk
-        DB::table('digital_tickets')->where('id', $ticket->id)->update([
-            'status' => 'Sudah digunakan',
-            'used_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        DB::table('check_in_logs')->insert([
-            'digital_ticket_id' => $ticket->id,
-            'event_id' => 1,
-            'staff_id' => $staffId,
-            'gate_location' => $gate,
-            'validation_status' => 'success',
-            'notes' => "Check-in Berhasil. Race pack & neon wristband diserahkan kepada {$ticket->holder_name}.",
-            'ip_address' => $request->ip(),
-            'scanned_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'status' => 'valid',
-            'title' => 'Check-in Berhasil Disetujui! ✅',
-            'message' => "Selamat datang, {$ticket->holder_name}! Silakan masuk melalui {$gate}.",
-            'data' => [
-                'attendee_name' => $ticket->holder_name,
-                'ticket_code' => $ticket->ticket_code,
-                'ticket_name' => $ticket->ticket_name,
-                'ticket_category' => $ticket->ticket_category,
-                'order_number' => '#' . $ticket->order_number,
-                'gate' => $gate,
-                'time' => now()->format('H:i:s WIB')
-            ]
-        ]);
+            ]);
+        });
     }
 }

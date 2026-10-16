@@ -481,19 +481,24 @@
             <table class="event-info-table">
               <tr>
                 <td class="event-info-label">Nama Acara</td>
-                <td class="event-info-value">Light And Glow Bukittinggi 2026 (5K Night Run & Concert)</td>
+                <td class="event-info-value">{{ $event->title ?? 'Light And Glow Bukittinggi 2026' }}</td>
               </tr>
               <tr>
                 <td class="event-info-label">Hari & Tanggal</td>
-                <td class="event-info-value">Sabtu, 28 November 2026</td>
+                <td class="event-info-value">
+                  {{ !empty($event->event_date) ? \Carbon\Carbon::parse($event->event_date)->translatedFormat('l, d F Y') : 'Sabtu, 25 April 2026' }}
+                </td>
               </tr>
               <tr>
                 <td class="event-info-label">Waktu Start</td>
-                <td class="event-info-value">19.45 WIB - Selesai (Gate Open: 16.00 WIB)</td>
+                <td class="event-info-value">
+                  {{ !empty($event->start_time) ? substr($event->start_time, 0, 5) . ' WIB' : '17:00 WIB' }} - 
+                  {{ !empty($event->end_time) ? substr($event->end_time, 0, 5) . ' WIB' : '23:30 WIB' }}
+                </td>
               </tr>
               <tr>
                 <td class="event-info-label">Lokasi / Venue</td>
-                <td class="event-info-value">Lapangan Wirabraja, Kota Bukittinggi, Sumatera Barat</td>
+                <td class="event-info-value">{{ $event->location ?? 'Jam Gadang, Bukittinggi, Sumatera Barat' }}</td>
               </tr>
               <tr>
                 <td class="event-info-label">Akses Gate</td>
@@ -505,7 +510,39 @@
               </tr>
             </table>
 
-            <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:12px; padding:14px; font-size:13px; color:#B45309; line-height:1.6;">
+            <!-- Section QRIS Resmi Acara -->
+            <div style="margin-top:20px; background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:16px; padding:18px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-weight:800; font-size:14px; color:#0F172A;">QRIS Resmi Pembayaran</span>
+                  <span style="font-size:10px; font-weight:800; background:#DCFCE7; color:#15803D; padding:2px 8px; border-radius:12px;">TERVERIFIKASI</span>
+                </div>
+                <span style="font-size:11px; color:#64748B;">{{ $event->qris_merchant_name ?? 'LIGHT AND GLOW BUKITTINGGI' }}</span>
+              </div>
+
+              <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
+                <div style="background:#fff; border:1px solid #CBD5E1; border-radius:12px; padding:10px; width:130px; height:130px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                  @if(!empty($event->qris_image))
+                    <img src="{{ Str::startsWith($event->qris_image, ['http://', 'https://']) ? $event->qris_image : asset(ltrim($event->qris_image, '/')) }}" alt="QRIS Resmi Panitia" style="width:100%; height:100%; object-fit:contain; border-radius:8px;" />
+                  @else
+                    <div style="text-align:center; padding:6px; color:#94A3B8; font-size:11px;">
+                      <i data-lucide="qr-code" style="width:32px;height:32px;margin:0 auto 4px;color:#CBD5E1;"></i>
+                      <span>QRIS Diperbarui saat Checkout</span>
+                    </div>
+                  @endif
+                </div>
+                <div style="flex:1; min-width:200px;">
+                  <p style="font-size:12px; color:#475569; margin:0 0 8px; line-height:1.5;">
+                    Pembayaran tiket dapat dilakukan langsung melalui pemindaian barcode QRIS toko resmi panitia di atas menggunakan aplikasi BCA, Mandiri, Dana, GoPay, OVO, atau LinkAja.
+                  </p>
+                  <span style="font-size:11px; color:#0284C7; font-weight:700;">
+                    ✓ Barcode QRIS & rincian total tagihan juga akan ditampilkan lengkap di modal checkout.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:12px; padding:14px; font-size:13px; color:#B45309; line-height:1.6; margin-top:16px;">
               <strong>Catatan Penting:</strong> E-tiket digital ber-QR code unik akan langsung terbit di dashboard akun Anda setelah pembayaran diverifikasi oleh panitia. Tiket hanya dapat dipindai <strong>1 kali</strong> di gerbang masuk.
             </div>
 
@@ -539,7 +576,7 @@
             <label style="display:block; font-size:13px; font-weight:700; color:#0F172A; margin-bottom:6px;">Metode Pembayaran:</label>
             <div style="display:flex; align-items:center; gap:10px; background:#F8FAFC; border:1.5px solid #CBD5E1; border-radius:12px; padding:12px 14px;">
               <span style="font-weight:800; font-size:14px; color:#0F172A;">QRIS Instant</span>
-              <span style="font-size:11px; background:#E0F9FE; color:#0077B6; padding:2px 8px; border-radius:6px; font-weight:700; margin-left:auto;">BCA / Mandiri / Dana / GoPay</span>
+              <span style="font-size:11px; background:#E0F9FE; color:#0077B6; padding:2px 8px; border-radius:6px; font-weight:700; margin-left:auto;">{{ $event->qris_merchant_name ?? 'BCA / Mandiri / Dana / GoPay' }}</span>
             </div>
           </div>
 
