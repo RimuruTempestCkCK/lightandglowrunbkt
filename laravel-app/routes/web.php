@@ -294,13 +294,9 @@ Route::get('/dashboard/acara', fn() => redirect()->route('admin.acara'));
 
 Route::post('/admin/acara/update', function (\Illuminate\Http\Request $request) {
     $request->validate([
-        'title' => 'nullable|string|max:200',
-        'location' => 'nullable|string|max:200',
-        'event_date' => 'nullable|date',
         'qris_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
         'qris_image' => 'nullable|string',
-        'qris_merchant_name' => 'nullable|string|max:100',
-        'qris_nmid' => 'nullable|string|max:50'
+        'qris_merchant_name' => 'nullable|string|max:100'
     ]);
 
     $event = DB::table('events')->first();
@@ -316,25 +312,24 @@ Route::post('/admin/acara/update', function (\Illuminate\Http\Request $request) 
     }
 
     $updateData = [
-        'title' => $request->input('title', $event->title ?? 'Light And Glow Bukittinggi 2026'),
-        'location' => $request->input('location', $event->location ?? 'Jam Gadang, Bukittinggi'),
-        'event_date' => $request->input('event_date', $event->event_date ?? '2026-10-24'),
         'qris_image' => $qrisImagePath,
         'qris_merchant_name' => $request->input('qris_merchant_name', 'LIGHT AND GLOW BUKITTINGGI'),
-        'qris_nmid' => $request->input('qris_nmid'),
         'updated_at' => now()
     ];
 
     if ($event) {
         DB::table('events')->where('id', $event->id)->update($updateData);
     } else {
+        $updateData['title'] = 'Light And Glow Bukittinggi 2026';
         $updateData['slug'] = 'light-and-glow-bukittinggi-2026';
+        $updateData['location'] = 'Jam Gadang, Bukittinggi';
+        $updateData['event_date'] = '2026-04-25';
         $updateData['status'] = 'active';
         $updateData['created_at'] = now();
         DB::table('events')->insert($updateData);
     }
 
-    return redirect()->route('admin.acara')->with('success', 'Gambar Barcode QRIS Pembayaran dan Pengaturan Acara berhasil disimpan ke database MySQL!');
+    return redirect()->route('admin.acara')->with('success', 'Gambar Barcode QRIS Pembayaran berhasil diperbarui di database!');
 })->name('admin.acara.update');
 
 // 5. Verifikasi Pembayaran (Berdasarkan rancangan web.txt)

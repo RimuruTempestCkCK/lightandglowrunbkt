@@ -49,9 +49,8 @@ Aplikasi terhubung langsung dengan database MySQL local (`lightandglowrunbkt`) m
 - `event_date` (DATE): Tanggal pelaksanaan
 - `start_time`, `end_time` (TIME)
 - `banner_image` (VARCHAR 255): Banner sampul
-- `qris_image` (VARCHAR 255, Nullable): URL / path gambar Barcode QRIS pembayaran yang dapat diedit oleh admin
+- `qris_image` (VARCHAR 255, Nullable): URL / path gambar Barcode QRIS pembayaran yang diunggah oleh admin
 - `qris_merchant_name` (VARCHAR 100): Nama akun merchant QRIS (*LIGHT AND GLOW BUKITTINGGI*)
-- `qris_nmid` (VARCHAR 50, Nullable): Nomor Identifikasi QRIS Nasional (NMID)
 - `status` (VARCHAR 50): Status event
 - `created_at`, `updated_at` (TIMESTAMP)
 
@@ -129,9 +128,11 @@ Aplikasi terhubung langsung dengan database MySQL local (`lightandglowrunbkt`) m
 ## 3. Fitur yang Telah Terintegrasi ke Web
 
 1. **Kelola & Upload Gambar QRIS Pembayaran Tiket oleh Admin (`/admin/acara`)**:
-   - Admin dapat **mengunggah file foto/gambar Barcode QRIS resmi** (PNG, JPG, WEBP) atau memasukkan path/URL gambar, nama akun merchant, dan nomor NMID secara mandiri.
+   - Menu fokus murni untuk **Pengelolaan QRIS Pembayaran**: admin dapat mengunggah file gambar Barcode QRIS resmi (PNG, JPG, WEBP) dan mengatur nama akun merchant resmi toko/panitia.
+   - Kolom dan input non-esensial (*NMID*, *Nama Acara*, *Lokasi Venue*, *Tanggal Pelaksanaan*) telah dieliminasi dari modal edit demi kesederhanaan dan fokus fitur.
+   - Kolom `qris_nmid` telah dihapus dari tabel database MySQL `events`.
    - File gambar QRIS tersimpan di server (`public/uploads/qris/`) dan path tersimpan di tabel `events` MySQL.
-   - Gambar QRIS ini langsung otomatis tampil pada modal checkout pembelian tiket pembeli untuk di-scan secara nyata melalui aplikasi m-Banking atau E-Wallet.
+   - Gambar barcode QRIS ini langsung otomatis tampil pada modal checkout pembelian tiket pembeli untuk di-scan secara nyata melalui aplikasi m-Banking atau E-Wallet.
 2. **Halaman Khusus Preview Tiket & Benefit Peserta (`/tiket/{id}`)**:
    - Membuka halaman preview penuh (bukan popup) yang menyajikan detail paket, foto sampul, dan checklist benefit resmi sesuai pamflet (*Jersey, Medali Finisher, Stick Glow, E-Sertifikat, dll*).
    - Terhubung langsung dengan tombol beli pada Landing Page.

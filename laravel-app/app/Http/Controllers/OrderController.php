@@ -120,8 +120,7 @@ class OrderController extends Controller
             'ticket_name'    => $ticket->name,
             'qris_payload'   => $qrisPayload,
             'qris_image_url' => $qrisImageUrl,
-            'qris_merchant'  => $eventData->qris_merchant_name ?? 'LIGHT AND GLOW BUKITTINGGI',
-            'qris_nmid'      => $eventData->qris_nmid ?? null
+            'qris_merchant'  => $eventData->qris_merchant_name ?? 'LIGHT AND GLOW BUKITTINGGI'
         ]);
     }
 

@@ -619,7 +619,6 @@
           <img id="qrisCodeImage" src="" alt="QRIS" style="width:200px; height:200px; display:block; object-fit:contain;" />
         </div>
 
-        <div id="qrisMerchantInfo" style="font-size:12px; font-weight:700; color:#0F172A; margin-bottom:4px;">NMID: <span id="qrisNmidText">-</span></div>
         <div style="font-size:14px; font-weight:800; color:#0F172A; margin-bottom:4px;">Total: <span id="payTotalText" style="color:#0077B6;">Rp {{ number_format($ticket->price, 0, ',', '.') }}</span></div>
         <div style="font-size:11px; color:#94A3B8; margin-bottom:16px;">Nomor Pesanan: <strong id="payOrderNumberText">-</strong></div>
 
@@ -731,13 +730,6 @@
         
         const qrUrl = data.qris_image_url || `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(data.qris_payload)}`;
         document.getElementById('qrisCodeImage').src = qrUrl;
-
-        if (data.qris_nmid) {
-          document.getElementById('qrisNmidText').textContent = data.qris_nmid;
-          document.getElementById('qrisMerchantInfo').style.display = 'block';
-        } else {
-          document.getElementById('qrisMerchantInfo').style.display = 'none';
-        }
 
         document.getElementById('modalStepForm').style.display = 'none';
         document.getElementById('modalStepPay').style.display = 'flex';

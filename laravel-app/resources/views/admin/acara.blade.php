@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Inter+Tight:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
   <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
   <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
-  <title>Master Acara & QRIS Pembayaran · Light And Glow Bukittinggi</title>
+  <title>Kelola QRIS Pembayaran · Light And Glow Bukittinggi</title>
   <script>
     !function(){
       try{
@@ -31,8 +31,8 @@
       padding: 20px;
     }
     .thumb-qris {
-      width: 52px;
-      height: 52px;
+      width: 56px;
+      height: 56px;
       border-radius: 8px;
       object-fit: contain;
       background: #fff;
@@ -83,7 +83,7 @@
     }
   </style>
 </head>
-<body data-active="acara_direct" data-crumbs="Master Data | Master Acara & QRIS Pembayaran">
+<body data-active="acara_direct" data-crumbs="Master Data | QRIS Pembayaran Tiket">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">
@@ -108,37 +108,35 @@
         <section class="hero" style="margin-bottom: 24px;">
           <div class="hero-text">
             <span class="eyebrow">Database MySQL Real-Time</span>
-            <h1 class="hero-title">Master <span class="accent">Acara & QRIS</span></h1>
-            <p class="hero-sub">Daftar konfigurasi utama event acara dan barcode QRIS pembayaran tiket. Data bersifat single master (hanya dapat diedit).</p>
+            <h1 class="hero-title">Kelola <span class="accent">QRIS Pembayaran</span></h1>
+            <p class="hero-sub">Kelola barcode gambar QRIS toko/panitia dan nama akun merchant resmi untuk pembayaran tiket peserta.</p>
           </div>
           <div class="hero-actions">
             @if(!$event)
-              <button class="btn btn--primary" onclick="openAddAcaraModal()">
+              <button class="btn btn--primary" onclick="openAddQrisModal()">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Tambah Data Acara
+                Tambah Data QRIS
               </button>
             @endif
           </div>
         </section>
 
-        <!-- Tabel Master Acara & QRIS -->
+        <!-- Tabel QRIS Pembayaran -->
         <div class="acara-table-wrap">
           <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
               <span class="eyebrow">Data Database Terkini</span>
-              <h2 class="card-title">Informasi Acara & QRIS Pembayaran</h2>
+              <h2 class="card-title">Barcode & Informasi Rekening QRIS Pembayaran</h2>
             </div>
           </div>
 
           <table class="table" style="width: 100%;">
             <thead>
               <tr>
-                <th style="width: 70px;">QRIS</th>
-                <th>Nama Acara</th>
-                <th>Lokasi Venue</th>
-                <th>Tanggal Pelaksanaan</th>
-                <th>Merchant QRIS</th>
-                <th>NMID</th>
+                <th style="width: 80px;">Barcode QRIS</th>
+                <th>Nama Akun Merchant</th>
+                <th>Status Tampil</th>
+                <th>Terakhir Diperbarui</th>
                 <th style="text-align: right; width: 100px;">Aksi</th>
               </tr>
             </thead>
@@ -149,45 +147,39 @@
                     @if(!empty($event->qris_image))
                       <img src="{{ asset($event->qris_image) }}" class="thumb-qris" alt="QRIS">
                     @else
-                      <span class="tag" style="background:rgba(239,68,68,0.12); color:#ef4444; font-size:10px;">Belum Ada</span>
+                      <span class="tag" style="background:rgba(239,68,68,0.12); color:#ef4444; font-size:11px; font-weight:700;">Belum Upload</span>
                     @endif
                   </td>
                   <td>
-                    <strong style="font-size:14px; color:var(--t-base);">{{ $event->title }}</strong>
-                    <span style="font-size:11px; color:var(--text-sub); display:block;">Slug: {{ $event->slug ?? 'light-and-glow-bukittinggi-2026' }}</span>
+                    <strong style="font-size:14px; color:var(--t-base);">{{ $event->qris_merchant_name ?? 'LIGHT AND GLOW BUKITTINGGI' }}</strong>
+                    <span style="font-size:11px; color:var(--text-sub); display:block;">Metode: QRIS Dinamis & Statis</span>
                   </td>
                   <td>
-                    <span style="font-size:13px; color:var(--t-base); font-weight:500;">{{ $event->location }}</span>
-                  </td>
-                  <td>
-                    <span class="tag" style="background:rgba(37,99,235,0.12); color:var(--primary); font-weight:700;">
-                      {{ \Carbon\Carbon::parse($event->event_date)->translatedFormat('d F Y') }}
+                    <span class="tag" style="background:rgba(16,185,129,0.12); color:#10B981; font-weight:700;">
+                      ● Aktif di Halaman Pembeli
                     </span>
                   </td>
                   <td>
-                    <strong style="color:var(--t-base);">{{ $event->qris_merchant_name ?? '-' }}</strong>
-                  </td>
-                  <td>
-                    <code style="font-size:11.5px; background:var(--bg-muted); padding:2px 6px; border-radius:4px; color:var(--t-muted);">
-                      {{ $event->qris_nmid ?? '-' }}
-                    </code>
+                    <span style="font-size:12px; color:var(--t-muted);">
+                      {{ !empty($event->updated_at) ? \Carbon\Carbon::parse($event->updated_at)->translatedFormat('d F Y H:i') : '-' }}
+                    </span>
                   </td>
                   <td style="text-align: right;">
-                    <button class="btn btn--primary" style="padding:5px 12px; font-size:12px;" onclick='openEditAcaraModal(@json($event))'>
+                    <button class="btn btn--primary" style="padding:6px 14px; font-size:12px;" onclick='openEditQrisModal(@json($event))'>
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
-                      Edit
+                      Edit QRIS
                     </button>
                   </td>
                 </tr>
               @else
                 <tr>
-                  <td colspan="7" style="text-align:center; padding:36px 20px;">
+                  <td colspan="5" style="text-align:center; padding:36px 20px;">
                     <div class="empty-data-alert" style="margin-bottom: 12px;">
-                      ⚠️ Belum ada data acara di database MySQL! Silakan klik tombol "Tambah Data Acara" di atas untuk menambahkan data.
+                      ⚠️ Belum ada data QRIS di database MySQL! Silakan klik tombol "Tambah Data QRIS" di atas untuk menambahkan data.
                     </div>
-                    <button class="btn btn--primary" onclick="openAddAcaraModal()">
+                    <button class="btn btn--primary" onclick="openAddQrisModal()">
                       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                      Tambah Data Acara Sekarang
+                      Tambah Data QRIS Sekarang
                     </button>
                   </td>
                 </tr>
@@ -201,14 +193,14 @@
     </div>
   </div>
 
-  <!-- Adminator Modal (Edit / Tambah Acara & QRIS) -->
-  <div id="adminatorAcaraModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeAcaraModal()">
-    <div class="adminator-modal" style="max-width:540px; width:92%;">
+  <!-- Adminator Modal (Edit / Tambah QRIS Pembayaran Saja) -->
+  <div id="adminatorAcaraModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeQrisModal()">
+    <div class="adminator-modal" style="max-width:500px; width:92%;">
       <form id="modalAcaraForm" method="POST" action="{{ route('admin.acara.update') }}" enctype="multipart/form-data">
         @csrf
         <div class="adminator-modal-head">
-          <h3 id="adminAcaraModalTitle" class="adminator-modal-title">Edit Acara & QRIS Pembayaran</h3>
-          <button type="button" class="adminator-modal-close" onclick="closeAcaraModal()" aria-label="Tutup">
+          <h3 id="adminAcaraModalTitle" class="adminator-modal-title">Edit QRIS Pembayaran</h3>
+          <button type="button" class="adminator-modal-close" onclick="closeQrisModal()" aria-label="Tutup">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
@@ -217,7 +209,7 @@
             
             <!-- Upload QRIS -->
             <div>
-              <label class="field-label">Gambar QRIS Pembayaran</label>
+              <label class="field-label">Gambar Barcode QRIS <span class="req">*</span></label>
               <div style="display:flex; gap:16px; align-items:center; margin-top:6px;">
                 <div class="qris-preview-box">
                   <img id="modalQrisPreview" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020101021226680016ID.CO.QRIS.WWW01189360050300000884215204581253033605802ID5914LIGHT%20AND%20GLOW6011BUKITTINGGI630419A8" alt="Preview QRIS">
@@ -225,46 +217,25 @@
                 <div style="flex:1;">
                   <input type="file" id="modalQrisFile" name="qris_file" class="input" accept="image/*" onchange="previewModalQris(this)">
                   <span style="font-size:11px; color:var(--t-muted); margin-top:4px; display:block;">
-                    Pilih file gambar QRIS baru (JPG, PNG, WEBP). Maks. 5MB.
+                    Pilih file gambar QRIS toko/rekening resmi (JPG, PNG, WEBP). Maks. 5MB.
                   </span>
                 </div>
               </div>
             </div>
 
-            <!-- Merchant & NMID -->
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-              <div>
-                <label class="field-label">Nama Akun Merchant <span class="req">*</span></label>
-                <input id="inputMerchantName" name="qris_merchant_name" class="input" placeholder="LIGHT AND GLOW BUKITTINGGI" required>
-              </div>
-              <div>
-                <label class="field-label">NMID QRIS</label>
-                <input id="inputNmid" name="qris_nmid" class="input" placeholder="ID102026xxxxxxxxx">
-              </div>
-            </div>
-
-            <!-- Nama Acara -->
+            <!-- Merchant Name -->
             <div>
-              <label class="field-label">Nama Acara <span class="req">*</span></label>
-              <input id="inputEventTitle" name="title" class="input" placeholder="Contoh: Light And Glow Bukittinggi 2026" required>
-            </div>
-
-            <!-- Lokasi & Tanggal -->
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-              <div>
-                <label class="field-label">Lokasi Venue <span class="req">*</span></label>
-                <input id="inputEventLocation" name="location" class="input" placeholder="Contoh: Jam Gadang, Bukittinggi" required>
-              </div>
-              <div>
-                <label class="field-label">Tanggal Pelaksanaan <span class="req">*</span></label>
-                <input id="inputEventDate" name="event_date" type="date" class="input" required>
-              </div>
+              <label class="field-label">Nama Akun Merchant QRIS <span class="req">*</span></label>
+              <input id="inputMerchantName" name="qris_merchant_name" class="input" placeholder="LIGHT AND GLOW BUKITTINGGI" required>
+              <span style="font-size:11px; color:var(--t-muted); margin-top:4px; display:block;">
+                Nama merchant/toko yang tertera di aplikasi pembeli saat scan QRIS.
+              </span>
             </div>
 
           </div>
         </div>
         <div class="adminator-modal-foot">
-          <button type="button" class="btn btn--ghost" onclick="closeAcaraModal()">Batal</button>
+          <button type="button" class="btn btn--ghost" onclick="closeQrisModal()">Batal</button>
           <button type="submit" class="btn btn--primary" id="btnSubmitModal">Simpan Perubahan</button>
         </div>
       </form>
@@ -272,31 +243,23 @@
   </div>
 
   <script>
-    function closeAcaraModal() {
+    function closeQrisModal() {
       document.getElementById('adminatorAcaraModal').style.display = 'none';
     }
 
-    function openAddAcaraModal() {
-      document.getElementById('adminAcaraModalTitle').textContent = 'Tambah Data Acara & QRIS';
-      document.getElementById('inputEventTitle').value = 'Light And Glow Bukittinggi 2026';
-      document.getElementById('inputEventLocation').value = 'Jam Gadang, Bukittinggi';
-      document.getElementById('inputEventDate').value = '2026-10-24';
+    function openAddQrisModal() {
+      document.getElementById('adminAcaraModalTitle').textContent = 'Tambah Data QRIS';
       document.getElementById('inputMerchantName').value = 'LIGHT AND GLOW BUKITTINGGI';
-      document.getElementById('inputNmid').value = '';
       document.getElementById('modalQrisPreview').src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020101021226680016ID.CO.QRIS.WWW01189360050300000884215204581253033605802ID5914LIGHT%20AND%20GLOW6011BUKITTINGGI630419A8';
       document.getElementById('modalQrisFile').value = '';
-      document.getElementById('btnSubmitModal').textContent = 'Simpan Data Acara';
+      document.getElementById('btnSubmitModal').textContent = 'Simpan QRIS';
 
       document.getElementById('adminatorAcaraModal').style.display = 'flex';
     }
 
-    function openEditAcaraModal(event) {
-      document.getElementById('adminAcaraModalTitle').textContent = 'Edit Acara & QRIS Pembayaran';
-      document.getElementById('inputEventTitle').value = event.title || '';
-      document.getElementById('inputEventLocation').value = event.location || '';
-      document.getElementById('inputEventDate').value = event.event_date ? event.event_date.substring(0, 10) : '';
+    function openEditQrisModal(event) {
+      document.getElementById('adminAcaraModalTitle').textContent = 'Edit QRIS Pembayaran';
       document.getElementById('inputMerchantName').value = event.qris_merchant_name || 'LIGHT AND GLOW BUKITTINGGI';
-      document.getElementById('inputNmid').value = event.qris_nmid || '';
       document.getElementById('modalQrisFile').value = '';
 
       if (event.qris_image) {
