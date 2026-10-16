@@ -104,9 +104,12 @@ class OrderController extends Controller
 
         // Cek apakah Admin sudah mengunggah / mengonfigurasi Foto QRIS di Master Acara
         $eventData = DB::table('events')->first();
-        $qrisImageUrl = ($eventData && !empty($eventData->qris_image)) 
-            ? $eventData->qris_image 
-            : "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($qrisPayload);
+        if ($eventData && !empty($eventData->qris_image)) {
+            $rawImg = $eventData->qris_image;
+            $qrisImageUrl = Str::startsWith($rawImg, ['http://', 'https://']) ? $rawImg : asset(ltrim($rawImg, '/'));
+        } else {
+            $qrisImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($qrisPayload);
+        }
 
         return response()->json([
             'success'        => true,

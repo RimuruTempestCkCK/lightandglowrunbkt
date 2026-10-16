@@ -128,9 +128,10 @@ Aplikasi terhubung langsung dengan database MySQL local (`lightandglowrunbkt`) m
 
 ## 3. Fitur yang Telah Terintegrasi ke Web
 
-1. **Kelola QRIS Pembayaran Tiket oleh Admin (`/admin/acara`)**:
-   - Admin dapat mengatur gambar barcode QRIS pembayaran, nama akun merchant, dan nomor NMID secara mandiri.
-   - Hasil konfigurasi langsung tersambung dan tampil saat pembeli melakukan checkout pembelian tiket di web.
+1. **Kelola & Upload Gambar QRIS Pembayaran Tiket oleh Admin (`/admin/acara`)**:
+   - Admin dapat **mengunggah file foto/gambar Barcode QRIS resmi** (PNG, JPG, WEBP) atau memasukkan path/URL gambar, nama akun merchant, dan nomor NMID secara mandiri.
+   - File gambar QRIS tersimpan di server (`public/uploads/qris/`) dan path tersimpan di tabel `events` MySQL.
+   - Gambar QRIS ini langsung otomatis tampil pada modal checkout pembelian tiket pembeli untuk di-scan secara nyata melalui aplikasi m-Banking atau E-Wallet.
 2. **Halaman Khusus Preview Tiket & Benefit Peserta (`/tiket/{id}`)**:
    - Membuka halaman preview penuh (bukan popup) yang menyajikan detail paket, foto sampul, dan checklist benefit resmi sesuai pamflet (*Jersey, Medali Finisher, Stick Glow, E-Sertifikat, dll*).
    - Terhubung langsung dengan tombol beli pada Landing Page.

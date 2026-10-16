@@ -1,4 +1,4 @@
-﻿"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[1],{810(e,t,a){const n="4.4.0",o=[
+"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[1],{810(e,t,a){const n="4.4.0",o=[
   {
     label: "Utama",
     items: [
@@ -57,7 +57,7 @@
         { key: "tiket_direct", text: "Kelola Tiket", href: "/admin/tiket", badge: { kind: "new", text: "TIKET" }, icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>' },
         { key: "rute_direct", text: "Rute & Spot", href: "/admin/rute", badge: { kind: "info", text: "FOTO" }, icon: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>' },
         { key: "banner_direct", text: "Kelola Banner", href: "/admin/banner", icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>' },
-        { key: "acara_direct", text: "Konten Acara", href: "/admin/acara", icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' }
+        { key: "acara_direct", text: "QRIS & Acara", href: "/admin/acara", badge: { kind: "danger", text: "QRIS" }, icon: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>' }
       ]
     },
     {

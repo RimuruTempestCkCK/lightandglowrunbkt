@@ -128,9 +128,8 @@ $petugasDashboardHandler = function () {
 
 Route::get('/petugas/dashboard', $petugasDashboardHandler)->name('petugas.dashboard');
 
-Route::get('/admin/cms', function () {
-    return redirect()->route('admin.acara');
-})->name('admin.cms');
+// Redirect legacy CMS to Master Acara & QRIS
+Route::get('/admin/cms', fn() => redirect()->route('admin.acara'));
 Route::get('/dashboard/cms', fn() => redirect()->route('admin.acara'));
 
 Route::get('/admin/tiket', function () {
@@ -298,17 +297,29 @@ Route::post('/admin/acara/update', function (\Illuminate\Http\Request $request) 
         'title' => 'nullable|string|max:200',
         'location' => 'nullable|string|max:200',
         'event_date' => 'nullable|date',
+        'qris_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
         'qris_image' => 'nullable|string',
         'qris_merchant_name' => 'nullable|string|max:100',
         'qris_nmid' => 'nullable|string|max:50'
     ]);
 
     $event = DB::table('events')->first();
+    $qrisImagePath = $event->qris_image ?? null;
+
+    if ($request->hasFile('qris_file')) {
+        $file = $request->file('qris_file');
+        $fileName = 'qris_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/qris'), $fileName);
+        $qrisImagePath = '/uploads/qris/' . $fileName;
+    } elseif ($request->filled('qris_image')) {
+        $qrisImagePath = $request->input('qris_image');
+    }
+
     $updateData = [
         'title' => $request->input('title', $event->title ?? 'Light And Glow Bukittinggi 2026'),
         'location' => $request->input('location', $event->location ?? 'Jam Gadang, Bukittinggi'),
         'event_date' => $request->input('event_date', $event->event_date ?? '2026-10-24'),
-        'qris_image' => $request->input('qris_image'),
+        'qris_image' => $qrisImagePath,
         'qris_merchant_name' => $request->input('qris_merchant_name', 'LIGHT AND GLOW BUKITTINGGI'),
         'qris_nmid' => $request->input('qris_nmid'),
         'updated_at' => now()
@@ -323,7 +334,7 @@ Route::post('/admin/acara/update', function (\Illuminate\Http\Request $request) 
         DB::table('events')->insert($updateData);
     }
 
-    return redirect()->route('admin.acara')->with('success', 'Pengaturan QRIS Pembayaran dan Konten Acara berhasil diperbarui di database MySQL!');
+    return redirect()->route('admin.acara')->with('success', 'Gambar Barcode QRIS Pembayaran dan Pengaturan Acara berhasil disimpan ke database MySQL!');
 })->name('admin.acara.update');
 
 // 5. Verifikasi Pembayaran (Berdasarkan rancangan web.txt)
