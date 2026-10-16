@@ -268,14 +268,25 @@
 
           <div class="form-field">
             <label class="form-label" for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              class="form-input"
-              placeholder="••••••••"
-              required
-            />
+            <div style="position:relative; display:flex; align-items:center;">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-input"
+                placeholder="••••••••"
+                required
+                style="padding-right:42px;"
+              />
+              <button
+                type="button"
+                onclick="togglePasswordVisibility('password', this)"
+                style="position:absolute; right:12px; background:none; border:none; color:#64748B; cursor:pointer; padding:4px; display:flex; align-items:center; justify-content:center;"
+                aria-label="Lihat password"
+              >
+                <i data-lucide="eye" style="width:18px;height:18px;"></i>
+              </button>
+            </div>
             @error('password')
               <span style="color:#B91C1C; font-size:12px; margin-top:4px; display:block;">{{ $message }}</span>
             @enderror
@@ -287,13 +298,21 @@
           </button>
         </form>
 
-
       </div>
     </div>
 
   </div>
 
   <script>
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      btn.innerHTML = `<i data-lucide="${isPassword ? 'eye-off' : 'eye'}" style="width:18px;height:18px;"></i>`;
+      if (window.lucide) lucide.createIcons();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) lucide.createIcons();
     });

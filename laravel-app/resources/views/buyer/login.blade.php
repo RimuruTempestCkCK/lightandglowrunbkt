@@ -282,14 +282,25 @@
 
           <div class="buyer-form-field">
             <label class="buyer-form-label" for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              class="buyer-form-input {{ $errors->has('password') ? 'is-error' : '' }}"
-              placeholder="Masukkan password Anda"
-              required
-            />
+            <div style="position:relative; display:flex; align-items:center;">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="buyer-form-input {{ $errors->has('password') ? 'is-error' : '' }}"
+                placeholder="Masukkan password Anda"
+                required
+                style="padding-right:42px;"
+              />
+              <button
+                type="button"
+                onclick="togglePasswordVisibility('password', this)"
+                style="position:absolute; right:12px; background:none; border:none; color:#64748B; cursor:pointer; padding:4px; display:flex; align-items:center; justify-content:center;"
+                aria-label="Lihat password"
+              >
+                <i data-lucide="eye" style="width:18px;height:18px;"></i>
+              </button>
+            </div>
             @error('password')<span class="buyer-form-error">{{ $message }}</span>@enderror
           </div>
 
@@ -308,17 +319,20 @@
           </a>
         </div>
 
-        {{--
-        <div style="margin-top:24px; text-align:center; font-size:12px; color:var(--goers-gray-600);">
-          Ini adalah akun pembeli tiket Light & Glow. Untuk Portal Admin/Panitia →
-          <a href="{{ route('login') }}" style="color:var(--goers-branding-500); font-weight:700;">Masuk di sini</a>
-        </div>
-        --}}
       </div>
     </div>
   </div>
 
   <script>
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      btn.innerHTML = `<i data-lucide="${isPassword ? 'eye-off' : 'eye'}" style="width:18px;height:18px;"></i>`;
+      if (window.lucide) lucide.createIcons();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) lucide.createIcons();
     });
