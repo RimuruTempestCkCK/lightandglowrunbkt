@@ -325,21 +325,33 @@
         display: none !important;
       }
 
+      /* Base modal styles */
       #eTicketModal .modal-content,
       #invoiceModal .modal-content {
         display: block !important;
         position: static !important;
         background: #ffffff !important;
         color: #0F172A !important;
-        border: 2px solid #0284C7 !important;
         border-radius: 16px !important;
-        max-width: 600px !important;
         margin: 0 auto !important;
         padding: 0 !important;
         box-shadow: none !important;
         animation: none !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
+      }
+
+      /* Specific for e-Ticket Pass */
+      #eTicketModal .modal-content {
+        max-width: 480px !important;
+        border: 2px solid #00B4D8 !important;
+        overflow: hidden !important;
+      }
+
+      /* Specific for Invoice */
+      #invoiceModal .modal-content {
+        max-width: 620px !important;
+        border: 1px solid #CBD5E1 !important;
       }
 
       #printableTicketArea,
@@ -351,36 +363,82 @@
         break-inside: avoid !important;
       }
 
-      #printableTicketArea h2#modalETicketEventTitle {
-        color: #070B19 !important;
-        font-size: 20px !important;
-        font-weight: 800 !important;
-        margin: 4px 0 !important;
+      /* Header Logo inside printable areas */
+      .print-doc-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        border-bottom: 2px solid #0F172A !important;
+        padding-bottom: 14px !important;
+        margin-bottom: 18px !important;
       }
 
-      #printableTicketArea p {
-        color: #475569 !important;
-        font-size: 13px !important;
-        margin-bottom: 14px !important;
+      .print-brand-wrap {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+      }
+
+      .print-brand-logo {
+        height: 48px !important;
+        width: auto !important;
+        object-fit: contain !important;
+      }
+
+      .print-brand-title {
+        font-size: 18px !important;
+        font-weight: 900 !important;
+        color: #070B19 !important;
+        letter-spacing: 0.5px !important;
+        line-height: 1.1 !important;
+      }
+
+      .print-brand-sub {
+        font-size: 11px !important;
+        color: #64748B !important;
+        font-weight: 600 !important;
+      }
+
+      /* e-Ticket Pass specific styling */
+      .ticket-print-header {
+        background: linear-gradient(135deg, #070B19, #0C1227) !important;
+        color: #ffffff !important;
+        padding: 16px 20px !important;
+        text-align: center !important;
+        border-radius: 12px 12px 0 0 !important;
+        margin: -24px -28px 18px -28px !important;
+      }
+
+      .ticket-print-header h2 {
+        color: #ffffff !important;
+        font-size: 18px !important;
+        margin: 4px 0 2px !important;
+      }
+
+      .ticket-print-header p {
+        color: #94A3B8 !important;
+        font-size: 12px !important;
+        margin: 0 !important;
       }
 
       .qr-container {
-        border: 2px dashed #0284C7 !important;
+        border: 2px dashed #00B4D8 !important;
         padding: 12px !important;
         box-shadow: none !important;
         background: #F8FAFC !important;
         display: inline-block !important;
         margin-bottom: 10px !important;
+        border-radius: 12px !important;
       }
 
       .qr-container img {
-        width: 170px !important;
-        height: 170px !important;
+        width: 160px !important;
+        height: 160px !important;
       }
 
       #modalETicketCode {
         color: #0284C7 !important;
-        font-size: 16px !important;
+        font-size: 15px !important;
         font-weight: 800 !important;
         margin-bottom: 12px !important;
       }
@@ -393,7 +451,7 @@
         color: #1E293B !important;
         border-radius: 10px !important;
         padding: 14px 16px !important;
-        font-size: 13px !important;
+        font-size: 12px !important;
         line-height: 1.8 !important;
       }
 
@@ -412,7 +470,7 @@
         margin-top: 14px !important;
         padding-top: 10px !important;
         border-top: 1px dashed #CBD5E1 !important;
-        font-size: 11px !important;
+        font-size: 10.5px !important;
         color: #64748B !important;
         text-align: center !important;
       }
@@ -712,22 +770,32 @@
 
   <!-- ==================== POP UP MODAL: E-TIKET DIGITAL & UNDUH ==================== -->
   <div id="eTicketModal" class="modal-overlay">
-    <div class="modal-content" style="max-width: 440px; background:#0F172A; color:#fff; border:1px solid #334155;">
+    <div class="modal-content" style="max-width: 460px; background:#0F172A; color:#fff; border:1px solid #334155;">
       <div class="modal-header" style="border-bottom:1px solid #1E293B; background:transparent;">
         <div style="display:flex; align-items:center; gap:8px;">
-          <i data-lucide="ticket" style="width:20px;height:20px; color:#00E5FF;"></i>
+          <img src="{{ asset('logo-lightandrun.png') }}" alt="Logo" style="height:22px; width:auto; object-fit:contain;">
           <h3 style="margin:0; font-size:15px; font-weight:800; color:#fff;">E-Tiket Light & Glow Bukittinggi</h3>
         </div>
         <button class="modal-close-btn" onclick="closeETicketModal()" style="color:#94A3B8;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
       </div>
+
       <div class="modal-body" id="printableTicketArea" style="text-align:center; padding:24px 20px;">
-        <div style="font-size:11px; letter-spacing:2px; color:#00E5FF; font-weight:800; text-transform:uppercase;">OFFICIAL ENTRANCE PASS</div>
-        <h2 id="modalETicketEventTitle" style="font-size:18px; font-weight:800; margin:4px 0 2px; color:#fff;">Light And Glow Bukittinggi 2026</h2>
-        <p style="font-size:12px; color:#94A3B8; margin-bottom:16px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
+        <!-- Header Print E-Pass -->
+        <div class="ticket-print-header" style="background:linear-gradient(135deg, #070B19, #0C1227); padding:16px 20px; text-align:center; border-radius:12px 12px 0 0; margin:-24px -20px 18px -20px;">
+          <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:4px;">
+            <img src="{{ asset('logo-lightandrun.png') }}" alt="Logo Light & Glow" style="height:36px; width:auto; object-fit:contain;">
+            <div style="text-align:left;">
+              <span style="font-size:10px; letter-spacing:2px; color:#00E5FF; font-weight:800; text-transform:uppercase; display:block;">OFFICIAL ENTRANCE PASS</span>
+              <strong style="font-size:14px; color:#fff; letter-spacing:0.5px;">LIGHT & GLOW BUKITTINGGI</strong>
+            </div>
+          </div>
+          <h2 id="modalETicketEventTitle" style="font-size:17px; font-weight:800; margin:4px 0 2px; color:#fff;">Light And Glow Bukittinggi 2026</h2>
+          <p style="font-size:11.5px; color:#94A3B8; margin:0;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</p>
+        </div>
 
         <!-- QR Box dengan efek expired bila sudah check-in -->
         <div id="modalQRContainer" class="qr-container" style="margin-bottom:12px;">
-          <img id="modalQRImage" src="" alt="QR" style="width:180px; height:180px; display:block;">
+          <img id="modalQRImage" src="" alt="QR" style="width:170px; height:170px; display:block;">
           <div id="modalQRExpiredOverlay" class="qr-expired-overlay" style="display:none;">
             <div class="qr-expired-cross">
               <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -742,16 +810,16 @@
         <div id="modalETicketCode" style="font-family:monospace; font-size:15px; font-weight:800; letter-spacing:1px; margin-bottom:8px; color:#38BDF8;">-</div>
         <div id="modalETicketStatusBadge" style="margin-bottom:16px;"></div>
 
-        <div class="print-ticket-info" style="background:#1E293B; border-radius:12px; padding:14px; text-align:left; font-size:12px; color:#CBD5E1; line-height:1.7;">
-          <div style="display:flex; justify-content:space-between;">
+        <div class="print-ticket-info" style="background:#1E293B; border-radius:12px; padding:14px 16px; text-align:left; font-size:12px; color:#CBD5E1; line-height:1.75;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
             <span style="color:#94A3B8;">Nama Pemegang:</span>
             <strong id="modalETicketHolder" style="color:#fff;">-</strong>
           </div>
-          <div style="display:flex; justify-content:space-between;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
             <span style="color:#94A3B8;">Kategori Tiket:</span>
             <strong id="modalETicketCategory" style="color:#fff;">-</strong>
           </div>
-          <div style="display:flex; justify-content:space-between;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
             <span style="color:#94A3B8;">Nomor Pesanan:</span>
             <strong id="modalETicketOrder" style="color:#fff;">-</strong>
           </div>
@@ -783,22 +851,25 @@
     <div class="modal-content" style="max-width: 600px; background:#ffffff; color:#0F172A; border:1px solid #E2E8F0;">
       <div class="modal-header" style="border-bottom:1px solid #E2E8F0; background:#F8FAFC;">
         <div style="display:flex; align-items:center; gap:8px;">
-          <i data-lucide="file-text" style="width:20px;height:20px; color:#0284C7;"></i>
+          <img src="{{ asset('logo-lightandrun.png') }}" alt="Logo" style="height:22px; width:auto; object-fit:contain;">
           <h3 style="margin:0; font-size:16px; font-weight:800; color:#0F172A;">Invoice Pemesanan Tiket Resmi</h3>
         </div>
         <button class="modal-close-btn" onclick="closeInvoiceModal()" style="color:#64748B;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
       </div>
 
       <div class="modal-body" id="printableInvoiceArea" style="padding:28px 24px; text-align:left;">
-        <!-- Header Invoice -->
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #0F172A; padding-bottom:16px; margin-bottom:20px;">
-          <div>
-            <div style="font-size:20px; font-weight:900; color:#070B19; letter-spacing:0.5px;">LIGHT & GLOW<span style="color:#00B4D8;">.</span></div>
-            <div style="font-size:12px; color:#64748B; font-weight:600;">5K Night Run & Konser Musik 2026</div>
-            <div style="font-size:11px; color:#94A3B8;">Jam Gadang, Bukittinggi · Sumatera Barat</div>
+        <!-- Header Invoice dengan Logo Resmi Web -->
+        <div class="print-doc-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #0F172A; padding-bottom:16px; margin-bottom:20px;">
+          <div class="print-brand-wrap" style="display:flex; align-items:center; gap:12px;">
+            <img src="{{ asset('logo-lightandrun.png') }}" alt="Logo Light & Glow" class="print-brand-logo" style="height:50px; width:auto; object-fit:contain;">
+            <div>
+              <div class="print-brand-title" style="font-size:19px; font-weight:900; color:#070B19; letter-spacing:0.5px; line-height:1.1;">LIGHT & GLOW<span style="color:#00B4D8;">.</span></div>
+              <div class="print-brand-sub" style="font-size:11.5px; color:#64748B; font-weight:600; margin-top:2px;">5K Night Run & Konser Musik 2026</div>
+              <div style="font-size:11px; color:#94A3B8;">Jam Gadang, Bukittinggi · Sumatera Barat</div>
+            </div>
           </div>
           <div style="text-align:right;">
-            <span style="font-size:11px; font-weight:800; letter-spacing:1px; color:#0284C7; text-transform:uppercase; background:#E0F2FE; padding:3px 8px; border-radius:4px; display:inline-block; margin-bottom:4px;">INVOICE PEMBELIAN</span>
+            <span style="font-size:11px; font-weight:800; letter-spacing:1px; color:#0284C7; text-transform:uppercase; background:#E0F2FE; padding:3px 10px; border-radius:4px; display:inline-block; margin-bottom:4px;">INVOICE PEMBELIAN</span>
             <div id="invOrderNumber" style="font-family:monospace; font-size:16px; font-weight:800; color:#0F172A;">#LG-XXXXX</div>
             <div id="invCreatedAt" style="font-size:11px; color:#64748B;">-</div>
           </div>
@@ -806,8 +877,10 @@
 
         <!-- Info Pembeli & Verifikasi Admin (Grid 2 Kolom) -->
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
-          <div class="invoice-info-box" style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:12px 14px; font-size:12px; line-height:1.7;">
-            <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#64748B; margin-bottom:4px; letter-spacing:0.5px;">Data Pemesan:</div>
+          <div class="invoice-info-box" style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:14px; font-size:12px; line-height:1.75;">
+            <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#0284C7; margin-bottom:6px; letter-spacing:0.5px; display:flex; align-items:center; gap:5px;">
+              <i data-lucide="user" style="width:13px;height:13px;"></i> Data Pemesan:
+            </div>
             <div><strong>Nama:</strong> <span id="invBuyerName" style="color:#0F172A;">-</span></div>
             <div><strong>Email:</strong> <span id="invBuyerEmail" style="color:#0F172A;">-</span></div>
             <div><strong>No. HP/WA:</strong> <span id="invBuyerPhone" style="color:#0F172A;">-</span></div>
@@ -815,8 +888,10 @@
             <div><strong>Alamat:</strong> <span id="invBuyerAddress" style="color:#0F172A;">-</span></div>
           </div>
 
-          <div class="invoice-info-box" style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:12px 14px; font-size:12px; line-height:1.7;">
-            <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#64748B; margin-bottom:4px; letter-spacing:0.5px;">Status Pembayaran & Verifikasi:</div>
+          <div class="invoice-info-box" style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:14px; font-size:12px; line-height:1.75;">
+            <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#0284C7; margin-bottom:6px; letter-spacing:0.5px; display:flex; align-items:center; gap:5px;">
+              <i data-lucide="check-circle" style="width:13px;height:13px;"></i> Status & Verifikasi:
+            </div>
             <div><strong>Metode Bayar:</strong> <span id="invPaymentMethod" style="color:#0F172A;">QRIS</span></div>
             <div><strong>Status Transaksi:</strong> <span id="invStatusBadge">-</span></div>
             <div style="margin-top:6px; border-top:1px dashed #CBD5E1; padding-top:6px;">
