@@ -178,10 +178,6 @@
                   </td>
                   <td style="text-align: right;">
                     <div class="btn-action-group">
-                      <a href="{{ route('buyer.ticket.detail', $t->id) }}" target="_blank" class="btn btn--ghost" style="padding:5px 9px; font-size:12px;" title="Preview Halaman Pembeli">
-                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                        Preview
-                      </a>
                       <button class="btn btn--ghost" style="padding:5px 9px; font-size:12px;" onclick='openEditTicketModal(@json($t))'>
                         Edit
                       </button>
