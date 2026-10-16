@@ -234,7 +234,22 @@
         <h2 class="auth-form-title">Masuk ke Portal</h2>
         <p class="auth-form-sub">Masukkan kredensial akun panitia pelaksana Anda.</p>
 
-        <form method="GET" action="{{ route('admin.dashboard') }}" onsubmit="event.preventDefault(); window.location='{{ route('admin.dashboard') }}';">
+        @if(session('error'))
+          <div style="background:#FEE2E2; color:#B91C1C; border:1px solid #FECACA; padding:12px 14px; border-radius:10px; font-size:13px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+            <i data-lucide="alert-circle" style="width:16px;height:16px;flex-shrink:0;"></i>
+            <span>{{ session('error') }}</span>
+          </div>
+        @endif
+
+        @if(session('success'))
+          <div style="background:#DCFCE7; color:#15803D; border:1px solid #BBF7D0; padding:12px 14px; border-radius:10px; font-size:13px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+            <i data-lucide="check-circle" style="width:16px;height:16px;flex-shrink:0;"></i>
+            <span>{{ session('success') }}</span>
+          </div>
+        @endif
+
+        <form method="POST" action="{{ route('login.post') }}">
+          @csrf
           <div class="form-field">
             <label class="form-label" for="email">Email</label>
             <input
@@ -243,9 +258,12 @@
               name="email"
               class="form-input"
               placeholder="admin@lightandglow.id"
-              value="admin@lightandglow.id"
+              value="{{ old('email') }}"
               required
             />
+            @error('email')
+              <span style="color:#B91C1C; font-size:12px; margin-top:4px; display:block;">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="form-field">
@@ -256,9 +274,11 @@
               name="password"
               class="form-input"
               placeholder="••••••••"
-              value="password123"
               required
             />
+            @error('password')
+              <span style="color:#B91C1C; font-size:12px; margin-top:4px; display:block;">{{ $message }}</span>
+            @enderror
           </div>
 
           <button type="submit" class="form-submit-btn">

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\BuyerAuthController;
@@ -69,17 +70,72 @@ Route::get('/tiket-saya', function () {
     return view('buyer.dashboard', compact('orders', 'digitalTickets', 'buyer'));
 })->name('buyer.dashboard');
 
-// 2. Autentikasi Admin (Adminator 4.4.0)
+// 2. Autentikasi Admin & Petugas (Adminator 4.4.0)
 Route::get('/login', function () {
+    if (Auth::check()) {
+        $user = Auth::user();
+        return $user->id == 1 ? redirect()->route('admin.dashboard') : redirect()->route('petugas.dashboard');
+    }
     return view('auth.login');
 })->name('login');
 
+Route::post('/login', function (\Illuminate\Http\Request $request) {
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string',
+    ]);
+
+    if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $request->session()->regenerate();
+        $user = Auth::user();
+
+        // Role mapping: ID 1 adalah Admin Utama, ID > 1 adalah Petugas Gate Scanner
+        if ($user->id == 1) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        return redirect()->intended(route('petugas.dashboard'));
+    }
+
+    return back()->withInput($request->only('email'))->with('error', 'Email atau password yang Anda masukkan salah.');
+})->name('login.post');
+
+Route::post('/logout', function (\Illuminate\Http\Request $request) {
+    Auth::guard('web')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect()->route('login')->with('success', 'Anda telah berhasil keluar dari sistem.');
+})->name('logout');
+
 Route::get('/register', function () {
-    return view('auth.register');
+    return redirect()->route('login');
 })->name('register');
 
+// Helper callback untuk verifikasi role admin
+$ensureAdmin = function () {
+    if (!Auth::check()) {
+        session(['url.intended' => url()->current()]);
+        return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+    }
+    if (Auth::user()->id != 1) {
+        return redirect()->route('petugas.dashboard')->with('error', 'Akses ditolak: Akun Anda adalah Petugas Gate, bukan Administrator.');
+    }
+    return null;
+};
+
+// Helper callback untuk verifikasi role petugas
+$ensurePetugas = function () {
+    if (!Auth::check()) {
+        session(['url.intended' => url()->current()]);
+        return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+    }
+    return null;
+};
+
 // 3. Dashboard Admin Utama (Adminator 4.4.0)
-$adminDashboardHandler = function () {
+$adminDashboardHandler = function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
+
     $totalOrdersCount = DB::table('orders')->count();
     $totalRevenue = DB::table('orders')->where('status', 'Pembayaran disetujui')->sum('total_amount');
     $activeTicketsCount = DB::table('digital_tickets')->count();
@@ -117,7 +173,9 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 // 3b. Dashboard Petugas Scanner (Check-in & Gate)
-$petugasDashboardHandler = function () {
+$petugasDashboardHandler = function () use ($ensurePetugas) {
+    if ($redirect = $ensurePetugas()) return $redirect;
+
     $event = DB::table('events')->first();
     $todayCheckIns = DB::table('check_in_logs')->where('validation_status', 'success')->count();
     $recentLogs = DB::table('check_in_logs')
@@ -135,7 +193,8 @@ Route::get('/petugas/dashboard', $petugasDashboardHandler)->name('petugas.dashbo
 Route::get('/admin/cms', fn() => redirect()->route('admin.acara'));
 Route::get('/dashboard/cms', fn() => redirect()->route('admin.acara'));
 
-Route::get('/admin/tiket', function () {
+Route::get('/admin/tiket', function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $tickets = DB::table('ticket_types')->get();
     return view('admin.tiket', compact('tickets'));
 })->name('admin.tiket');
@@ -227,7 +286,8 @@ Route::get('/tiket/{id}', function ($id) {
     return view('buyer.ticket-detail', compact('ticket', 'event', 'buyer'));
 })->name('buyer.ticket.detail');
 
-Route::get('/admin/banner', function () {
+Route::get('/admin/banner', function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $banners = DB::table('banners')->orderBy('order_index', 'asc')->get();
     return view('admin.banner', compact('banners'));
 })->name('admin.banner');
@@ -305,13 +365,15 @@ Route::delete('/admin/banner/{id}', function ($id) {
 })->name('admin.banner.delete');
 
 // Admin Rute & Spot Ikonik Bukittinggi (Terintegrasi Database MySQL)
-Route::get('/admin/rute', function () {
+Route::get('/admin/rute', function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $spots = DB::table('event_spots')->orderBy('order_index', 'asc')->get();
     return view('admin.rute', compact('spots'));
 })->name('admin.rute');
 Route::get('/dashboard/rute', fn() => redirect()->route('admin.rute'));
 
-Route::post('/admin/rute/store', function (\Illuminate\Http\Request $request) {
+Route::post('/admin/rute/store', function (\Illuminate\Http\Request $request) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $request->validate([
         'name' => 'required|string|max:100',
         'description' => 'required|string|max:255',
@@ -347,7 +409,8 @@ Route::post('/admin/rute/store', function (\Illuminate\Http\Request $request) {
     return redirect()->route('admin.rute')->with('success', 'Spot ikonik rute baru berhasil disimpan ke database!');
 })->name('admin.rute.store');
 
-Route::post('/admin/rute/{id}/update', function (\Illuminate\Http\Request $request, $id) {
+Route::post('/admin/rute/{id}/update', function (\Illuminate\Http\Request $request, $id) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $request->validate([
         'name' => 'required|string|max:100',
         'description' => 'required|string|max:255',
@@ -382,12 +445,14 @@ Route::post('/admin/rute/{id}/update', function (\Illuminate\Http\Request $reque
     return redirect()->route('admin.rute')->with('success', 'Data foto dan informasi spot rute berhasil diperbarui di database!');
 })->name('admin.rute.update');
 
-Route::delete('/admin/rute/{id}', function ($id) {
+Route::delete('/admin/rute/{id}', function ($id) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     DB::table('event_spots')->where('id', $id)->delete();
     return redirect()->route('admin.rute')->with('success', 'Spot rute berhasil dihapus dari database.');
 })->name('admin.rute.delete');
 
-Route::get('/admin/acara', function () {
+Route::get('/admin/acara', function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $event = DB::table('events')->first();
     return view('admin.acara', compact('event'));
 })->name('admin.acara');
@@ -434,7 +499,8 @@ Route::post('/admin/acara/update', function (\Illuminate\Http\Request $request) 
 })->name('admin.acara.update');
 
 // 5. Verifikasi Pembayaran (Berdasarkan rancangan web.txt)
-Route::get('/admin/verifikasi', function () {
+Route::get('/admin/verifikasi', function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $orders = DB::table('orders')
         ->join('buyers', 'orders.buyer_id', '=', 'buyers.id')
         ->join('ticket_types', 'orders.ticket_type_id', '=', 'ticket_types.id')
@@ -454,7 +520,8 @@ Route::get('/admin/scanner', function () {
 Route::get('/dashboard/scanner', fn() => redirect()->route('petugas.dashboard'));
 
 // 7. Data Pesanan, Kehadiran, & Petugas
-Route::get('/admin/pesanan', function () {
+Route::get('/admin/pesanan', function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $orders = DB::table('orders')
         ->join('buyers', 'orders.buyer_id', '=', 'buyers.id')
         ->join('ticket_types', 'orders.ticket_type_id', '=', 'ticket_types.id')
@@ -466,7 +533,8 @@ Route::get('/admin/pesanan', function () {
 })->name('admin.pesanan');
 Route::get('/dashboard/pesanan', fn() => redirect()->route('admin.pesanan'));
 
-Route::get('/admin/kehadiran', function () {
+Route::get('/admin/kehadiran', function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $logs = DB::table('check_in_logs')
         ->join('digital_tickets', 'check_in_logs.digital_ticket_id', '=', 'digital_tickets.id')
         ->leftJoin('users', 'check_in_logs.staff_id', '=', 'users.id')
@@ -481,13 +549,15 @@ Route::get('/admin/kehadiran', function () {
 })->name('admin.kehadiran');
 Route::get('/dashboard/kehadiran', fn() => redirect()->route('admin.kehadiran'));
 
-Route::get('/admin/petugas', function () {
+Route::get('/admin/petugas', function () use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $staff = DB::table('users')->get();
     return view('admin.petugas', compact('staff'));
 })->name('admin.petugas');
 Route::get('/dashboard/petugas', fn() => redirect()->route('admin.petugas'));
 
-Route::post('/admin/petugas/store', function (\Illuminate\Http\Request $request) {
+Route::post('/admin/petugas/store', function (\Illuminate\Http\Request $request) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $request->validate([
         'name' => 'required|string|max:150',
         'email' => 'required|email|max:150|unique:users,email',
@@ -505,7 +575,8 @@ Route::post('/admin/petugas/store', function (\Illuminate\Http\Request $request)
     return redirect()->route('admin.petugas')->with('success', 'Akun petugas baru berhasil ditambahkan!');
 })->name('admin.petugas.store');
 
-Route::post('/admin/petugas/{id}/update', function (\Illuminate\Http\Request $request, $id) {
+Route::post('/admin/petugas/{id}/update', function (\Illuminate\Http\Request $request, $id) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $request->validate([
         'name' => 'required|string|max:150',
         'email' => 'required|email|max:150|unique:users,email,' . $id,
