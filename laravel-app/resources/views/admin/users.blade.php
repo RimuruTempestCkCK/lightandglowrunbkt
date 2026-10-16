@@ -322,12 +322,9 @@
   <div id="adminatorUserModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeUserModal()">
     <div class="adminator-modal" style="max-width:760px; width:94%;">
       <div class="adminator-modal-head">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div id="modalUserAvatar" class="av ma-1" style="width:38px; height:38px; font-size:16px;">U</div>
-          <div>
-            <h3 class="adminator-modal-title" id="modalUserName">Nama Pengguna</h3>
-            <span style="font-size:12px; color:var(--t-muted);" id="modalUserEmail">user@example.com</span>
-          </div>
+        <div>
+          <h3 class="adminator-modal-title" id="modalUserName">Nama Pengguna</h3>
+          <span style="font-size:12px; color:var(--t-muted);" id="modalUserEmail">user@example.com</span>
         </div>
         <button type="button" class="adminator-modal-close" onclick="closeUserModal()" aria-label="Tutup">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -357,7 +354,7 @@
             <span class="info-value" id="modalUserJoined">-</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Total Pengeluaran</span>
+            <span class="info-label">Total Pengeluaran (Terkonfirmasi)</span>
             <span class="info-value" id="modalUserSpent" style="color:var(--primary);">-</span>
           </div>
         </div>
@@ -469,7 +466,6 @@
         tickets: JSON.parse(row.getAttribute('data-tickets') || '[]')
       };
 
-      document.getElementById('modalUserAvatar').textContent = (currentSelectedUser.name || 'U').charAt(0).toUpperCase();
       document.getElementById('modalUserName').textContent = currentSelectedUser.name;
       document.getElementById('modalUserEmail').textContent = currentSelectedUser.email;
       document.getElementById('modalUserPhone').textContent = currentSelectedUser.phone || '-';

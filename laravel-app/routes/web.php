@@ -650,7 +650,7 @@ Route::get('/admin/users', function () use ($ensureAdmin) {
             'buyers.address',
             'buyers.created_at',
             DB::raw('COUNT(orders.id) as total_orders'),
-            DB::raw('COALESCE(SUM(orders.total_amount), 0) as total_spent'),
+            DB::raw("COALESCE(SUM(CASE WHEN orders.status = 'Pembayaran disetujui' THEN orders.total_amount ELSE 0 END), 0) as total_spent"),
             DB::raw("COUNT(CASE WHEN orders.status = 'Pembayaran disetujui' THEN 1 END) as approved_orders")
         )
         ->groupBy(
