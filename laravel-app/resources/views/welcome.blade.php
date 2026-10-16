@@ -53,15 +53,9 @@
           <span id="cmsBrandLogoText">LIGHT & GLOW</span><span class="dot">.</span>
         </a>
 
-        <!-- Desktop Search Bar -->
-        <div class="goers-search-box">
-          <i data-lucide="search" class="goers-search-icon" style="width:18px; height:18px;"></i>
-          <input type="text" id="mainSearchInput" class="goers-search-input" placeholder="Cari kategori tiket Light and Glow..." onkeyup="filterEvents(this.value)" />
-        </div>
-
         <!-- Navigation Actions -->
         <div class="goers-nav-actions">
-          <div class="nav-links-desktop" style="display:flex; align-items:center; gap:12px;">
+          <div class="nav-links-desktop" style="display:flex; align-items:center; gap:16px;">
             <a href="#tiket-section" class="nav-btn-link">Tiket</a>
             <a href="#highlight-section" class="nav-btn-link">Highlight Acara</a>
             <a href="#rute-section" class="nav-btn-link">Rute & Venue</a>
@@ -94,14 +88,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Mobile Search Row -->
-    <div class="mobile-search-row">
-      <div class="goers-search-box" style="display:block; max-width:100%;">
-        <i data-lucide="search" class="goers-search-icon" style="width:18px; height:18px;"></i>
-        <input type="text" class="goers-search-input" placeholder="Cari tiket Light and Glow..." onkeyup="filterEvents(this.value)" />
-      </div>
-    </div>
   </header>
 
   <!-- Mobile Drawer -->
@@ -114,15 +100,9 @@
       </a>
       <button onclick="toggleMobileDrawer()" class="mobile-drawer-close">Tutup</button>
     </div>
-    <!-- Search inside Mobile Drawer -->
-    <div style="margin-top:16px;">
-      <div style="position:relative; width:100%;">
-        <input type="text" class="goers-search-input" placeholder="Cari tiket..." onkeyup="filterEvents(this.value)" style="height:40px; padding:0 16px; font-size:13px; background:#F8FAFC;" />
-      </div>
-    </div>
 
     <!-- Navigation links -->
-    <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:20px;">
       <a href="#tiket-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Kategori Tiket</a>
       <a href="#highlight-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Highlight Acara</a>
       <a href="#rute-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Rute & Venue</a>

@@ -367,14 +367,17 @@ img {
   color: #0077B6;
 }
 
+.goers-nav-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  gap: 24px;
+}
+
+/* Responsive Navbar */
 @media (max-width: 992px) {
   .top-bar {
-    display: none !important;
-  }
-  .goers-search-box {
-    display: none !important;
-  }
-  .mobile-search-row {
     display: none !important;
   }
   .nav-links-desktop {
@@ -388,25 +391,44 @@ img {
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: var(--radius-full);
+    background: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    color: #0F172A;
+    letter-spacing: 0.5px;
+    cursor: pointer;
   }
   .goers-nav-wrapper {
-    height: 60px;
+    height: 64px;
     padding: 0 4px;
-    gap: 12px;
+    justify-content: space-between;
+  }
+  .goers-brand-logo {
+    font-size: 17px;
+    gap: 8px;
+  }
+  .goers-brand-logo img.brand-logo-img {
+    height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .goers-nav-wrapper {
+    height: 58px;
   }
   .goers-brand-logo {
     font-size: 15px;
-    gap: 8px;
-    flex-shrink: 0;
+    gap: 6px;
   }
   .goers-brand-logo img.brand-logo-img {
-    height: 34px;
+    height: 32px;
   }
   .mobile-menu-toggle {
     padding: 6px 14px;
-    font-size: 13px;
-    font-weight: 800;
-    flex-shrink: 0;
+    font-size: 12px;
   }
 }
 
