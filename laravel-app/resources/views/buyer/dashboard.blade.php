@@ -765,11 +765,8 @@
           <img id="proofModalImg" src="" alt="Bukti Pembayaran" class="proof-preview-modal-img" />
         </div>
       </div>
-      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
-        <a id="proofModalDownloadLink" href="#" target="_blank" download class="btn-login" style="padding:8px 16px; font-size:12px; display:inline-flex; align-items:center; gap:6px; border-color:#CBD5E1; color:#0F172A;">
-          <i data-lucide="external-link" style="width:14px;height:14px;"></i> Buka Gambar Asli
-        </a>
-        <button type="button" class="btn-signup" onclick="closeProofModal()" style="padding:8px 20px; font-size:12px;">Tutup</button>
+      <div class="modal-footer" style="display:flex; justify-content:center; align-items:center;">
+        <button type="button" class="btn-signup" onclick="closeProofModal()" style="padding:10px 28px; font-size:13px;">Tutup</button>
       </div>
     </div>
   </div>
@@ -986,7 +983,6 @@
     function showProofModal(url, orderNum) {
       document.getElementById('proofOrderNumText').textContent = '#' + orderNum;
       document.getElementById('proofModalImg').src = url;
-      document.getElementById('proofModalDownloadLink').href = url;
       document.getElementById('proofModal').classList.add('active');
       if (window.lucide) lucide.createIcons();
     }
