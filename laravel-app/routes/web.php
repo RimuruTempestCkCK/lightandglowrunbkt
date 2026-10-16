@@ -37,7 +37,20 @@ Route::get('/tiket-saya', function () {
     $orders = DB::table('orders')
         ->join('buyers', 'orders.buyer_id', '=', 'buyers.id')
         ->join('ticket_types', 'orders.ticket_type_id', '=', 'ticket_types.id')
-        ->select('orders.*', 'buyers.name as buyer_name', 'buyers.email as buyer_email', 'buyers.phone as buyer_phone', 'ticket_types.name as ticket_name', 'ticket_types.category as ticket_category', 'ticket_types.image as ticket_image')
+        ->leftJoin('users', 'orders.verified_by', '=', 'users.id')
+        ->select(
+            'orders.*',
+            'buyers.name as buyer_name',
+            'buyers.email as buyer_email',
+            'buyers.phone as buyer_phone',
+            'buyers.nik as buyer_nik',
+            'buyers.address as buyer_address',
+            'ticket_types.name as ticket_name',
+            'ticket_types.category as ticket_category',
+            'ticket_types.price as ticket_price',
+            'ticket_types.image as ticket_image',
+            'users.name as verified_by_name'
+        )
         ->where('orders.buyer_id', $buyer['id'])
         ->orderBy('orders.id', 'desc')
         ->get();

@@ -306,7 +306,10 @@
       }
 
       /* Modal Overlay becomes normal container in print */
-      #eTicketModal.modal-overlay {
+      body.printing-ticket #eTicketModal.modal-overlay,
+      body.printing-invoice #invoiceModal.modal-overlay,
+      #eTicketModal.modal-overlay.active,
+      #invoiceModal.modal-overlay.active {
         display: block !important;
         position: static !important;
         background: transparent !important;
@@ -317,14 +320,20 @@
         height: auto !important;
       }
 
-      #eTicketModal .modal-content {
+      body.printing-invoice #eTicketModal,
+      body.printing-ticket #invoiceModal {
+        display: none !important;
+      }
+
+      #eTicketModal .modal-content,
+      #invoiceModal .modal-content {
         display: block !important;
         position: static !important;
         background: #ffffff !important;
         color: #0F172A !important;
         border: 2px solid #0284C7 !important;
         border-radius: 16px !important;
-        max-width: 520px !important;
+        max-width: 600px !important;
         margin: 0 auto !important;
         padding: 0 !important;
         box-shadow: none !important;
@@ -333,7 +342,8 @@
         break-inside: avoid !important;
       }
 
-      #printableTicketArea {
+      #printableTicketArea,
+      #printableInvoiceArea {
         padding: 24px 28px !important;
         color: #0F172A !important;
         background: #ffffff !important;
@@ -375,7 +385,9 @@
         margin-bottom: 12px !important;
       }
 
-      #printableTicketArea .print-ticket-info {
+      #printableTicketArea .print-ticket-info,
+      #printableInvoiceArea .invoice-table-wrap,
+      #printableInvoiceArea .invoice-info-box {
         background: #F8FAFC !important;
         border: 1px solid #E2E8F0 !important;
         color: #1E293B !important;
@@ -385,11 +397,13 @@
         line-height: 1.8 !important;
       }
 
-      #printableTicketArea .print-ticket-info strong {
+      #printableTicketArea .print-ticket-info strong,
+      #printableInvoiceArea strong {
         color: #0F172A !important;
       }
 
-      #printableTicketArea .print-ticket-info span {
+      #printableTicketArea .print-ticket-info span,
+      #printableInvoiceArea span {
         color: #64748B !important;
       }
 
@@ -544,7 +558,12 @@
                   <span style="font-size:11px; color:#64748B;">Total Tagihan:</span>
                   <div style="font-size:18px; font-weight:800; color:var(--goers-branding-500);">Rp {{ number_format($ord->total_amount ?? 0, 0, ',', '.') }}</div>
                 </div>
-                <div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end;">
+                  <button type="button" class="btn-login" style="padding:8px 14px; font-size:12px; border-color:#CBD5E1; color:#0F172A; display:inline-flex; align-items:center; gap:6px; background:#F8FAFC;" onclick='openInvoiceModal(@json($ord))'>
+                    <i data-lucide="file-text" style="width:14px;height:14px; color:#0284C7;"></i>
+                    Lihat Invoice
+                  </button>
+
                   @if($ord->status === 'Pembayaran disetujui')
                     @php
                       $ticketForOrder = $digitalTickets->firstWhere('order_id', $ord->id);
@@ -556,11 +575,11 @@
                       </button>
                     @endif
                   @elseif($ord->status === 'Menunggu verifikasi')
-                    <button class="btn-login" style="padding:8px 16px; font-size:12px;" onclick="checkStatusPending('{{ $ord->order_number }}')">
+                    <button class="btn-login" style="padding:8px 14px; font-size:12px;" onclick="checkStatusPending('{{ $ord->order_number }}')">
                       Cek Status
                     </button>
                   @else
-                    <span style="font-size:12px; color:#EF4444; font-weight:600;">{{ $ord->rejection_reason ?? $ord->status }}</span>
+                    <span style="font-size:12px; color:#EF4444; font-weight:600; align-self:center;">{{ $ord->rejection_reason ?? $ord->status }}</span>
                   @endif
                 </div>
               </div>
@@ -759,6 +778,105 @@
     </div>
   </div>
 
+  <!-- ==================== POP UP MODAL: INVOICE RESMI PEMBELIAN TIKET ==================== -->
+  <div id="invoiceModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 600px; background:#ffffff; color:#0F172A; border:1px solid #E2E8F0;">
+      <div class="modal-header" style="border-bottom:1px solid #E2E8F0; background:#F8FAFC;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <i data-lucide="file-text" style="width:20px;height:20px; color:#0284C7;"></i>
+          <h3 style="margin:0; font-size:16px; font-weight:800; color:#0F172A;">Invoice Pemesanan Tiket Resmi</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeInvoiceModal()" style="color:#64748B;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+      </div>
+
+      <div class="modal-body" id="printableInvoiceArea" style="padding:28px 24px; text-align:left;">
+        <!-- Header Invoice -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #0F172A; padding-bottom:16px; margin-bottom:20px;">
+          <div>
+            <div style="font-size:20px; font-weight:900; color:#070B19; letter-spacing:0.5px;">LIGHT & GLOW<span style="color:#00B4D8;">.</span></div>
+            <div style="font-size:12px; color:#64748B; font-weight:600;">5K Night Run & Konser Musik 2026</div>
+            <div style="font-size:11px; color:#94A3B8;">Jam Gadang, Bukittinggi · Sumatera Barat</div>
+          </div>
+          <div style="text-align:right;">
+            <span style="font-size:11px; font-weight:800; letter-spacing:1px; color:#0284C7; text-transform:uppercase; background:#E0F2FE; padding:3px 8px; border-radius:4px; display:inline-block; margin-bottom:4px;">INVOICE PEMBELIAN</span>
+            <div id="invOrderNumber" style="font-family:monospace; font-size:16px; font-weight:800; color:#0F172A;">#LG-XXXXX</div>
+            <div id="invCreatedAt" style="font-size:11px; color:#64748B;">-</div>
+          </div>
+        </div>
+
+        <!-- Info Pembeli & Verifikasi Admin (Grid 2 Kolom) -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+          <div class="invoice-info-box" style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:12px 14px; font-size:12px; line-height:1.7;">
+            <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#64748B; margin-bottom:4px; letter-spacing:0.5px;">Data Pemesan:</div>
+            <div><strong>Nama:</strong> <span id="invBuyerName" style="color:#0F172A;">-</span></div>
+            <div><strong>Email:</strong> <span id="invBuyerEmail" style="color:#0F172A;">-</span></div>
+            <div><strong>No. HP/WA:</strong> <span id="invBuyerPhone" style="color:#0F172A;">-</span></div>
+            <div><strong>NIK:</strong> <span id="invBuyerNik" style="color:#0F172A;">-</span></div>
+            <div><strong>Alamat:</strong> <span id="invBuyerAddress" style="color:#0F172A;">-</span></div>
+          </div>
+
+          <div class="invoice-info-box" style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:12px 14px; font-size:12px; line-height:1.7;">
+            <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#64748B; margin-bottom:4px; letter-spacing:0.5px;">Status Pembayaran & Verifikasi:</div>
+            <div><strong>Metode Bayar:</strong> <span id="invPaymentMethod" style="color:#0F172A;">QRIS</span></div>
+            <div><strong>Status Transaksi:</strong> <span id="invStatusBadge">-</span></div>
+            <div style="margin-top:6px; border-top:1px dashed #CBD5E1; padding-top:6px;">
+              <strong>Waktu Verifikasi Admin:</strong>
+              <div id="invVerifiedAt" style="font-weight:700; color:#047857;">-</div>
+            </div>
+            <div><strong>Diverifikasi Oleh:</strong> <span id="invVerifiedBy" style="color:#0F172A;">Admin Panitia</span></div>
+          </div>
+        </div>
+
+        <!-- Tabel Rincian Tiket -->
+        <div class="invoice-table-wrap" style="border:1px solid #E2E8F0; border-radius:10px; overflow:hidden; margin-bottom:20px;">
+          <table style="width:100%; border-collapse:collapse; font-size:12px;">
+            <thead style="background:#F1F5F9; color:#475569; font-weight:700;">
+              <tr>
+                <th style="padding:10px 14px; text-align:left;">Item / Kategori Tiket</th>
+                <th style="padding:10px 14px; text-align:center;">Harga Satuan</th>
+                <th style="padding:10px 14px; text-align:center;">Qty</th>
+                <th style="padding:10px 14px; text-align:right;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #E2E8F0;">
+                <td style="padding:12px 14px;">
+                  <strong id="invTicketName" style="color:#0F172A; font-size:13px; display:block;">-</strong>
+                  <span id="invTicketEventDate" style="color:#64748B; font-size:11px;">Sabtu, 25 April 2026 · Jam Gadang Bukittinggi</span>
+                </td>
+                <td id="invTicketPrice" style="padding:12px 14px; text-align:center; color:#475569;">-</td>
+                <td id="invTicketQty" style="padding:12px 14px; text-align:center; font-weight:700; color:#0F172A;">1</td>
+                <td id="invTicketSubtotal" style="padding:12px 14px; text-align:right; font-weight:800; color:#0F172A;">-</td>
+              </tr>
+            </tbody>
+            <tfoot style="background:#F8FAFC;">
+              <tr>
+                <td colspan="3" style="padding:12px 14px; text-align:right; font-weight:800; color:#0F172A; font-size:13px;">Total Pembayaran:</td>
+                <td id="invTotalAmount" style="padding:12px 14px; text-align:right; font-weight:900; font-size:16px; color:#0284C7;">-</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Notice / Catatan Resmi -->
+        <div class="print-footer-notice" style="border:1px dashed #CBD5E1; background:#F8FAFC; border-radius:8px; padding:10px 14px; font-size:11px; color:#64748B; text-align:center; line-height:1.6;">
+          🔒 Invoice ini adalah bukti sah pemesanan tiket resmi <strong>Light And Glow Bukittinggi 2026</strong>.<br>
+          Tercatat resmi dalam database MySQL sistem panitia pelaksana. Simpan bukti ini untuk pengambilan race pack / verifikasi di venue.
+        </div>
+      </div>
+
+      <div class="modal-footer" style="border-top:1px solid #E2E8F0; background:#F8FAFC; display:flex; gap:10px; justify-content:flex-end;">
+        <button type="button" class="btn-login" onclick="closeInvoiceModal()" style="border-color:#CBD5E1; color:#475569; padding:9px 18px; font-size:12px;">
+          Tutup
+        </button>
+        <button type="button" class="btn-signup" onclick="printInvoice()" style="padding:9px 18px; font-size:12px; display:inline-flex; align-items:center; gap:6px;">
+          <i data-lucide="printer" style="width:14px;height:14px;"></i>
+          Cetak Invoice (PDF)
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="goers-footer" style="padding:24px 0; border-top:1px solid #E2E8F0;">
     <div class="goers-container" style="text-align:center; font-size:12px; color:#94A3B8;">
@@ -839,7 +957,78 @@
     }
 
     function printETicket() {
+      document.body.classList.remove('printing-invoice');
+      document.body.classList.add('printing-ticket');
       window.print();
+      document.body.classList.remove('printing-ticket');
+    }
+
+    // Modal Invoice
+    function openInvoiceModal(order) {
+      document.getElementById('invOrderNumber').textContent = '#' + (order.order_number || '');
+      
+      // Tanggal Pemesanan
+      let createdDate = '-';
+      if (order.created_at) {
+        const d = new Date(order.created_at.replace(/-/g, '/'));
+        createdDate = !isNaN(d) ? d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB' : order.created_at;
+      }
+      document.getElementById('invCreatedAt').textContent = createdDate;
+
+      // Data Pembeli
+      document.getElementById('invBuyerName').textContent = order.buyer_name || '-';
+      document.getElementById('invBuyerEmail').textContent = order.buyer_email || '-';
+      document.getElementById('invBuyerPhone').textContent = order.buyer_phone || '-';
+      document.getElementById('invBuyerNik').textContent = order.buyer_nik || '-';
+      document.getElementById('invBuyerAddress').textContent = order.buyer_address || '-';
+
+      // Status & Verifikasi
+      document.getElementById('invPaymentMethod').textContent = order.payment_method || 'QRIS';
+      
+      const statusBadge = document.getElementById('invStatusBadge');
+      if (order.status === 'Pembayaran disetujui') {
+        statusBadge.innerHTML = '<span style="background:#DCFCE7; color:#15803D; font-weight:800; font-size:11px; padding:2px 8px; border-radius:4px; display:inline-block;">✓ LUNAS / DISETUJUI</span>';
+      } else if (order.status === 'Menunggu verifikasi') {
+        statusBadge.innerHTML = '<span style="background:#FEF3C7; color:#B45309; font-weight:800; font-size:11px; padding:2px 8px; border-radius:4px; display:inline-block;">MENUNGGU VERIFIKASI</span>';
+      } else {
+        statusBadge.innerHTML = '<span style="background:#FEE2E2; color:#B91C1C; font-weight:800; font-size:11px; padding:2px 8px; border-radius:4px; display:inline-block;">' + (order.status || 'DITOLAK') + '</span>';
+      }
+
+      // Waktu Verifikasi Admin
+      let verifiedDate = 'Menunggu verifikasi panitia';
+      if (order.verified_at) {
+        const vd = new Date(order.verified_at.replace(/-/g, '/'));
+        verifiedDate = !isNaN(vd) ? vd.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB' : order.verified_at;
+      } else if (order.status === 'Pembayaran disetujui') {
+        verifiedDate = createdDate + ' (Otomatis/Admin)';
+      }
+      document.getElementById('invVerifiedAt').textContent = verifiedDate;
+      document.getElementById('invVerifiedBy').textContent = order.verified_by_name ? ('Admin (' + order.verified_by_name + ')') : 'Panitia Light and Glow';
+
+      // Rincian Item Tiket
+      const qty = parseInt(order.quantity) || 1;
+      const totalAmount = parseFloat(order.total_amount) || 0;
+      const unitPrice = parseFloat(order.ticket_price) || (totalAmount / qty);
+
+      document.getElementById('invTicketName').textContent = order.ticket_name + ' (' + (order.ticket_category || 'Reguler') + ')';
+      document.getElementById('invTicketPrice').textContent = 'Rp ' + Number(unitPrice).toLocaleString('id-ID');
+      document.getElementById('invTicketQty').textContent = qty;
+      document.getElementById('invTicketSubtotal').textContent = 'Rp ' + Number(totalAmount).toLocaleString('id-ID');
+      document.getElementById('invTotalAmount').textContent = 'Rp ' + Number(totalAmount).toLocaleString('id-ID');
+
+      document.getElementById('invoiceModal').classList.add('active');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeInvoiceModal() {
+      document.getElementById('invoiceModal').classList.remove('active');
+    }
+
+    function printInvoice() {
+      document.body.classList.remove('printing-ticket');
+      document.body.classList.add('printing-invoice');
+      window.print();
+      document.body.classList.remove('printing-invoice');
     }
 
     function checkStatusPending(orderId) {
@@ -874,6 +1063,7 @@
       if (e.key === 'Escape') {
         closeProofModal();
         closeETicketModal();
+        closeInvoiceModal();
       }
     });
   </script>
