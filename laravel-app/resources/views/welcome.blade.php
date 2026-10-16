@@ -31,10 +31,6 @@
         <span id="cmsTopBar">⚡ Registrasi <strong>Light and Glow Bukittinggi 2026</strong> Resmi Dibuka! Kuota terbatas.</span> <a href="#tiket-section">Beli Tiket Sekarang</a>
       </div>
       <div class="top-bar-right">
-        <a href="#help-section" class="top-bar-item">
-          <i data-lucide="help-circle" style="width:14px; height:14px;"></i>
-          Informasi Acara
-        </a>
         <div class="top-bar-item">
           <i data-lucide="map-pin" style="width:14px; height:14px;"></i>
           Jam Gadang, Bukittinggi
@@ -106,7 +102,6 @@
       <a href="#tiket-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Kategori Tiket</a>
       <a href="#highlight-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Highlight Acara</a>
       <a href="#rute-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Rute & Venue</a>
-      <a href="#help-section" onclick="toggleMobileDrawer()" class="mobile-drawer-nav-link">Informasi Acara</a>
     </div>
     <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
       @if(!empty($buyer))
