@@ -662,7 +662,7 @@ Route::get('/admin/users', function () use ($ensureAdmin) {
             'buyers.address',
             'buyers.created_at'
         )
-        ->orderBy('buyers.id', 'desc')
+        ->orderBy('buyers.id', 'asc')
         ->get();
 
     // Ambil seluruh orders & tiket untuk relasi pop-up detail pengguna
