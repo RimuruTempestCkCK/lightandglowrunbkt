@@ -50,7 +50,7 @@
     }
   </style>
 </head>
-<body data-active="kehadiran" data-crumbs="Laporan & Petugas | Log Kehadiran">
+<body data-active="kehadiran" data-crumbs="Laporan & Petugas | Log Kehadiran" data-user-name="{{ Auth::check() ? Auth::user()->name : '' }}" data-user-email="{{ Auth::check() ? Auth::user()->email : '' }}">
   <div class="shell">
     <div data-shell-sidebar class="no-print"></div>
     <div class="main">

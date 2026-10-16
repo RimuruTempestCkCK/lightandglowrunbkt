@@ -108,7 +108,7 @@
     }
   </style>
 </head>
-<body data-active="scanner" data-crumbs="Petugas | Scanner QR Code Check-in Gate">
+<body data-active="scanner" data-crumbs="Petugas | Scanner QR Code Check-in Gate" data-user-name="{{ Auth::check() ? Auth::user()->name : '' }}" data-user-email="{{ Auth::check() ? Auth::user()->email : '' }}">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">

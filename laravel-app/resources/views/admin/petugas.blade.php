@@ -46,7 +46,7 @@
     }
   </style>
 </head>
-<body data-active="petugas" data-crumbs="Laporan & Petugas | Data Petugas">
+<body data-active="petugas" data-crumbs="Laporan & Petugas | Data Petugas" data-user-name="{{ Auth::check() ? Auth::user()->name : '' }}" data-user-email="{{ Auth::check() ? Auth::user()->email : '' }}">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">

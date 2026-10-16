@@ -50,7 +50,7 @@
     }
   </style>
 </head>
-<body data-active="pesanan" data-crumbs="Transaksi | Data Pesanan & Pembeli">
+<body data-active="pesanan" data-crumbs="Transaksi | Data Pesanan & Pembeli" data-user-name="{{ Auth::check() ? Auth::user()->name : '' }}" data-user-email="{{ Auth::check() ? Auth::user()->email : '' }}">
   <div class="shell">
     <div data-shell-sidebar class="no-print"></div>
     <div class="main">

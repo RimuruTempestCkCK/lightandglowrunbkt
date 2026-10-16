@@ -44,7 +44,7 @@
     }
   </style>
 </head>
-<body data-active="verifikasi" data-crumbs="Transaksi | Verifikasi Pembayaran">
+<body data-active="verifikasi" data-crumbs="Transaksi | Verifikasi Pembayaran" data-user-name="{{ Auth::check() ? Auth::user()->name : '' }}" data-user-email="{{ Auth::check() ? Auth::user()->email : '' }}">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">

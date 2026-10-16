@@ -24,7 +24,7 @@
   <script defer="defer" src="{{ asset('adminator/2026.5a84696f.js') }}"></script>
   <link href="{{ asset('adminator/style.76ee5eee.css') }}" rel="stylesheet">
 </head>
-<body data-active="dashboard" data-crumbs="Workspace | Dashboard Admin">
+<body data-active="dashboard" data-crumbs="Workspace | Dashboard Admin" data-user-name="{{ Auth::check() ? Auth::user()->name : '' }}" data-user-email="{{ Auth::check() ? Auth::user()->email : '' }}">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">

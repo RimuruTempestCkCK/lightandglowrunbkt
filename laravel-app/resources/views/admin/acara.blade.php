@@ -84,7 +84,7 @@
     }
   </style>
 </head>
-<body data-active="acara_direct" data-crumbs="Master Data | QRIS Pembayaran Tiket">
+<body data-active="acara_direct" data-crumbs="Master Data | QRIS Pembayaran Tiket" data-user-name="{{ Auth::check() ? Auth::user()->name : '' }}" data-user-email="{{ Auth::check() ? Auth::user()->email : '' }}">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">

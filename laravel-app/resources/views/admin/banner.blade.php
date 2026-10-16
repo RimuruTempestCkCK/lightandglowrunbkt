@@ -103,7 +103,7 @@
     }
   </style>
 </head>
-<body data-active="banner_direct" data-crumbs="Master Data | Kelola Gambar Banner Hero">
+<body data-active="banner_direct" data-crumbs="Master Data | Kelola Gambar Banner Hero" data-user-name="{{ Auth::check() ? Auth::user()->name : '' }}" data-user-email="{{ Auth::check() ? Auth::user()->email : '' }}">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">
