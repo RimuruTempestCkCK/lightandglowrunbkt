@@ -128,11 +128,10 @@ $petugasDashboardHandler = function () {
 
 Route::get('/petugas/dashboard', $petugasDashboardHandler)->name('petugas.dashboard');
 
-// 4. CMS & Master Data
 Route::get('/admin/cms', function () {
-    return view('admin.cms');
+    return redirect()->route('admin.acara');
 })->name('admin.cms');
-Route::get('/dashboard/cms', fn() => redirect()->route('admin.cms'));
+Route::get('/dashboard/cms', fn() => redirect()->route('admin.acara'));
 
 Route::get('/admin/tiket', function () {
     $tickets = DB::table('ticket_types')->get();
@@ -293,6 +292,39 @@ Route::get('/admin/acara', function () {
     return view('admin.acara', compact('event'));
 })->name('admin.acara');
 Route::get('/dashboard/acara', fn() => redirect()->route('admin.acara'));
+
+Route::post('/admin/acara/update', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'title' => 'nullable|string|max:200',
+        'location' => 'nullable|string|max:200',
+        'event_date' => 'nullable|date',
+        'qris_image' => 'nullable|string',
+        'qris_merchant_name' => 'nullable|string|max:100',
+        'qris_nmid' => 'nullable|string|max:50'
+    ]);
+
+    $event = DB::table('events')->first();
+    $updateData = [
+        'title' => $request->input('title', $event->title ?? 'Light And Glow Bukittinggi 2026'),
+        'location' => $request->input('location', $event->location ?? 'Jam Gadang, Bukittinggi'),
+        'event_date' => $request->input('event_date', $event->event_date ?? '2026-10-24'),
+        'qris_image' => $request->input('qris_image'),
+        'qris_merchant_name' => $request->input('qris_merchant_name', 'LIGHT AND GLOW BUKITTINGGI'),
+        'qris_nmid' => $request->input('qris_nmid'),
+        'updated_at' => now()
+    ];
+
+    if ($event) {
+        DB::table('events')->where('id', $event->id)->update($updateData);
+    } else {
+        $updateData['slug'] = 'light-and-glow-bukittinggi-2026';
+        $updateData['status'] = 'active';
+        $updateData['created_at'] = now();
+        DB::table('events')->insert($updateData);
+    }
+
+    return redirect()->route('admin.acara')->with('success', 'Pengaturan QRIS Pembayaran dan Konten Acara berhasil diperbarui di database MySQL!');
+})->name('admin.acara.update');
 
 // 5. Verifikasi Pembayaran (Berdasarkan rancangan web.txt)
 Route::get('/admin/verifikasi', function () {

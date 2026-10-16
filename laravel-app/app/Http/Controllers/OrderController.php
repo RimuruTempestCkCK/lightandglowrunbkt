@@ -102,6 +102,12 @@ class OrderController extends Controller
             'updated_at'     => now(),
         ]);
 
+        // Cek apakah Admin sudah mengunggah / mengonfigurasi Foto QRIS di Master Acara
+        $eventData = DB::table('events')->first();
+        $qrisImageUrl = ($eventData && !empty($eventData->qris_image)) 
+            ? $eventData->qris_image 
+            : "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($qrisPayload);
+
         return response()->json([
             'success'        => true,
             'order_id'       => $orderId,
@@ -110,7 +116,9 @@ class OrderController extends Controller
             'total_formatted' => 'Rp ' . number_format($totalAmount, 0, ',', '.'),
             'ticket_name'    => $ticket->name,
             'qris_payload'   => $qrisPayload,
-            'qris_image_url' => "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($qrisPayload)
+            'qris_image_url' => $qrisImageUrl,
+            'qris_merchant'  => $eventData->qris_merchant_name ?? 'LIGHT AND GLOW BUKITTINGGI',
+            'qris_nmid'      => $eventData->qris_nmid ?? null
         ]);
     }
 
