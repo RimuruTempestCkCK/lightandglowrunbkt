@@ -1,10 +1,9 @@
-"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[1],{810(e,t,a){const n="4.4.0",o=[
+﻿"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[1],{810(e,t,a){const n="4.4.0",o=[
   {
     label: "Utama",
     items: [
       { key: "dashboard", text: "Dashboard Admin", href: "/admin/dashboard", icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
-      { key: "petugas_dash", text: "Dashboard Petugas", href: "/petugas/dashboard", icon: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>' }
-    ]
+      ]
   },
   {
     label: "Master Data",
@@ -23,10 +22,9 @@
     ]
   },
   {
-    label: "Check-in & Gate",
+    label: "Laporan & Petugas",
     items: [
-      { key: "scanner", text: "Scan QR Tiket", href: "/petugas/dashboard", badge: { kind: "info", text: "SCAN" }, icon: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>' },
-      { key: "kehadiran", text: "Log Kehadiran", href: "/admin/kehadiran", icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
+        { key: "kehadiran", text: "Log Kehadiran", href: "/admin/kehadiran", icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
       { key: "petugas", text: "Data Petugas", href: "/admin/petugas", icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>' }
     ]
   }
@@ -70,9 +68,8 @@
       ]
     },
     {
-      label: "Check-in & Gate",
+      label: "Laporan & Petugas",
       items: [
-        { key: "scanner", text: "Scan QR Tiket", href: "/petugas/dashboard", badge: { kind: "info", text: "SCAN" }, icon: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>' },
         { key: "kehadiran", text: "Log Kehadiran", href: "/admin/kehadiran", icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
         { key: "petugas", text: "Data Petugas", href: "/admin/petugas", icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>' }
       ]
