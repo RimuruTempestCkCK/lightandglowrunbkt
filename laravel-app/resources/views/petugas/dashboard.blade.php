@@ -35,13 +35,6 @@
           <div class="hero-text">
             <span class="eyebrow" id="heroDate">Panel Petugas Gate</span>
             <h1 class="hero-title">Dashboard <span class="accent">{{ Auth::check() ? Auth::user()->name : 'Petugas Masuk' }}</span></h1>
-            <p class="hero-sub">Ringkasan operasional check-in gerbang masuk venue Light And Glow Bukittinggi 2026. Pantau arus peserta dan mulai pemindaian e-tiket di menu Scanner.</p>
-          </div>
-          <div class="hero-actions">
-            <a href="{{ route('petugas.scanner') }}" class="btn btn--primary">
-              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-              Buka Scanner QR
-            </a>
           </div>
         </section>
 
@@ -178,9 +171,6 @@
                 <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
               </svg>
               <p style="font-size:14px; margin:0;">Belum ada riwayat check-in yang tercatat di gate ini.</p>
-              <div style="margin-top:16px;">
-                <a href="{{ route('petugas.scanner') }}" class="btn btn--primary">Mulai Pindai Tiket</a>
-              </div>
             </div>
           @endif
         </section>
