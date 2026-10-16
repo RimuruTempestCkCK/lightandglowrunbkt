@@ -18,13 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
 let currentSlide = 0;
 let heroSlider = null;
 let dots = [];
-const totalSlides = 3;
+let totalSlides = 3;
 let autoSlideInterval = null;
 
 function initHeroSlider() {
   heroSlider = document.getElementById('heroSlider');
   dots = document.querySelectorAll('.slider-dot');
-  if (heroSlider) {
+  const slideElements = document.querySelectorAll('.hero-slide');
+  if (slideElements.length > 0) {
+    totalSlides = slideElements.length;
+  }
+  if (heroSlider && totalSlides > 1) {
     autoSlideInterval = setInterval(() => slideHero(1), 5000);
   }
 }
@@ -38,6 +42,7 @@ function updateSlider() {
 }
 
 function slideHero(direction) {
+  if (totalSlides <= 1) return;
   currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
   updateSlider();
   resetAutoSlide();
@@ -51,7 +56,9 @@ function goToSlide(index) {
 
 function resetAutoSlide() {
   clearInterval(autoSlideInterval);
-  autoSlideInterval = setInterval(() => slideHero(1), 5000);
+  if (totalSlides > 1) {
+    autoSlideInterval = setInterval(() => slideHero(1), 5000);
+  }
 }
 
 let currentSelectedTicket = {
@@ -405,16 +412,4 @@ function acceptCookies() {
     banner.style.display = 'none';
   }
   localStorage.setItem('goers_cookie_accepted', 'true');
-}
-
-// Newsletter Form
-function handleSubscribe(e) {
-  e.preventDefault();
-  const el = document.getElementById('subSuccess');
-  if (el) {
-    el.style.display = 'block';
-    setTimeout(() => {
-      el.style.display = 'none';
-    }, 4000);
-  }
 }

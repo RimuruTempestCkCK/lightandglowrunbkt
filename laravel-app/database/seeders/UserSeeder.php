@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->insert([
+        $users = [
             [
                 'id' => 1,
                 'name' => 'Admin Utama Light & Glow',
@@ -38,6 +38,13 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-        ]);
+        ];
+
+        foreach ($users as $u) {
+            DB::table('users')->updateOrInsert(
+                ['email' => $u['email']],
+                $u
+            );
+        }
     }
 }

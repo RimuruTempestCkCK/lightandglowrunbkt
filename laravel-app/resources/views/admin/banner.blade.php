@@ -227,8 +227,52 @@
     </div>
   </div>
 
+  <!-- Adminator Modal Konfirmasi Hapus Banner -->
+  <div id="adminatorDeleteBannerModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeDeleteBannerModal()">
+    <div class="adminator-modal" style="max-width:440px; width:92%;">
+      <div class="adminator-modal-head">
+        <h3 class="adminator-modal-title" style="color:var(--danger); display:flex; align-items:center; gap:8px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Konfirmasi Hapus Banner
+        </h3>
+        <button type="button" class="adminator-modal-close" onclick="closeDeleteBannerModal()" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="adminator-modal-body">
+        <p style="margin:0 0 8px; font-size:14px; color:var(--t-base);">Apakah Anda yakin ingin menghapus gambar banner ini?</p>
+        <span style="font-size:12px; color:var(--t-muted); display:block; line-height:1.5;">Banner akan dihapus permanen dari carousel beranda pengunjung. Tindakan ini tidak dapat dibatalkan.</span>
+      </div>
+      <div class="adminator-modal-foot">
+        <button type="button" class="btn btn--ghost" onclick="closeDeleteBannerModal()">Batal</button>
+        <button type="button" class="btn" style="background:#EF4444; color:#fff;" id="btnConfirmDeleteBanner" onclick="executeDeleteBanner()">Ya, Hapus Banner</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
+    let activeDeleteBannerId = null;
+
+    function openDeleteBannerModal(id) {
+      activeDeleteBannerId = id;
+      document.getElementById('adminatorDeleteBannerModal').style.display = 'flex';
+    }
+
+    function closeDeleteBannerModal() {
+      activeDeleteBannerId = null;
+      document.getElementById('adminatorDeleteBannerModal').style.display = 'none';
+    }
+
+    function executeDeleteBanner() {
+      if (activeDeleteBannerId) {
+        const form = document.getElementById('delete-banner-form-' + activeDeleteBannerId);
+        if (form) {
+          form.submit();
+        }
+      }
+    }
+
     function previewUploadedBanner(input) {
       const img = document.getElementById('bannerImgPreview');
       const placeholder = document.getElementById('bannerImgPlaceholder');
@@ -294,21 +338,16 @@
     }
 
     function confirmDeleteBanner(id) {
-      Swal.fire({
-        title: 'Hapus Banner?',
-        text: 'Banner ini akan dihapus permanen dari carousel beranda.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#EF4444',
-        cancelButtonColor: '#6B7280',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          document.getElementById('delete-banner-form-' + id).submit();
-        }
-      });
+      openDeleteBannerModal(id);
     }
+
+    // Keyboard Escape to close modals
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeBannerAdminModal();
+        closeDeleteBannerModal();
+      }
+    });
   </script>
 </body>
 </html>

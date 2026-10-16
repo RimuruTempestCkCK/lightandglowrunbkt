@@ -7,9 +7,12 @@
   <meta name="description" content="Dapatkan tiket resmi Light and Glow Bukittinggi 2026. Lari malam 5K bertabur cahaya neon glow-in-the-dark dan konser musik spektakuler di Jam Gadang!" />
   <meta name="theme-color" content="#EB1355" />
   
-  <!-- Favicon -->
+  <!-- Favicon (Light & Glow Official Logo) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
   <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
   <link rel="alternate icon" href="{{ asset('favicon.ico') }}" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
 
   <!-- Google Fonts: Karla & Montserrat & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -124,64 +127,71 @@
       <div class="hero-slider-container">
         <!-- Slider Track -->
         <div class="hero-slider" id="heroSlider">
-          
-          <!-- Slide 1: Light and Glow Main -->
-          <div class="hero-slide">
-            <img src="{{ asset('poster-lightandglowrun.jpeg') }}" alt="Poster Light and Glow Run Bukittinggi 2026" id="cmsSlide1Img" class="hero-slide-bg" style="object-position: top center;" />
-            <div class="hero-slide-overlay" style="background: linear-gradient(90deg, rgba(7, 11, 25, 0.92) 0%, rgba(7, 11, 25, 0.65) 50%, rgba(7, 11, 25, 0.25) 100%);"></div>
-            <div class="hero-slide-content">
-              <span class="hero-tag" id="cmsSlide1Tag" style="background:linear-gradient(135deg, #00E5FF, #00B4D8); color:#070B19; font-weight:800; box-shadow:0 0 12px rgba(0,229,255,0.5);">⚡ Run • Light • Music • Together</span>
-              <h1 class="hero-title" id="cmsSlide1Title" style="color:#ffffff;">LIGHT AND GLOW RUN <span style="color:#00E5FF; text-shadow:0 0 20px rgba(0,229,255,0.7);">BUKITTINGGI 2026</span></h1>
-              <p class="hero-desc" id="cmsSlide1Desc" style="color:#D8E7FA;">Lari malam 5K bertabur cahaya neon bersinar bersama ribuan pelari, LED stick, dan berujung konser DJ spektakuler di Lapangan Wirabraja Bukittinggi!</p>
-              <a href="#tiket-section" class="btn-hero-action">
-                <i data-lucide="ticket" style="width:18px;height:18px;"></i>
-                Beli Tiket Sekarang
-              </a>
+          @if(isset($banners) && count($banners) > 0)
+            @foreach($banners as $index => $banner)
+              @php
+                $bannerImg = filter_var($banner->image, FILTER_VALIDATE_URL) ? $banner->image : asset(ltrim($banner->image, '/'));
+                $tagBg = $index === 0 
+                  ? 'linear-gradient(135deg, #00E5FF, #00B4D8); color:#070B19; font-weight:800; box-shadow:0 0 12px rgba(0,229,255,0.5);'
+                  : ($index === 1 ? 'var(--goers-teal);' : '#7B1FA2;');
+                $btnBg = $index === 1 ? 'background:var(--goers-teal);' : ($index === 2 ? 'background:#7B1FA2;' : '');
+                $btnIcon = $index === 1 ? 'compass' : ($index === 2 ? 'sparkles' : 'ticket');
+                $btnText = $index === 1 ? 'Pilih Paket Tiket' : ($index === 2 ? 'Dapatkan Tiket VIP' : 'Beli Tiket Sekarang');
+              @endphp
+              <div class="hero-slide">
+                <img src="{{ $bannerImg }}" alt="{{ $banner->title ?? 'Banner Slide' }}" class="hero-slide-bg" style="object-position: center;" />
+                <div class="hero-slide-overlay" style="background: linear-gradient(90deg, rgba(7, 11, 25, 0.92) 0%, rgba(7, 11, 25, 0.65) 50%, rgba(7, 11, 25, 0.25) 100%);"></div>
+                <div class="hero-slide-content">
+                  <span class="hero-tag" style="background:{{ $tagBg }}">
+                    {{ !empty($banner->tag) ? $banner->tag : '⚡ Run • Light • Music • Together' }}
+                  </span>
+                  <h1 class="hero-title" style="color:#ffffff;">
+                    {{ $banner->title ?? 'LIGHT AND GLOW RUN BUKITTINGGI 2026' }}
+                  </h1>
+                  <p class="hero-desc" style="color:#D8E7FA;">
+                    {{ $banner->description ?? 'Sensasi lari malam 5K bertabur cahaya neon bersinar bersama ribuan pelari, LED stick, dan konser spektakuler di Jam Gadang Bukittinggi!' }}
+                  </p>
+                  <a href="#tiket-section" class="btn-hero-action" style="{{ $btnBg }}">
+                    <i data-lucide="{{ $btnIcon }}" style="width:18px;height:18px;"></i>
+                    {{ $btnText }}
+                  </a>
+                </div>
+              </div>
+            @endforeach
+          @else
+            <!-- Fallback Default Slide 1 -->
+            <div class="hero-slide">
+              <img src="{{ asset('poster-lightandglowrun.jpeg') }}" alt="Poster Light and Glow Run Bukittinggi 2026" class="hero-slide-bg" style="object-position: top center;" />
+              <div class="hero-slide-overlay" style="background: linear-gradient(90deg, rgba(7, 11, 25, 0.92) 0%, rgba(7, 11, 25, 0.65) 50%, rgba(7, 11, 25, 0.25) 100%);"></div>
+              <div class="hero-slide-content">
+                <span class="hero-tag" style="background:linear-gradient(135deg, #00E5FF, #00B4D8); color:#070B19; font-weight:800; box-shadow:0 0 12px rgba(0,229,255,0.5);">⚡ Run • Light • Music • Together</span>
+                <h1 class="hero-title" style="color:#ffffff;">LIGHT AND GLOW RUN <span style="color:#00E5FF; text-shadow:0 0 20px rgba(0,229,255,0.7);">BUKITTINGGI 2026</span></h1>
+                <p class="hero-desc" style="color:#D8E7FA;">Lari malam 5K bertabur cahaya neon bersinar bersama ribuan pelari, LED stick, dan berujung konser DJ spektakuler di Lapangan Wirabraja Bukittinggi!</p>
+                <a href="#tiket-section" class="btn-hero-action">
+                  <i data-lucide="ticket" style="width:18px;height:18px;"></i>
+                  Beli Tiket Sekarang
+                </a>
+              </div>
             </div>
-          </div>
-
-          <!-- Slide 2: 5K Glow Experience -->
-          <div class="hero-slide">
-            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&auto=format&fit=crop&q=80" alt="Hero Slide 2" id="cmsSlide2Img" class="hero-slide-bg" />
-            <div class="hero-slide-overlay"></div>
-            <div class="hero-slide-content">
-              <span class="hero-tag" id="cmsSlide2Tag" style="background:var(--goers-teal);">5K Glow Experience</span>
-              <h1 class="hero-title" id="cmsSlide2Title">Sensasi Lari Malam Penuh Cahaya di Jam Gadang</h1>
-              <p class="hero-desc" id="cmsSlide2Desc">Jelajahi keindahan malam Kota Wisata Bukittinggi bersama ribuan pelari dengan jersey neon, LED glasses, dan medali finisher eksklusif.</p>
-              <a href="#tiket-section" class="btn-hero-action" style="background:var(--goers-teal);">
-                <i data-lucide="compass" style="width:18px;height:18px;"></i>
-                Pilih Paket Tiket
-              </a>
-            </div>
-          </div>
-
-          <!-- Slide 3: Live Music & Light Show -->
-          <div class="hero-slide">
-            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80" alt="Hero Slide 3" id="cmsSlide3Img" class="hero-slide-bg" />
-            <div class="hero-slide-overlay"></div>
-            <div class="hero-slide-content">
-              <span class="hero-tag" id="cmsSlide3Tag" style="background:#7B1FA2;">Music & Light Show</span>
-              <h1 class="hero-title" id="cmsSlide3Title">Pesta Cahaya Spektakuler & Live Music Stage</h1>
-              <p class="hero-desc" id="cmsSlide3Desc">Nikmati dentuman panggung hiburan musik langsung, pertunjukan laser cahaya megah, dan pesta kembang api di pelataran Jam Gadang!</p>
-              <a href="#tiket-section" class="btn-hero-action" style="background:#7B1FA2;">
-                <i data-lucide="sparkles" style="width:18px;height:18px;"></i>
-                Dapatkan Tiket VIP
-              </a>
-            </div>
-          </div>
-
+          @endif
         </div>
 
-        <!-- Slider Navigation -->
-        <button class="slider-arrow prev" onclick="slideHero(-1)"><i data-lucide="chevron-left" style="width:24px;height:24px;"></i></button>
-        <button class="slider-arrow next" onclick="slideHero(1)"><i data-lucide="chevron-right" style="width:24px;height:24px;"></i></button>
+        @php
+          $slideCount = isset($banners) && count($banners) > 0 ? count($banners) : 1;
+        @endphp
 
-        <!-- Slider Dots -->
-        <div class="slider-dots" id="sliderDots">
-          <div class="slider-dot active" onclick="goToSlide(0)"></div>
-          <div class="slider-dot" onclick="goToSlide(1)"></div>
-          <div class="slider-dot" onclick="goToSlide(2)"></div>
-        </div>
+        @if($slideCount > 1)
+          <!-- Slider Navigation -->
+          <button class="slider-arrow prev" onclick="slideHero(-1)"><i data-lucide="chevron-left" style="width:24px;height:24px;"></i></button>
+          <button class="slider-arrow next" onclick="slideHero(1)"><i data-lucide="chevron-right" style="width:24px;height:24px;"></i></button>
+
+          <!-- Slider Dots -->
+          <div class="slider-dots" id="sliderDots">
+            @for($i = 0; $i < $slideCount; $i++)
+              <div class="slider-dot {{ $i === 0 ? 'active' : '' }}" onclick="goToSlide({{ $i }})"></div>
+            @endfor
+          </div>
+        @endif
       </div>
     </div>
   </section>
@@ -579,24 +589,13 @@
         <!-- Brand & Description -->
         <div class="footer-brand">
           <img src="{{ asset('logo-lightandrun.png') }}" alt="Light and Glow Bukittinggi" class="footer-logo-img" />
-          <h2>LIGHT & GLOW<span>.</span></h2>
+          <h2>LIGHT & GLOW RUN <span>2026</span></h2>
           <p>
-            Light and Glow Bukittinggi 2026 adalah perayaan akbar lari malam 5K dan konser spektakuler bertabur cahaya neon terbesar di Kota Bukittinggi, Sumatera Barat. Menyatukan semangat olahraga, pesona visual cahaya, dan hiburan panggung berkelas.
+            Light and Glow Bukittinggi 2026 adalah perayaan lari malam 5K dan konser bertabur cahaya neon terbesar di Kota Bukittinggi, Sumatera Barat. Menyatukan semangat olahraga, pesona visual cahaya, dan hiburan panggung berkelas di Lapangan Wirabraja (Kantin) & Jam Gadang.
           </p>
-          <div class="social-links">
-            <a href="#" class="social-icon-btn" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-            </a>
-            <a href="#" class="social-icon-btn" aria-label="Facebook">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-            </a>
-            <a href="#" class="social-icon-btn" aria-label="Twitter / X">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
-            </a>
-          </div>
         </div>
 
-        <!-- Col 1 -->
+        <!-- Col 1: Navigasi Aktif -->
         <div class="footer-col">
           <h4>Navigasi</h4>
           <ul class="footer-links">
@@ -604,45 +603,23 @@
             <li><a href="#highlight-section">Highlight Acara</a></li>
             <li><a href="#rute-section">Rute & Venue</a></li>
             <li><a href="{{ route('buyer.dashboard') }}">Tiket Saya</a></li>
-            <li><a href="{{ route('login') }}">Admin Portal</a></li>
+            <li><a href="{{ route('login') }}">Portal Petugas & Admin</a></li>
           </ul>
         </div>
 
-        <!-- Col 2 -->
+        <!-- Col 2: Tiket & Layanan Resmi -->
         <div class="footer-col">
-          <h4>Tentang Acara</h4>
-          <ul class="footer-links">
-            <li><a href="#">Light & Glow 2026</a></li>
-            <li><a href="#">Jadwal Pengambilan Race Pack</a></li>
-            <li><a href="#">Tata Tertib Lari Malam</a></li>
-            <li><a href="#">Line-up Musisi Konser</a></li>
-            <li><a href="#">Panduan Akses & Parkir</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 3 -->
-        <div class="footer-col">
-          <h4>Bantuan & Info</h4>
-          <ul class="footer-links">
-            <li><a href="#">Pusat Informasi Tiket</a></li>
-            <li><a href="#">Tata Cara Bayar QRIS</a></li>
-            <li><a href="#">Hubungi Panitia Pelaksana</a></li>
-            <li><a href="#">Syarat dan Ketentuan</a></li>
-            <li><a href="#">Kebijakan Privasi</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 4: Newsletter -->
-        <div class="footer-col">
-          <h4>Info Kuota & Promo</h4>
-          <p style="font-size:12px; margin-bottom:12px; color:#9CA3AF;">Dapatkan kabar update kuota tiket dan info bintang tamu panggung konser langsung ke emailmu.</p>
-          <form class="newsletter-form" onsubmit="handleSubscribe(event)">
-            <div class="newsletter-input-group">
-              <input type="email" required placeholder="Alamat email Anda..." class="newsletter-input" />
-              <button type="submit" class="btn-newsletter">Kirim</button>
+          <h4>Layanan Tiket Resmi</h4>
+          <div style="display:flex; flex-direction:column; gap:14px; font-size:13px; color:#9CA3AF; line-height:1.6;">
+            <div>
+              <strong style="color:#ffffff; display:block; margin-bottom:2px;">Verifikasi QR Code</strong>
+              Setiap e-tiket memiliki kode QR unik terdaftar di sistem untuk pemindaian saat check-in gerbang masuk.
             </div>
-            <span id="subSuccess" style="color:#10B981; font-size:12px; display:none;">Terima kasih telah berlangganan!</span>
-          </form>
+            <div>
+              <strong style="color:#ffffff; display:block; margin-bottom:2px;">Metode Pembayaran</strong>
+              Pembayaran tiket resmi didukung melalui QRIS nasional yang dapat diakses oleh seluruh bank dan aplikasi e-wallet.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -651,10 +628,8 @@
         <div>
           &copy; 2026 Light and Glow Run Bukittinggi. All Rights Reserved.
         </div>
-        <div style="display:flex; gap:16px;">
-          <a href="#" style="color:#9CA3AF;">Kebijakan Privasi</a>
-          <span>•</span>
-          <a href="#" style="color:#9CA3AF;">Syarat & Ketentuan</a>
+        <div style="color:#64748B; font-size:12.5px;">
+          Website Resmi Tiket & Check-in Light and Glow Bukittinggi
         </div>
       </div>
     </div>
@@ -914,24 +889,6 @@
           const el = document.getElementById('cmsTopBar');
           if (el) el.innerHTML = d.topBarText;
         }
-
-        // Hero Slide 1
-        if (d.slide1Tag) { const el = document.getElementById('cmsSlide1Tag'); if (el) el.textContent = d.slide1Tag; }
-        if (d.slide1Img) { const el = document.getElementById('cmsSlide1Img'); if (el) el.src = d.slide1Img; }
-        if (d.slide1Title) { const el = document.getElementById('cmsSlide1Title'); if (el) el.textContent = d.slide1Title; }
-        if (d.slide1Desc) { const el = document.getElementById('cmsSlide1Desc'); if (el) el.textContent = d.slide1Desc; }
-
-        // Hero Slide 2
-        if (d.slide2Tag) { const el = document.getElementById('cmsSlide2Tag'); if (el) el.textContent = d.slide2Tag; }
-        if (d.slide2Img) { const el = document.getElementById('cmsSlide2Img'); if (el) el.src = d.slide2Img; }
-        if (d.slide2Title) { const el = document.getElementById('cmsSlide2Title'); if (el) el.textContent = d.slide2Title; }
-        if (d.slide2Desc) { const el = document.getElementById('cmsSlide2Desc'); if (el) el.textContent = d.slide2Desc; }
-
-        // Hero Slide 3
-        if (d.slide3Tag) { const el = document.getElementById('cmsSlide3Tag'); if (el) el.textContent = d.slide3Tag; }
-        if (d.slide3Img) { const el = document.getElementById('cmsSlide3Img'); if (el) el.src = d.slide3Img; }
-        if (d.slide3Title) { const el = document.getElementById('cmsSlide3Title'); if (el) el.textContent = d.slide3Title; }
-        if (d.slide3Desc) { const el = document.getElementById('cmsSlide3Desc'); if (el) el.textContent = d.slide3Desc; }
 
         // Concert Headers
         if (d.concertHeaderTitle) { const el = document.getElementById('cmsConcertTitle'); if (el) el.textContent = d.concertHeaderTitle; }

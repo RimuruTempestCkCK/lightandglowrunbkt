@@ -224,8 +224,53 @@
     </div>
   </div>
 
+  <!-- Adminator Modal Konfirmasi Hapus Spot -->
+  <div id="adminatorDeleteSpotModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeDeleteSpotModal()">
+    <div class="adminator-modal" style="max-width:440px; width:92%;">
+      <div class="adminator-modal-head">
+        <h3 class="adminator-modal-title" style="color:var(--danger); display:flex; align-items:center; gap:8px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Konfirmasi Hapus Spot
+        </h3>
+        <button type="button" class="adminator-modal-close" onclick="closeDeleteSpotModal()" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="adminator-modal-body">
+        <p style="margin:0 0 8px; font-size:14px; color:var(--t-base);">Apakah Anda yakin ingin menghapus spot <strong id="deleteSpotNameLabel"></strong>?</p>
+        <span style="font-size:12px; color:var(--t-muted); display:block; line-height:1.5;">Data titik rute ini akan dihapus permanen dari sistem dan peta rute. Tindakan ini tidak dapat dibatalkan.</span>
+      </div>
+      <div class="adminator-modal-foot">
+        <button type="button" class="btn btn--ghost" onclick="closeDeleteSpotModal()">Batal</button>
+        <button type="button" class="btn" style="background:#EF4444; color:#fff;" id="btnConfirmDeleteSpot" onclick="executeDeleteSpot()">Ya, Hapus Spot</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
+    let activeDeleteSpotId = null;
+
+    function openDeleteSpotModal(id, name) {
+      activeDeleteSpotId = id;
+      document.getElementById('deleteSpotNameLabel').textContent = '"' + name + '"';
+      document.getElementById('adminatorDeleteSpotModal').style.display = 'flex';
+    }
+
+    function closeDeleteSpotModal() {
+      activeDeleteSpotId = null;
+      document.getElementById('adminatorDeleteSpotModal').style.display = 'none';
+    }
+
+    function executeDeleteSpot() {
+      if (activeDeleteSpotId) {
+        const form = document.getElementById('delete-spot-form-' + activeDeleteSpotId);
+        if (form) {
+          form.submit();
+        }
+      }
+    }
+
     function previewUploadedSpot(input) {
       const img = document.getElementById('spotImgPreview');
       const placeholder = document.getElementById('spotImgPlaceholder');
@@ -295,21 +340,16 @@
     }
 
     function confirmDeleteSpot(id, name) {
-      Swal.fire({
-        title: 'Hapus Spot Rute?',
-        text: `Apakah Anda yakin ingin menghapus spot "${name}"? Data di database MySQL akan dihapus permanen.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#EF4444',
-        cancelButtonColor: '#6B7280',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          document.getElementById('delete-spot-form-' + id).submit();
-        }
-      });
+      openDeleteSpotModal(id, name);
     }
+
+    // Keyboard Escape to close modals
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeSpotModal();
+        closeDeleteSpotModal();
+      }
+    });
   </script>
 </body>
 </html>

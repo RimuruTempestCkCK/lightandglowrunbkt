@@ -12,7 +12,7 @@ class BannerSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('banners')->insert([
+        $banners = [
             [
                 'id' => 1,
                 'tag' => 'NIGHT RUN & CONCERT',
@@ -40,12 +40,19 @@ class BannerSeeder extends Seeder
                 'tag' => 'LIMITED EARLY BIRD',
                 'title' => 'Dapatkan Tiket Spesial Kamu!',
                 'description' => 'Termasuk Glow Pack eksklusif (Neon Tee, LED Glasses, Glow Stick, Medal Finisher & Refreshment).',
-                'image' => 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop',
+                'image' => '/uploads/banners/banner_1792165663_wDbsCgB7.jpg',
                 'order_index' => 3,
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-        ]);
+        ];
+
+        foreach ($banners as $b) {
+            DB::table('banners')->updateOrInsert(
+                ['id' => $b['id']],
+                $b
+            );
+        }
     }
 }

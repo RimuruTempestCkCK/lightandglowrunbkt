@@ -15,11 +15,12 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             EventSeeder::class,
             TicketTypeSeeder::class,
+            EventSpotSeeder::class,
+            BannerSeeder::class,
             BuyerSeeder::class,
             OrderSeeder::class,
             DigitalTicketSeeder::class,
             CheckInLogSeeder::class,
-            BannerSeeder::class,
         ]);
     }
 }

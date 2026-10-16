@@ -12,7 +12,7 @@ class TicketTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('ticket_types')->insert([
+        $tickets = [
             [
                 'id' => 1,
                 'event_id' => 1,
@@ -69,6 +69,13 @@ class TicketTypeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-        ]);
+        ];
+
+        foreach ($tickets as $t) {
+            DB::table('ticket_types')->updateOrInsert(
+                ['id' => $t['id']],
+                $t
+            );
+        }
     }
 }

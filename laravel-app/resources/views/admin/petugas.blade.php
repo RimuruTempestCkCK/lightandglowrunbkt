@@ -195,8 +195,53 @@
     </div>
   </div>
 
+  <!-- Adminator Modal Konfirmasi Hapus Petugas -->
+  <div id="adminatorDeleteStaffModal" class="adminator-modal-overlay" style="display:none;" onclick="if(event.target===this)closeDeleteStaffModal()">
+    <div class="adminator-modal" style="max-width:440px; width:92%;">
+      <div class="adminator-modal-head">
+        <h3 class="adminator-modal-title" style="color:var(--danger); display:flex; align-items:center; gap:8px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Konfirmasi Hapus Petugas
+        </h3>
+        <button type="button" class="adminator-modal-close" onclick="closeDeleteStaffModal()" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="adminator-modal-body">
+        <p style="margin:0 0 8px; font-size:14px; color:var(--t-base);">Apakah Anda yakin ingin menghapus akun petugas <strong id="deleteStaffNameLabel"></strong>?</p>
+        <span style="font-size:12px; color:var(--t-muted); display:block; line-height:1.5;">Akun petugas ini akan dihapus permanen dari sistem dan tidak bisa login lagi. Tindakan ini tidak dapat dibatalkan.</span>
+      </div>
+      <div class="adminator-modal-foot">
+        <button type="button" class="btn btn--ghost" onclick="closeDeleteStaffModal()">Batal</button>
+        <button type="button" class="btn" style="background:#EF4444; color:#fff;" id="btnConfirmDeleteStaff" onclick="executeDeleteStaff()">Ya, Hapus Petugas</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
+    let activeDeleteStaffId = null;
+
+    function openDeleteStaffModal(id, name) {
+      activeDeleteStaffId = id;
+      document.getElementById('deleteStaffNameLabel').textContent = '"' + name + '"';
+      document.getElementById('adminatorDeleteStaffModal').style.display = 'flex';
+    }
+
+    function closeDeleteStaffModal() {
+      activeDeleteStaffId = null;
+      document.getElementById('adminatorDeleteStaffModal').style.display = 'none';
+    }
+
+    function executeDeleteStaff() {
+      if (activeDeleteStaffId) {
+        const form = document.getElementById('delete-staff-form-' + activeDeleteStaffId);
+        if (form) {
+          form.submit();
+        }
+      }
+    }
+
     function closeStaffModal() {
       document.getElementById('adminatorStaffModal').style.display = 'none';
     }
@@ -234,21 +279,16 @@
     }
 
     function confirmDeleteStaff(id, name) {
-      Swal.fire({
-        title: `Hapus Akun ${name}?`,
-        text: 'Akun petugas ini akan dihapus permanen dari sistem dan tidak bisa login lagi.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#EF4444',
-        cancelButtonColor: '#6B7280',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          document.getElementById('delete-staff-form-' + id).submit();
-        }
-      });
+      openDeleteStaffModal(id, name);
     }
+
+    // Keyboard Escape to close modals
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeStaffModal();
+        closeDeleteStaffModal();
+      }
+    });
   </script>
 </body>
 </html>
