@@ -15,8 +15,9 @@ use App\Http\Controllers\BuyerAuthController;
 Route::get('/', function () {
     $event = DB::table('events')->first();
     $tickets = DB::table('ticket_types')->where('is_active', true)->get();
+    $spots = DB::table('event_spots')->where('is_active', true)->orderBy('order_index', 'asc')->get();
     $buyer = session('buyer');
-    return view('welcome', compact('event', 'tickets', 'buyer'));
+    return view('welcome', compact('event', 'tickets', 'spots', 'buyer'));
 })->name('home');
 
 // ─── BUYER AUTH ROUTES ─────────────────────────────────────────────────────
@@ -230,6 +231,62 @@ Route::get('/admin/banner', function () {
     return view('admin.banner', compact('banners'));
 })->name('admin.banner');
 Route::get('/dashboard/banner', fn() => redirect()->route('admin.banner'));
+
+// Admin Rute & Spot Ikonik Bukittinggi (Terintegrasi Database MySQL)
+Route::get('/admin/rute', function () {
+    $spots = DB::table('event_spots')->orderBy('order_index', 'asc')->get();
+    return view('admin.rute', compact('spots'));
+})->name('admin.rute');
+Route::get('/dashboard/rute', fn() => redirect()->route('admin.rute'));
+
+Route::post('/admin/rute/store', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'name' => 'required|string|max:100',
+        'description' => 'required|string|max:255',
+        'image' => 'required|string',
+        'order_index' => 'nullable|integer'
+    ]);
+
+    $orderIndex = (int) ($request->input('order_index', 0) ?: 0);
+
+    DB::table('event_spots')->insert([
+        'name' => $request->input('name'),
+        'description' => $request->input('description'),
+        'image' => $request->input('image'),
+        'order_index' => $orderIndex,
+        'is_active' => true,
+        'created_at' => now(),
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('admin.rute')->with('success', 'Spot ikonik rute baru berhasil disimpan ke database!');
+})->name('admin.rute.store');
+
+Route::post('/admin/rute/{id}/update', function (\Illuminate\Http\Request $request, $id) {
+    $request->validate([
+        'name' => 'required|string|max:100',
+        'description' => 'required|string|max:255',
+        'image' => 'required|string',
+        'order_index' => 'nullable|integer'
+    ]);
+
+    $orderIndex = (int) ($request->input('order_index', 0) ?: 0);
+
+    DB::table('event_spots')->where('id', $id)->update([
+        'name' => $request->input('name'),
+        'description' => $request->input('description'),
+        'image' => $request->input('image'),
+        'order_index' => $orderIndex,
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('admin.rute')->with('success', 'Data foto dan informasi spot rute berhasil diperbarui di database!');
+})->name('admin.rute.update');
+
+Route::delete('/admin/rute/{id}', function ($id) {
+    DB::table('event_spots')->where('id', $id)->delete();
+    return redirect()->route('admin.rute')->with('success', 'Spot rute berhasil dihapus dari database.');
+})->name('admin.rute.delete');
 
 Route::get('/admin/acara', function () {
     $event = DB::table('events')->first();

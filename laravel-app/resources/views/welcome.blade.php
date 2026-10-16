@@ -555,45 +555,19 @@
       </div>
 
       <div class="destination-grid">
-        <div class="destination-card">
-          <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=400&q=80" alt="Jam Gadang" />
-          <div class="destination-overlay">
-            <div class="destination-city">Jam Gadang</div>
-            <div class="destination-count">Start & Finish / Main Stage</div>
+        @forelse($spots as $s)
+          <div class="destination-card">
+            <img src="{{ $s->image }}" alt="{{ $s->name }}" loading="lazy" />
+            <div class="destination-overlay">
+              <div class="destination-city">{{ $s->name }}</div>
+              <div class="destination-count">{{ $s->description }}</div>
+            </div>
           </div>
-        </div>
-
-        <div class="destination-card">
-          <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Ngarai Sianok" />
-          <div class="destination-overlay">
-            <div class="destination-city">Ngarai Sianok</div>
-            <div class="destination-count">Panorama Viewpoint & Photobooth</div>
+        @empty
+          <div style="grid-column: 1 / -1; text-align: center; padding: 32px; color: #64748B;">
+            Belum ada spot rute yang ditampilkan.
           </div>
-        </div>
-
-        <div class="destination-card">
-          <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80" alt="Benteng Fort de Kock" />
-          <div class="destination-overlay">
-            <div class="destination-city">Fort de Kock</div>
-            <div class="destination-count">Neon Light Tunnel Zone</div>
-          </div>
-        </div>
-
-        <div class="destination-card">
-          <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=400&q=80" alt="Jembatan Limpapeh" />
-          <div class="destination-overlay">
-            <div class="destination-city">Jembatan Limpapeh</div>
-            <div class="destination-count">Cheering Station & DJ Booth</div>
-          </div>
-        </div>
-
-        <div class="destination-card">
-          <img src="https://images.unsplash.com/photo-1555899434-94d1368aa7af?auto=format&fit=crop&w=400&q=80" alt="Pasar Atas" />
-          <div class="destination-overlay">
-            <div class="destination-city">Pelataran Pasar Atas</div>
-            <div class="destination-count">Glow Festival Food & Bazaar</div>
-          </div>
-        </div>
+        @endforelse
       </div>
     </div>
   </section>
