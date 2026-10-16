@@ -287,18 +287,7 @@
           </button>
         </form>
 
-        <div class="auth-divider">atau akses cepat</div>
 
-        <div class="quick-roles">
-          <a class="role-btn" href="{{ route('admin.dashboard') }}">
-            <i data-lucide="layout-dashboard" style="width:15px;height:15px;color:#0284C7;"></i>
-            Admin Utama
-          </a>
-          <a class="role-btn" href="{{ route('petugas.dashboard') }}">
-            <i data-lucide="qr-code" style="width:15px;height:15px;color:#10B981;"></i>
-            Petugas Scan
-          </a>
-        </div>
       </div>
     </div>
 
