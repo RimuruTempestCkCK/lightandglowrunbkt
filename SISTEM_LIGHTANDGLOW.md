@@ -140,6 +140,8 @@ Aplikasi terhubung langsung dengan database MySQL local (`lightandglowrunbkt`) m
    - Kartu metrik KPI hanya ada secara eksklusif pada **Dashboard Admin** (`/admin/dashboard`). Halaman admin lainnya murni berupa tabel master data dan form input.
    - File template tidak terpakai seperti `admin/scanner.blade.php` dan `admin/cms.blade.php` telah dibersihkan.
    - Sidebar Admin dan Petugas Scanner dipisahkan secara ketat sehingga admin tidak melihat menu scanner petugas di sidebar.
+   - Bagian user workspace di sidebar footer (`workspace-avatar` John Doe) telah dihapus menyeluruh pada panel admin dan panel petugas.
+   - Dropdown profile di topbar header kini menampilkan data pengguna yang sesuai dengan database MySQL (`Admin Utama Light & Glow` / `admin@lightandglow.id` untuk admin, dan `Alex Pratama (Petugas Gate 1)` / `alex.gate1@lightandglow.id` untuk petugas), serta menghilangkan menu tidak perlu (*Settings*, *Profile*, *Messages*) dan menyisakan tombol *Logout*.
 4. **Integrasi Kuota Real-time**:
    - Menampilkan sisa kuota tiket di landing page dan halaman detail.
    - Bila kuota tersisa = 0, tombol otomatis berubah menjadi disabled bertuliskan *"Tiket Habis"*.
