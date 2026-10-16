@@ -62,7 +62,7 @@
           <div class="hero-text">
             <span class="eyebrow">Audit & Kehadiran</span>
             <h1 class="hero-title">Laporan <span class="accent">Kehadiran Peserta</span></h1>
-            <p class="hero-sub">Pantau riwayat pemindaian tiket di gate masuk. Filter status validasi atau cari kode tiket, serta unduh atau cetak laporan sesuai hasil filter.</p>
+            <p class="hero-sub">Pantau riwayat check-in peserta dan status validasi tiket di gate.</p>
           </div>
           <div class="hero-actions">
             <button class="btn btn--ghost" onclick="exportAttendanceCSV()">
@@ -71,7 +71,7 @@
             </button>
             <button class="btn btn--primary" onclick="window.print()">
               <svg viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
-              Cetak PDF Laporan
+              Cetak Laporan
             </button>
           </div>
         </section>
@@ -102,8 +102,8 @@
         <div class="card" id="printableArea" style="padding: 24px;">
           <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
-              <span class="eyebrow">Log Audit Real-time</span>
-              <h2 class="card-title">Riwayat Check-in Peserta di Venue Acara</h2>
+              <span class="eyebrow">Log Kehadiran</span>
+              <h2 class="card-title">Riwayat Check-in Peserta</h2>
             </div>
             <div style="font-size:12px; color:var(--t-muted);" id="counterInfo">
               Menampilkan {{ count($logs) }} data kehadiran

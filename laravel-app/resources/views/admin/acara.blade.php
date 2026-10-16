@@ -108,15 +108,15 @@
         <!-- Hero Section -->
         <section class="hero" style="margin-bottom: 24px;">
           <div class="hero-text">
-            <span class="eyebrow">Database MySQL Real-Time</span>
+            <span class="eyebrow">Metode Pembayaran</span>
             <h1 class="hero-title">Kelola <span class="accent">QRIS Pembayaran</span></h1>
-            <p class="hero-sub">Kelola barcode gambar QRIS toko/panitia dan nama akun merchant resmi untuk pembayaran tiket peserta.</p>
+            <p class="hero-sub">Atur barcode QRIS dan nama merchant resmi penerima transfer.</p>
           </div>
           <div class="hero-actions">
             @if(!$event)
               <button class="btn btn--primary" onclick="openAddQrisModal()">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Tambah Data QRIS
+                Tambah QRIS
               </button>
             @endif
           </div>
@@ -126,8 +126,8 @@
         <div class="acara-table-wrap">
           <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
-              <span class="eyebrow">Data Database Terkini</span>
-              <h2 class="card-title">Barcode & Informasi Rekening QRIS Pembayaran</h2>
+              <span class="eyebrow">Akun Aktif</span>
+              <h2 class="card-title">Barcode & Rekening QRIS</h2>
             </div>
           </div>
 

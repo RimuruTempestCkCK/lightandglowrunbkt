@@ -70,14 +70,14 @@
         <!-- Hero Section -->
         <section class="hero" style="margin-bottom: 24px;">
           <div class="hero-text">
-            <span class="eyebrow">Manajemen Akses & Database</span>
+            <span class="eyebrow">Manajemen Petugas</span>
             <h1 class="hero-title">Akun Petugas <span class="accent">Scanner Gate</span></h1>
-            <p class="hero-sub">Kelola akun petugas lapangan, tambah akun petugas baru, ubah kredensial nama/email/password, dan hapus akun petugas di database MySQL.</p>
+            <p class="hero-sub">Kelola akun dan hak akses petugas scanner gate lapangan.</p>
           </div>
           <div class="hero-actions">
             <button class="btn btn--primary" onclick="openAddStaffModal()">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Tambah Petugas Baru
+              Tambah Petugas
             </button>
           </div>
         </section>
@@ -86,8 +86,8 @@
         <div class="card" style="padding: 24px;">
           <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
-              <span class="eyebrow">Daftar Pengguna Sistem</span>
-              <h2 class="card-title">Petugas Validasi QR Code & Akses Internal</h2>
+              <span class="eyebrow">Daftar Petugas</span>
+              <h2 class="card-title">Petugas Scanner Gate</h2>
             </div>
           </div>
 

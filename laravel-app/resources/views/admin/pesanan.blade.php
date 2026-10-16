@@ -62,7 +62,7 @@
           <div class="hero-text">
             <span class="eyebrow">Manajemen Transaksi</span>
             <h1 class="hero-title">Data Pesanan & <span class="accent">Pembeli Tiket</span></h1>
-            <p class="hero-sub">Kelola seluruh riwayat transaksi, filter status pesanan, serta unduh rekap data sesuai hasil filter dalam format CSV dan cetak PDF.</p>
+            <p class="hero-sub">Kelola riwayat transaksi dan unduh rekap pesanan pembeli.</p>
           </div>
           <div class="hero-actions">
             <button class="btn btn--ghost" onclick="exportFilteredCSV()">
@@ -103,7 +103,7 @@
           <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
               <span class="eyebrow">Rekapitulasi Transaksi</span>
-              <h2 class="card-title">Daftar Transaksi Pesanan Tiket (Database Real-time)</h2>
+              <h2 class="card-title">Daftar Transaksi Pesanan Tiket</h2>
             </div>
             <div style="font-size:12px; color:var(--t-muted);" id="counterInfo">
               Menampilkan {{ count($orders) }} pesanan

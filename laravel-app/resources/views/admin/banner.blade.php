@@ -127,14 +127,14 @@
         <!-- Hero Section -->
         <section class="hero" style="margin-bottom: 24px;">
           <div class="hero-text">
-            <span class="eyebrow">Database MySQL Real-Time</span>
-            <h1 class="hero-title">Kelola <span class="accent">Gambar Banner Hero</span></h1>
-            <p class="hero-sub">Tambah dan edit gambar foto banner carousel yang tampil pada beranda landing page Light And Glow Bukittinggi.</p>
+            <span class="eyebrow">Banner Beranda</span>
+            <h1 class="hero-title">Kelola <span class="accent">Banner Hero</span></h1>
+            <p class="hero-sub">Atur gambar banner carousel pada beranda website.</p>
           </div>
           <div class="hero-actions">
             <button class="btn btn--primary" onclick="openAddBannerModal()">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Tambah Gambar Banner
+              Tambah Banner
             </button>
           </div>
         </section>

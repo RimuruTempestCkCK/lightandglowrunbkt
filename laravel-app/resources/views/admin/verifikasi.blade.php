@@ -55,7 +55,7 @@
           <div class="hero-text">
             <span class="eyebrow">Manajemen Transaksi</span>
             <h1 class="hero-title">Verifikasi <span class="accent">Pembayaran</span></h1>
-            <p class="hero-sub">Periksa bukti transfer atau pembayaran QRIS dari pembeli tiket. Pesanan yang <strong>Menunggu Verifikasi</strong> selalu ditempatkan di paling atas antrean.</p>
+            <p class="hero-sub">Periksa dan validasi bukti transfer pembayaran tiket pembeli.</p>
           </div>
           <div class="hero-actions">
             <button class="btn btn--primary" onclick="location.reload()">

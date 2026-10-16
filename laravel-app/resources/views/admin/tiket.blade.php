@@ -101,14 +101,14 @@
         <!-- Hero Section -->
         <section class="hero" style="margin-bottom: 24px;">
           <div class="hero-text">
-            <span class="eyebrow">Database MySQL Real-Time</span>
+            <span class="eyebrow">Manajemen Tiket</span>
             <h1 class="hero-title">Kelola <span class="accent">Tiket & Benefit</span></h1>
-            <p class="hero-sub">Kelola kategori tiket, harga, kuota, serta daftar benefit pamflet resmi yang langsung tersinkronisasi ke Halaman Detail & Preview Pembeli.</p>
+            <p class="hero-sub">Kelola kategori, harga, kuota, dan benefit tiket peserta.</p>
           </div>
           <div class="hero-actions">
             <button class="btn btn--primary" onclick="openAddTicketModal()">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Tambah Tiket Baru
+              Tambah Tiket
             </button>
           </div>
         </section>
@@ -117,8 +117,8 @@
         <div class="tiket-table-wrap">
           <div class="card-head" style="margin-bottom: 16px;">
             <div class="card-title-wrap">
-              <span class="eyebrow">Data Database Terkini</span>
-              <h2 class="card-title">Katalog Tiket & Paket Peserta Light And Glow</h2>
+              <span class="eyebrow">Daftar Tiket</span>
+              <h2 class="card-title">Katalog Tiket Peserta</h2>
             </div>
           </div>
 

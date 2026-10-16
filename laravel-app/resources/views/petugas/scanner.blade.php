@@ -119,7 +119,7 @@
           <div class="hero-text">
             <span class="eyebrow" id="heroDate">Check-in Gate Scanner</span>
             <h1 class="hero-title">Pemindaian <span class="accent">QR Code E-Tiket</span></h1>
-            <p class="hero-sub">Pindai QR Code tiket peserta di gerbang masuk venue Light And Glow Bukittinggi. Sistem memverifikasi keabsahan tiket secara realtime dan mencatat log kehadiran.</p>
+            <p class="hero-sub">Pindai QR code atau input kode tiket untuk validasi check-in peserta.</p>
           </div>
 
         </section>
