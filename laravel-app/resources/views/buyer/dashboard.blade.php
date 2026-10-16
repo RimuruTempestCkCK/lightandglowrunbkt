@@ -601,7 +601,13 @@
                   @php
                     $proofUrl = null;
                     if (!empty($ord->payment_proof)) {
-                      $proofUrl = str_starts_with($ord->payment_proof, 'http') ? $ord->payment_proof : asset('storage/' . $ord->payment_proof);
+                      $cleanProof = $ord->payment_proof;
+                      if (str_starts_with($cleanProof, 'http://127.0.0.1:8000/storage/')) {
+                        $cleanProof = str_replace('http://127.0.0.1:8000/', '', $cleanProof);
+                      } elseif (str_starts_with($cleanProof, 'http://localhost/storage/')) {
+                        $cleanProof = str_replace('http://localhost/', '', $cleanProof);
+                      }
+                      $proofUrl = str_starts_with($cleanProof, 'http') ? $cleanProof : asset(ltrim($cleanProof, '/'));
                     }
                   @endphp
                   @if($proofUrl)

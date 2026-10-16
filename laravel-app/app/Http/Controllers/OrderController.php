@@ -148,18 +148,19 @@ class OrderController extends Controller
             ], 403);
         }
 
-        $proofUrl = null;
-
         if ($request->hasFile('payment_proof')) {
             $file = $request->file('payment_proof');
             $filename = 'proof_' . $order->order_number . '_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('proofs', $filename, 'public');
-            $proofUrl = asset('storage/' . $path);
+            // Simpan relative path 'storage/proofs/...' agar fleksibel di localhost maupun Ngrok/Dev Tunnel
+            $proofUrl = 'storage/' . $path;
         } elseif ($request->input('proof_url')) {
             $proofUrl = $request->input('proof_url');
         } else {
-            // Default dummy placeholder proof jika di browser simulasi
-            $proofUrl = 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500&auto=format&fit=crop&q=60';
+            return response()->json([
+                'success' => false,
+                'message' => 'File bukti pembayaran wajib diunggah!'
+            ], 422);
         }
 
         DB::table('orders')->where('id', $order->id)->update([
@@ -173,7 +174,7 @@ class OrderController extends Controller
             'success' => true,
             'message' => 'Bukti pembayaran berhasil diunggah! Status pesanan kini: Menunggu Verifikasi Admin.',
             'order_number' => '#' . $order->order_number,
-            'proof_url' => $proofUrl
+            'proof_url' => asset($proofUrl)
         ]);
     }
 

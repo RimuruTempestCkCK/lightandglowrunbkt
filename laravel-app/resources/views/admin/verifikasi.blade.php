@@ -126,7 +126,16 @@
                   <td>{{ $order->payment_method }}</td>
                   <td>
                     @if($order->payment_proof)
-                      <a href="#" onclick="viewProof('{{ addslashes($order->buyer_name) }}', '#{{ $order->order_number }}', '{{ asset(ltrim($order->payment_proof, '/')) }}'); return false;" style="color:var(--primary); font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+                      @php
+                        $cleanProof = $order->payment_proof;
+                        if (str_starts_with($cleanProof, 'http://127.0.0.1:8000/storage/')) {
+                          $cleanProof = str_replace('http://127.0.0.1:8000/', '', $cleanProof);
+                        } elseif (str_starts_with($cleanProof, 'http://localhost/storage/')) {
+                          $cleanProof = str_replace('http://localhost/', '', $cleanProof);
+                        }
+                        $proofDisplayUrl = str_starts_with($cleanProof, 'http') ? $cleanProof : asset(ltrim($cleanProof, '/'));
+                      @endphp
+                      <a href="#" onclick="viewProof('{{ addslashes($order->buyer_name) }}', '#{{ $order->order_number }}', '{{ $proofDisplayUrl }}'); return false;" style="color:var(--primary); font-weight:600; display:inline-flex; align-items:center; gap:4px;">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         Lihat Bukti
                       </a>
