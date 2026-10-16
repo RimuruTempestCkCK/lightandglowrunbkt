@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -83,12 +84,7 @@ class OrderController extends Controller
         // Payload QRIS Nasional Dinamis
         $qrisPayload = "00020101021226680016ID.CO.QRIS.WWW01189360050300000{$randNum}5204581253033605802ID5914LIGHT%20AND%20GLOW6011BUKITTINGGI630419A8";
 
-        // Kurangi sisa kuota tiket
-        if ($ticket->remaining_quota > 0) {
-            DB::table('ticket_types')->where('id', $ticket->id)->decrement('remaining_quota', $quantity);
-        }
-
-        // Simpan ke Tabel Orders
+        // Simpan ke Tabel Orders (Kuota TIDAK berkurang saat checkout, hanya berkurang setelah admin menyetujui pembayaran)
         $orderId = DB::table('orders')->insertGetId([
             'order_number'   => $orderNumber,
             'buyer_id'       => $buyerId,
@@ -129,10 +125,27 @@ class OrderController extends Controller
      */
     public function uploadProof(Request $request, $id)
     {
+        // 1. Otorisasi Pembeli: Wajib login sebagai pembeli
+        $buyer = session('buyer');
+        if (!$buyer || empty($buyer['id'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Silakan login terlebih dahulu sebagai pembeli untuk mengunggah bukti pembayaran.'
+            ], 401);
+        }
+
         $order = DB::table('orders')->where('id', $id)->orWhere('order_number', $id)->orWhere('order_number', ltrim($id, '#'))->first();
 
         if (!$order) {
             return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan!'], 404);
+        }
+
+        // 2. Validasi Kepemilikan: Tolak jika pesanan bukan milik pembeli yang sedang login (IDOR Protection)
+        if ($order->buyer_id != $buyer['id']) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akses ditolak: Anda tidak memiliki hak akses untuk mengunggah bukti pada pesanan ini.'
+            ], 403);
         }
 
         $proofUrl = null;
@@ -169,6 +182,14 @@ class OrderController extends Controller
      */
     public function verifyPayment(Request $request, $id)
     {
+        // 1. Otorisasi Server-side: Hanya administrator yang berwenang (User ID 1) yang diizinkan menyetujui pembayaran
+        if (!Auth::check() || Auth::id() != 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akses ditolak. Anda harus login sebagai Administrator untuk menyetujui pembayaran.'
+            ], 403);
+        }
+
         return DB::transaction(function () use ($request, $id) {
             $order = DB::table('orders')
                 ->where('id', $id)
@@ -181,7 +202,7 @@ class OrderController extends Controller
                 return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan!'], 404);
             }
 
-            // Cegah verifikasi ganda / penerbitan tiket ganda
+            // 2. Cegah verifikasi ganda / penerbitan tiket ganda (Idempotensi)
             if ($order->status === 'Pembayaran disetujui') {
                 return response()->json([
                     'success' => true,
@@ -190,18 +211,51 @@ class OrderController extends Controller
                 ]);
             }
 
-            // 1. Update status pesanan
+            // 3. Validasi Bukti Pembayaran: Bukti transfer tidak boleh kosong
+            if (empty($order->payment_proof) || trim($order->payment_proof) === '') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memverifikasi: Pesanan #' . $order->order_number . ' belum mengunggah bukti pembayaran QRIS / transfer.'
+                ], 422);
+            }
+
+            // 4. Validasi Status Pesanan: Hanya pesanan berstatus 'Menunggu verifikasi' yang dapat disetujui
+            if ($order->status !== 'Menunggu verifikasi') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memverifikasi: Status pesanan saat ini adalah "' . $order->status . '". Hanya pesanan berstatus "Menunggu verifikasi" yang dapat disetujui.'
+                ], 422);
+            }
+
+            // 5. Kunci baris tiket_types untuk pengecekan dan pengurangan kuota yang aman dari race condition
+            $ticketType = DB::table('ticket_types')->where('id', $order->ticket_type_id)->lockForUpdate()->first();
+            if (!$ticketType) {
+                return response()->json(['success' => false, 'message' => 'Kategori tiket untuk pesanan ini tidak ditemukan!'], 404);
+            }
+
+            // 6. Periksa ketersediaan kuota aktual
+            if ($ticketType->remaining_quota < $order->quantity) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menyetujui pembayaran: Sisa kuota tiket "' . $ticketType->name . '" tidak mencukupi (sisa: ' . $ticketType->remaining_quota . ', dibutuhkan: ' . $order->quantity . ').'
+                ], 422);
+            }
+
+            // 7. Kurangi kuota tiket tepat satu kali saat admin menyetujui pembayaran
+            DB::table('ticket_types')->where('id', $ticketType->id)->decrement('remaining_quota', $order->quantity);
+
+            // 8. Update status pesanan menjadi 'Pembayaran disetujui'
             DB::table('orders')->where('id', $order->id)->update([
                 'status' => 'Pembayaran disetujui',
                 'verified_at' => now(),
-                'verified_by' => 1,
+                'verified_by' => Auth::id() ?: 1,
                 'updated_at' => now(),
             ]);
 
-            // 2. Ambil data pembeli
+            // 9. Ambil data pembeli
             $buyer = DB::table('buyers')->where('id', $order->buyer_id)->first();
 
-            // 3. Cek apakah tiket digital sudah pernah dibuat sebelumnya
+            // 10. Terbitkan tiket digital tepat satu kali jika belum pernah diterbitkan
             $existingTicketsCount = DB::table('digital_tickets')->where('order_id', $order->id)->count();
             if ($existingTicketsCount < $order->quantity) {
                 $needed = $order->quantity - $existingTicketsCount;
@@ -225,7 +279,7 @@ class OrderController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Pembayaran pesanan #' . $order->order_number . ' disetujui. Tiket digital & QR Code resmi telah diterbitkan!',
+                'message' => 'Pembayaran pesanan #' . $order->order_number . ' disetujui. Kuota tiket berhasil dikurangi dan tiket digital resmi telah diterbitkan!',
                 'order_number' => '#' . $order->order_number
             ]);
         });
@@ -236,6 +290,14 @@ class OrderController extends Controller
      */
     public function rejectPayment(Request $request, $id)
     {
+        // 1. Otorisasi Server-side: Hanya administrator yang berwenang (User ID 1) yang diizinkan menolak pembayaran
+        if (!Auth::check() || Auth::id() != 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akses ditolak. Anda harus login sebagai Administrator untuk menolak pembayaran.'
+            ], 403);
+        }
+
         return DB::transaction(function () use ($request, $id) {
             $order = DB::table('orders')
                 ->where('id', $id)
@@ -248,7 +310,15 @@ class OrderController extends Controller
                 return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan!'], 404);
             }
 
-            // Cegah penolakan berulang yang mengembalikan kuota berkali-kali
+            // Cegah penolakan terhadap pesanan yang sudah berstatus disetujui / lunas demi konsistensi data
+            if ($order->status === 'Pembayaran disetujui') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pesanan #' . $order->order_number . ' sudah berstatus disetujui / lunas dan tiket digital telah terbit. Tidak dapat ditolak secara langsung.'
+                ], 422);
+            }
+
+            // Cegah penolakan berulang
             if ($order->status === 'Pembayaran ditolak') {
                 return response()->json([
                     'success' => true,
@@ -259,10 +329,7 @@ class OrderController extends Controller
 
             $reason = $request->input('reason', 'Bukti mutasi transfer / QRIS tidak valid atau dana belum masuk.');
 
-            // 1. Kembalikan kuota tiket hanya jika sebelumnya kuota berkurang saat order
-            DB::table('ticket_types')->where('id', $order->ticket_type_id)->increment('remaining_quota', $order->quantity);
-
-            // 2. Update status order
+            // Update status pesanan menjadi 'Pembayaran ditolak' (Tidak menambah kuota karena kuota tidak dikurangi saat checkout)
             DB::table('orders')->where('id', $order->id)->update([
                 'status' => 'Pembayaran ditolak',
                 'rejection_reason' => $reason,
@@ -287,9 +354,19 @@ class OrderController extends Controller
             'qr_token' => 'required|string'
         ]);
 
+        // 1. Otorisasi Petugas / Admin: Wajib terautentikasi di sesi internal
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'status' => 'unauthorized',
+                'title' => 'Akses Ditolak!',
+                'message' => 'Akses ditolak. Sesi petugas tidak valid. Silakan login terlebih dahulu.'
+            ], 401);
+        }
+
         $tokenInput = trim($request->input('qr_token'));
         $gate = $request->input('gate', 'Gate 1 (Utama Jam Gadang)');
-        $staffId = $request->input('staff_id', 2);
+        $staffId = Auth::id();
 
         return DB::transaction(function () use ($request, $tokenInput, $gate, $staffId) {
             // 1. Cari tiket berdasarkan qr_token atau ticket_code dengan lock

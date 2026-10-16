@@ -221,7 +221,8 @@ Route::get('/admin/tiket', function () use ($ensureAdmin) {
 Route::get('/dashboard/tiket', fn() => redirect()->route('admin.tiket'));
 
 // Admin Ticket CRUD (Integrasi Database MySQL)
-Route::post('/admin/tiket/store', function (\Illuminate\Http\Request $request) {
+Route::post('/admin/tiket/store', function (\Illuminate\Http\Request $request) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $request->validate([
         'name' => 'required|string|max:150',
         'price' => 'required|numeric|min:0',
@@ -251,7 +252,8 @@ Route::post('/admin/tiket/store', function (\Illuminate\Http\Request $request) {
     return redirect()->route('admin.tiket')->with('success', 'Tiket baru berhasil ditambahkan ke database MySQL!');
 })->name('admin.tiket.store');
 
-Route::post('/admin/tiket/{id}/update', function (\Illuminate\Http\Request $request, $id) {
+Route::post('/admin/tiket/{id}/update', function (\Illuminate\Http\Request $request, $id) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $request->validate([
         'name' => 'required|string|max:150',
         'price' => 'required',
@@ -290,7 +292,8 @@ Route::post('/admin/tiket/{id}/update', function (\Illuminate\Http\Request $requ
     return redirect()->route('admin.tiket')->with('success', 'Data tiket dan daftar benefit berhasil diperbarui di database MySQL!');
 })->name('admin.tiket.update');
 
-Route::delete('/admin/tiket/{id}', function ($id) {
+Route::delete('/admin/tiket/{id}', function ($id) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     DB::table('ticket_types')->where('id', $id)->delete();
     return redirect()->route('admin.tiket')->with('success', 'Tiket berhasil dihapus dari database.');
 })->name('admin.tiket.delete');
@@ -313,7 +316,8 @@ Route::get('/admin/banner', function () use ($ensureAdmin) {
 })->name('admin.banner');
 Route::get('/dashboard/banner', fn() => redirect()->route('admin.banner'));
 
-Route::post('/admin/banner/store', function (\Illuminate\Http\Request $request) {
+Route::post('/admin/banner/store', function (\Illuminate\Http\Request $request) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $request->validate([
         'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         'image' => 'nullable|string',
@@ -348,7 +352,8 @@ Route::post('/admin/banner/store', function (\Illuminate\Http\Request $request) 
     return redirect()->route('admin.banner')->with('success', 'Gambar banner baru berhasil ditambahkan!');
 })->name('admin.banner.store');
 
-Route::post('/admin/banner/{id}/update', function (\Illuminate\Http\Request $request, $id) {
+Route::post('/admin/banner/{id}/update', function (\Illuminate\Http\Request $request, $id) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $request->validate([
         'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         'image' => 'nullable|string',
@@ -379,7 +384,8 @@ Route::post('/admin/banner/{id}/update', function (\Illuminate\Http\Request $req
     return redirect()->route('admin.banner')->with('success', 'Gambar banner berhasil diperbarui!');
 })->name('admin.banner.update');
 
-Route::delete('/admin/banner/{id}', function ($id) {
+Route::delete('/admin/banner/{id}', function ($id) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     DB::table('banners')->where('id', $id)->delete();
     return redirect()->route('admin.banner')->with('success', 'Banner berhasil dihapus dari database.');
 })->name('admin.banner.delete');
@@ -478,7 +484,8 @@ Route::get('/admin/acara', function () use ($ensureAdmin) {
 })->name('admin.acara');
 Route::get('/dashboard/acara', fn() => redirect()->route('admin.acara'));
 
-Route::post('/admin/acara/update', function (\Illuminate\Http\Request $request) {
+Route::post('/admin/acara/update', function (\Illuminate\Http\Request $request) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     $request->validate([
         'qris_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
         'qris_image' => 'nullable|string',
@@ -618,7 +625,8 @@ Route::post('/admin/petugas/{id}/update', function (\Illuminate\Http\Request $re
     return redirect()->route('admin.petugas')->with('success', 'Data petugas berhasil diperbarui!');
 })->name('admin.petugas.update');
 
-Route::delete('/admin/petugas/{id}', function ($id) {
+Route::delete('/admin/petugas/{id}', function ($id) use ($ensureAdmin) {
+    if ($redirect = $ensureAdmin()) return $redirect;
     if ($id == 1) {
         return redirect()->route('admin.petugas')->with('error', 'Akun Admin Utama tidak boleh dihapus demi keamanan sistem.');
     }
@@ -644,9 +652,24 @@ Route::post('/api/checkout', function (\Illuminate\Http\Request $request) {
 })->name('api.checkout');
 
 Route::post('/api/orders/{id}/upload-proof', [OrderController::class, 'uploadProof'])->name('api.order.uploadProof');
-Route::post('/api/orders/{id}/verify', [OrderController::class, 'verifyPayment'])->name('api.order.verify');
-Route::post('/api/orders/{id}/reject', [OrderController::class, 'rejectPayment'])->name('api.order.reject');
-Route::post('/api/scanner/validate', [OrderController::class, 'validateTicket'])->name('api.scanner.validate');
+Route::post('/api/orders/{id}/verify', function (\Illuminate\Http\Request $request, $id) {
+    if (!Auth::check() || Auth::id() != 1) {
+        return response()->json(['success' => false, 'message' => 'Akses ditolak. Anda harus login sebagai Administrator.'], 403);
+    }
+    return app(OrderController::class)->verifyPayment($request, $id);
+})->name('api.order.verify');
+Route::post('/api/orders/{id}/reject', function (\Illuminate\Http\Request $request, $id) {
+    if (!Auth::check() || Auth::id() != 1) {
+        return response()->json(['success' => false, 'message' => 'Akses ditolak. Anda harus login sebagai Administrator.'], 403);
+    }
+    return app(OrderController::class)->rejectPayment($request, $id);
+})->name('api.order.reject');
+Route::post('/api/scanner/validate', function (\Illuminate\Http\Request $request) {
+    if (!Auth::check()) {
+        return response()->json(['success' => false, 'message' => 'Akses ditolak. Sesi petugas tidak valid. Silakan login kembali.'], 401);
+    }
+    return app(OrderController::class)->validateTicket($request);
+})->name('api.scanner.validate');
 
 // API: cek status login pembeli (dipakai oleh JS sebelum buka modal)
 Route::get('/api/buyer/status', function () {
