@@ -946,6 +946,16 @@
         // Selesai sinkronisasi konten CMS
       } catch (e) {
         console.error('Error synchronizing CMS to landing page', e);
+      } finally {
+        if (window.lucide) {
+          lucide.createIcons();
+        }
+      }
+    });
+
+    window.addEventListener('load', () => {
+      if (window.lucide) {
+        lucide.createIcons();
       }
     });
   </script>

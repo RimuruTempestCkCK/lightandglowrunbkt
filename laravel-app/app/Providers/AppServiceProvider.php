@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (request()->server->has('HTTP_X_FORWARDED_PROTO') && request()->server->get('HTTP_X_FORWARDED_PROTO') === 'https') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        } elseif (str_contains(request()->header('host', ''), 'devtunnels.ms')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }

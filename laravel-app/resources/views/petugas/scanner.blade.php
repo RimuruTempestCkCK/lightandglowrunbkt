@@ -26,17 +26,19 @@
   <style>
     .scanner-box {
       max-width: 580px;
+      width: 100%;
       margin: 0 auto;
       background: var(--bg-card);
       border: 1px solid var(--border-soft);
       border-radius: 16px;
-      padding: 24px;
+      padding: 20px;
       text-align: center;
       box-shadow: var(--shadow-card);
+      box-sizing: border-box;
     }
     .viewfinder {
       width: 100%;
-      height: 280px;
+      height: 240px;
       background: #0B1120;
       border-radius: 14px;
       position: relative;
@@ -46,7 +48,7 @@
       justify-content: center;
       color: #fff;
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       border: 1px solid var(--border);
     }
     .scan-laser {
@@ -64,8 +66,8 @@
       100% { top: 95%; }
     }
     .scan-reticle {
-      width: 180px;
-      height: 180px;
+      width: 150px;
+      height: 150px;
       border: 2px dashed rgba(255,255,255,0.65);
       border-radius: 16px;
       display: flex;
@@ -76,11 +78,33 @@
     .scan-result-card {
       background: var(--bg-body);
       border-radius: 12px;
-      padding: 18px;
+      padding: 16px;
       margin-top: 16px;
       display: none;
       text-align: left;
       border: 1px solid var(--border);
+      word-break: break-word;
+    }
+    @media (max-width: 480px) {
+      .scanner-box {
+        padding: 14px;
+        border-radius: 12px;
+      }
+      .viewfinder {
+        height: 210px;
+      }
+      .scan-reticle {
+        width: 130px;
+        height: 130px;
+      }
+      .scan-controls-row {
+        flex-direction: column;
+        width: 100%;
+      }
+      .scan-controls-row button,
+      .scan-controls-row input {
+        width: 100% !important;
+      }
     }
   </style>
 </head>
@@ -97,39 +121,7 @@
             <h1 class="hero-title">Pemindaian <span class="accent">QR Code E-Tiket</span></h1>
             <p class="hero-sub">Pindai QR Code tiket peserta di gerbang masuk venue Light And Glow Bukittinggi. Sistem memverifikasi keabsahan tiket secara realtime dan mencatat log kehadiran.</p>
           </div>
-          <div class="hero-actions">
-            <a href="{{ route('petugas.dashboard') }}" class="btn btn--ghost">
-              <svg viewBox="0 0 24 24"><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
-              Dashboard Petugas
-            </a>
-          </div>
-        </section>
 
-        <!-- KPI Check-in Ringkas untuk Petugas -->
-        <section class="kpi-grid" style="margin-bottom: 24px;">
-          <article class="kpi-card c-success">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon success"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                <div class="kpi-label">Total Peserta Check-in</div>
-              </div>
-              <span class="kpi-pill up">Gate Aktif</span>
-            </div>
-            <div class="kpi-value">{{ $todayCheckIns ?? 0 }}</div>
-            <div class="kpi-compare"><svg class="up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg> Peserta telah masuk gate utama</div>
-          </article>
-
-          <article class="kpi-card c-primary">
-            <div class="kpi-top">
-              <div class="kpi-identity">
-                <div class="kpi-icon primary"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-                <div class="kpi-label">Status Kamera Scanner</div>
-              </div>
-              <span class="kpi-pill info">Siap Scan</span>
-            </div>
-            <div class="kpi-value" style="font-size: 24px; font-weight: 700; margin-top: 6px;">READY</div>
-            <div class="kpi-compare"><svg class="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg> Sensor & Validasi realtime aktif</div>
-          </article>
         </section>
 
         <div class="scanner-box">
@@ -147,70 +139,25 @@
             <span style="font-size:12px; margin-top:12px; color:#94A3B8;">Arahkan kamera ke QR Code e-tiket peserta</span>
           </div>
 
-          <div style="display:flex; gap:10px; justify-content:center; margin-bottom:16px;">
-            <button id="btnToggleCamera" class="btn btn--primary" onclick="toggleCameraScanner()" style="font-size:13px; display:inline-flex; align-items:center; gap:6px;">
+          <div style="display:flex; justify-content:center; margin-bottom:16px;">
+            <button id="btnToggleCamera" class="btn btn--primary" onclick="toggleCameraScanner()" style="font-size:13px; display:inline-flex; align-items:center; gap:6px; padding:10px 20px;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
               <span>Nyalakan Kamera Scanner</span>
-            </button>
-            <button class="btn btn--ghost" style="font-size:12px;" onclick="quickScan('LG-BKT-2026-99214')">
-              Demo Valid (LG-BKT-2026-99214)
             </button>
           </div>
 
           <div style="margin-bottom:16px;">
-            <div style="display:flex; gap:8px;">
-              <input type="text" id="ticketCodeInput" class="form-control" placeholder="Ketik / Scan QR Token atau Kode Tiket..." style="padding:11px 14px; border-radius:8px; border:1px solid var(--border); background:var(--bg-body); color:inherit; flex:1;" onkeydown="if(event.key==='Enter') submitScanCode()" />
-              <button class="btn btn--primary" onclick="submitScanCode()">Validasi</button>
+            <div class="scan-controls-row" style="display:flex; gap:8px;">
+              <input type="text" id="ticketCodeInput" class="form-control" placeholder="Ketik / scan kode tiket atau QR token..." style="padding:11px 14px; border-radius:8px; border:1px solid var(--border); background:var(--bg-body); color:inherit; flex:1;" onkeydown="if(event.key==='Enter') submitScanCode()" />
+              <button class="btn btn--primary" onclick="submitScanCode()" style="white-space:nowrap; padding:11px 18px;">Validasi</button>
             </div>
-            <div style="font-size:11px; color:var(--t-muted); margin-top:8px;">Format kode tiket: LG-BKT-2026-XXXXX atau Token QR dari smartphone peserta</div>
+            <div style="font-size:11px; color:var(--t-muted); margin-top:8px;">Mendukung input manual kode tiket maupun kamera scan langsung</div>
           </div>
 
           <!-- Result card container -->
           <div id="scanResult" class="scan-result-card"></div>
         </div>
 
-        @if(isset($recentLogs) && count($recentLogs) > 0)
-          <section class="card" style="max-width: 780px; margin: 24px auto 0; padding: 20px;">
-            <div class="card-head" style="margin-bottom: 14px;">
-              <div class="card-title-wrap">
-                <span class="eyebrow">Riwayat Terakhir Gate</span>
-                <h2 class="card-title" style="font-size:16px;">Pemindaian Terbaru Petugas</h2>
-              </div>
-            </div>
-            <div class="table-scroll">
-              <table class="table" style="width: 100%; min-width: 600px;">
-                <thead>
-                  <tr>
-                    <th style="white-space: nowrap;">Waktu</th>
-                    <th style="white-space: nowrap;">Kode Tiket</th>
-                    <th style="white-space: nowrap;">Peserta</th>
-                    <th style="white-space: nowrap;">Gate</th>
-                    <th style="text-align:right; white-space: nowrap;">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($recentLogs as $log)
-                    <tr>
-                      <td style="font-size:12px; color:var(--t-muted);">{{ \Carbon\Carbon::parse($log->scanned_at)->format('H:i:s') }}</td>
-                      <td><code>{{ $log->ticket_code }}</code></td>
-                      <td><strong>{{ $log->holder_name }}</strong></td>
-                      <td>{{ $log->gate_location }}</td>
-                      <td style="text-align:right;">
-                        @if($log->validation_status === 'success')
-                          <span class="badge success dot">Berhasil</span>
-                        @elseif($log->validation_status === 'rejected_used')
-                          <span class="badge danger dot">Duplikat</span>
-                        @else
-                          <span class="badge warning dot">Tidak Valid</span>
-                        @endif
-                      </td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
-            </div>
-          </section>
-        @endif
 
       </main>
       <div data-shell-footer></div>
@@ -301,11 +248,6 @@
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
         <span>Nyalakan Kamera Scanner</span>
       `;
-    }
-
-    function quickScan(code) {
-      document.getElementById('ticketCodeInput').value = code;
-      submitScanCode();
     }
 
     async function submitScanCode() {

@@ -94,6 +94,21 @@ img {
   display: block;
 }
 
+/* Lucide Icons SVG Baseline & Mobile Fix */
+svg.lucide, i[data-lucide] svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.category-icon-wrapper svg.lucide,
+.category-icon-wrapper i[data-lucide] svg,
+.category-icon-wrapper i[data-lucide] {
+  width: 28px !important;
+  height: 28px !important;
+  stroke-width: 2px;
+}
+
 /* Container */
 .goers-container {
   width: 100%;
