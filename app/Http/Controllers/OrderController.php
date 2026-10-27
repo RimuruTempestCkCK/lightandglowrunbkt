@@ -125,7 +125,17 @@ class OrderController extends Controller
      */
     public function uploadProof(Request $request, $id)
     {
-        // 1. Otorisasi Pembeli: Wajib login sebagai pembeli
+        // 1. Validasi Input Berkas (Keamanan Tipe & Ukuran Maksimal 5MB)
+        $request->validate([
+            'payment_proof' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'proof_url'     => 'nullable|string|max:500'
+        ], [
+            'payment_proof.image' => 'Berkas bukti pembayaran harus berupa gambar.',
+            'payment_proof.mimes' => 'Format gambar yang diperbolehkan hanya JPG, JPEG, PNG, atau WEBP.',
+            'payment_proof.max'   => 'Ukuran berkas bukti pembayaran maksimal adalah 5MB.'
+        ]);
+
+        // 2. Otorisasi Pembeli: Wajib login sebagai pembeli
         $buyer = session('buyer');
         if (!$buyer || empty($buyer['id'])) {
             return response()->json([
@@ -140,7 +150,7 @@ class OrderController extends Controller
             return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan!'], 404);
         }
 
-        // 2. Validasi Kepemilikan: Tolak jika pesanan bukan milik pembeli yang sedang login (IDOR Protection)
+        // 3. Validasi Kepemilikan: Tolak jika pesanan bukan milik pembeli yang sedang login (IDOR Protection)
         if ($order->buyer_id != $buyer['id']) {
             return response()->json([
                 'success' => false,
@@ -150,7 +160,15 @@ class OrderController extends Controller
 
         if ($request->hasFile('payment_proof')) {
             $file = $request->file('payment_proof');
-            $filename = 'proof_' . $order->order_number . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $extension = strtolower($file->getClientOriginalExtension());
+            $safeExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+            if (!in_array($extension, $safeExtensions)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ekstensi file tidak aman atau tidak didukung.'
+                ], 422);
+            }
+            $filename = 'proof_' . $order->order_number . '_' . time() . '.' . $extension;
             $path = $file->storeAs('proofs', $filename, 'public');
             // Simpan relative path 'storage/proofs/...' agar fleksibel di localhost maupun Ngrok/Dev Tunnel
             $proofUrl = 'storage/' . $path;
